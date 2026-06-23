@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Nhi Khoa - Công cụ Lâm sàng</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --bg: #f3f4f6;
+            --surface: #ffffff;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --border: #d1d5db;
+            --radius: 12px;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --orange: #f97316;
+            --sidebar-width: 260px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+
+        body { background-color: var(--bg); color: var(--text); line-height: 1.5; }
+
+        /* --- APP LAYOUT (SIDEBAR & MAIN) --- */
+        .app-layout { display: flex; min-height: 100vh; }
+
+        /* Sidebar Styling */
+        .sidebar { width: var(--sidebar-width); background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; position: fixed; top: 0; bottom: 0; left: 0; z-index: 1000; transition: transform 0.3s ease; }
+        .sidebar-header { padding: 20px; text-align: center; border-bottom: 1px solid var(--bg); }
+        .sidebar-header h2 { color: var(--primary); font-size: 20px; }
+        .sidebar-header p { font-size: 12px; color: var(--text-light); }
+        
+        .menu-list { flex: 1; overflow-y: auto; padding-top: 10px; }
+        .menu-item { padding: 14px 20px; display: flex; align-items: center; gap: 12px; font-weight: 500; color: var(--text); cursor: pointer; transition: background 0.2s; border-left: 4px solid transparent; }
+        .menu-item:hover { background: #f9fafb; }
+        .menu-item.active { color: var(--primary); background: #eff6ff; border-left-color: var(--primary); font-weight: 600; }
+        .menu-item svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+        /* Main Content Styling */
+        .main-wrapper { flex: 1; margin-left: var(--sidebar-width); display: flex; flex-direction: column; min-width: 0; transition: margin-left 0.3s ease; }
+        
+        .top-bar { display: none; background: var(--surface); padding: 12px 16px; align-items: center; gap: 16px; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 900; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .hamburger { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text); padding: 4px; display: flex; align-items: center; justify-content: center; }
+        .top-bar h2 { font-size: 18px; color: var(--primary); margin: 0; }
+
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; opacity: 0; transition: opacity 0.3s; }
+
+        /* --- CONTENT COMPONENTS --- */
+        .container { max-width: 700px; margin: 0 auto; padding: 24px 16px 80px 16px; width: 100%; }
+        
+        .header { text-align: center; margin-bottom: 24px; }
+        .header h1 { font-size: 24px; color: var(--primary-dark); margin-bottom: 4px; }
+        .header p { font-size: 14px; color: var(--text-light); }
+
+        .card { background: var(--surface); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .card-title { font-size: 18px; font-weight: 600; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); color: var(--primary-dark); }
+
+        .form-row { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+        .form-col { flex: 1; min-width: 140px; }
+
+        label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 6px; color: var(--text); }
+        
+        input[type="number"], select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 16px; background-color: var(--surface); color: var(--text); transition: border-color 0.2s; appearance: none; }
+        select { background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; padding-right: 40px; }
+        input:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2); }
+
+        .btn { width: 100%; padding: 16px; background-color: var(--primary); color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: 600; cursor: pointer; transition: background-color 0.2s; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2); margin-top: 8px; }
+        .btn:hover { background-color: var(--primary-dark); }
+        .btn:active { transform: translateY(1px); }
+
+        .result-section { display: none; margin-top: 24px; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .result-box { text-align: center; padding: 24px; background: linear-gradient(135deg, #eff6ff, #dbeafe); border-radius: var(--radius); border: 1px solid #bfdbfe; margin-bottom: 20px; }
+        .result-value { font-size: 36px; font-weight: 700; color: var(--primary-dark); margin: 8px 0; }
+        .result-unit { font-size: 16px; color: var(--text-light); }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 14px; }
+        th, td { border: 1px solid var(--border); padding: 10px; text-align: left; }
+        th { background-color: #f9fafb; font-weight: 600; }
+        
+        .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; color: white; text-align: center; }
+        .bg-green { background-color: var(--success); }
+        .bg-yellow { background-color: var(--warning); color: #000; }
+        .bg-orange { background-color: var(--orange); }
+        .bg-red { background-color: var(--danger); }
+        .bg-gray { background-color: var(--text-light); }
+
+        .note { font-size: 13px; color: var(--text-light); font-style: italic; margin-top: 8px; }
+        .warning-box { background-color: #fef2f2; border: 1px solid #fecaca; color: #991b1b; padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; }
+
+        .tab-content { display: none; animation: fadeIn 0.3s; }
+        .tab-content.active { display: block; }
+
+        /* --- ACCORDION & CSLE STYLES --- */
+        .accordion-btn { background-color: var(--surface); color: var(--text); cursor: pointer; padding: 16px; width: 100%; border: 1px solid var(--border); border-radius: 8px; text-align: left; outline: none; font-size: 16px; font-weight: 600; transition: 0.2s; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .accordion-btn:hover { background-color: #f9fafb; }
+        .accordion-btn.active { background-color: var(--primary); color: white; border-color: var(--primary); }
+        .accordion-content { display: none; padding: 16px; background-color: var(--surface); border: 1px solid var(--border); border-top: none; border-radius: 0 0 8px 8px; margin-top: -8px; margin-bottom: 16px; animation: fadeIn 0.3s; }
+        .accordion-content.show { display: block; }
+        .cb-group { margin-bottom: 16px; background: #f9fafb; padding: 12px; border-radius: 8px; border: 1px solid #e5e7eb; }
+        .cb-group h4 { margin-bottom: 10px; color: var(--primary-dark); font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .cb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
+        .cb-label { display: flex; align-items: flex-start; font-size: 14px; cursor: pointer; color: var(--text); line-height: 1.4; }
+        .cb-label input { margin-top: 2px; margin-right: 8px; width: 18px; height: 18px; accent-color: var(--primary); flex-shrink: 0; cursor: pointer; }
+        .score-box { background: #eff6ff; border: 1px solid #bfdbfe; padding: 16px; border-radius: 8px; margin-top: 16px; text-align: center; }
+        .score-val { font-size: 32px; font-weight: 700; color: var(--primary-dark); }
+
+        /* --- RESPONSIVE DESIGN (MOBILE & TABLET) --- */
+        @media (max-width: 860px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main-wrapper { margin-left: 0; }
+            .top-bar { display: flex; }
+            .overlay.active { display: block; opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-layout">
+    
+    <!-- OVERLAY MÀN HÌNH NHỎ -->
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- SIDEBAR (MENU TRÁI) -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Nhi Khoa App</h2>
+            <p>Công cụ Lâm sàng</p>
+        </div>
+        <div class="menu-list">
+            <div class="menu-item active" onclick="switchTab('tab-egfr', this)">
+                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/><path d="M12 7v5l3 3"/></svg>
+                eGFR & CKD
+            </div>
+            <div class="menu-item" onclick="switchTab('tab-upcr', this)">
+                <svg viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg>
+                Chỉ số UPCR
+            </div>
+            <div class="menu-item" onclick="switchTab('tab-csle', this)">
+                <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+                Thang điểm cSLE
+            </div>
+            <div class="menu-item" onclick="switchTab('tab-bp', this)">
+                <svg viewBox="0 0 24 24"><path d="M4 22v-2c0-3.3 2.7-6 6-6h4c3.3 0 6 2.7 6 6v2M12 11a4 4 0 100-8 4 4 0 000 8z"/><path d="M18 11v5m0 0l-2-2m2 2l2-2" stroke-width="1.5"/></svg>
+                Phân độ Huyết áp
+            </div>
+            <div class="menu-item" onclick="switchTab('tab-steroid', this)">
+                <svg viewBox="0 0 24 24"><path d="M10 2v7.31c0 1.06-.42 2.08-1.17 2.83L5 16.59C3.75 17.84 3 19.53 3 21.3V22h18v-.7c0-1.77-.75-3.46-2-4.71l-3.83-4.45c-.75-.75-1.17-1.77-1.17-2.83V2H10z"/><path d="M8 2h8"/></svg>
+                Phác đồ Steroid
+            </div>
+        </div>
+    </aside>
+
+    <!-- KHU VỰC NỘI DUNG CHÍNH -->
+    <div class="main-wrapper">
+        
+        <!-- THANH TOP BAR -->
+        <div class="top-bar">
+            <button class="hamburger" onclick="toggleSidebar()">
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+            <h2 id="mobile-title">eGFR & CKD</h2>
+        </div>
+
+        <div class="container">
+            
+            <!-- MODULE 1: eGFR & CKD -->
+            <div id="tab-egfr" class="tab-content active">
+                <div class="header">
+                    <h1>Tính eGFR & Phân độ CKD</h1>
+                    <p>Công thức Schwartz gốc & KDIGO/KDOQI</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">1. Thông tin lâm sàng</div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>Tuổi</label>
+                            <input type="number" id="ageValue" inputmode="decimal" placeholder="Nhập số">
+                        </div>
+                        <div class="form-col">
+                            <label>Đơn vị tuổi</label>
+                            <select id="ageUnit">
+                                <option value="years">Năm</option>
+                                <option value="months">Tháng</option>
+                                <option value="weeks">Tuần</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>Giới tính</label>
+                            <select id="gender">
+                                <option value="male">Nam</option>
+                                <option value="female">Nữ</option>
+                            </select>
+                        </div>
+                        <div class="form-col">
+                            <label>Chiều cao (cm)</label>
+                            <input type="number" id="height" inputmode="decimal" placeholder="VD: 110">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">2. Cận lâm sàng</div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>Creatinine máu</label>
+                            <input type="number" id="serumCrea" inputmode="decimal" placeholder="VD: 45">
+                        </div>
+                        <div class="form-col">
+                            <label>Đơn vị</label>
+                            <select id="creaUnit">
+                                <option value="umol">µmol/L</option>
+                                <option value="mgdl">mg/dL</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <label style="margin-top: 10px; color: var(--primary-dark); border-bottom: 1px dashed var(--border); padding-bottom: 4px; margin-bottom: 10px; display: inline-block;">Thông số Nước tiểu (Tùy chọn - Để phân độ CKD)</label>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>Albumin niệu (mg/L)</label>
+                            <input type="number" id="urineAlb" inputmode="decimal" placeholder="VD: 40">
+                        </div>
+                        <div class="form-col">
+                            <label>Creatinine niệu (mg/dL)</label>
+                            <input type="number" id="urineCrea" inputmode="decimal" placeholder="VD: 100">
+                        </div>
+                    </div>
+                    <p class="note">* Tự động tính ACR để phân độ tổn thương thận.</p>
+                </div>
+
+                <button class="btn" onclick="calculate()">TÍNH eGFR</button>
+
+                <div id="resultSection" class="result-section">
+                    <div id="warningInfant" class="warning-box" style="display: none;">
+                        <strong>Lưu ý:</strong> Trẻ dưới 2 tuổi chức năng thận chưa hoàn thiện. Không áp dụng phân độ CKD G1-G5.
+                    </div>
+                    <div class="result-box">
+                        <div style="font-weight: 600; color: var(--text-light);">eGFR (Mức lọc cầu thận)</div>
+                        <div class="result-value" id="egfrResult">--</div>
+                        <div class="result-unit">mL/phút/1.73m² (Hệ số K: <span id="kFactorUsed">--</span>)</div>
+                    </div>
+
+                    <div class="card" id="infantReference" style="display: none;">
+                        <div class="card-title">Tham chiếu sinh lý (Trẻ < 2 tuổi)</div>
+                        <table>
+                            <tr><th>Tuổi</th><th>eGFR Bình thường (Mean ± SD)</th></tr>
+                            <tr><td>1 tuần</td><td>40.6 ± 14.8</td></tr>
+                            <tr><td>2 - 8 tuần</td><td>65.8 ± 24.8</td></tr>
+                            <tr><td>2 tháng - 1 tuổi</td><td>95.7 ± 21.7</td></tr>
+                            <tr><td>1 - 2 tuổi</td><td>133.0 ± 27.0</td></tr>
+                        </table>
+                    </div>
+
+                    <div id="ckdClassification" style="display: none;">
+                        <div class="card">
+                            <div class="card-title" style="display: flex; justify-content: space-between;">
+                                <span>Phân loại KDIGO 2012</span>
+                                <span id="acrBadge" class="badge bg-gray">ACR: --</span>
+                            </div>
+                            <table>
+                                <tr><td width="35%"><strong>Mức GFR</strong></td><td id="kdigoG" style="font-weight: 600;">--</td></tr>
+                                <tr><td><strong>Albumin niệu</strong></td><td id="kdigoA">--</td></tr>
+                                <tr><td><strong>Nguy cơ</strong></td><td id="kdigoRisk">--</td></tr>
+                            </table>
+                        </div>
+                        <div class="card">
+                            <div class="card-title">Giai đoạn NKF/KDOQI</div>
+                            <table><tr><td><strong>Chẩn đoán</strong></td><td id="kdoqiStage" style="font-weight: 600; color: var(--primary-dark);">--</td></tr></table>
+                            <p class="note" style="margin-top: 10px;">* Giai đoạn 1 & 2 của KDOQI bắt buộc cần bằng chứng tổn thương thận (ACR ≥ 30 mg/g).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODULE 2: UPCR -->
+            <div id="tab-upcr" class="tab-content">
+                <div class="header">
+                    <h1>Chỉ số UPCR</h1>
+                    <p>Tỷ số Protein/Creatinine niệu</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">1. Thông tin bệnh nhân (Tùy chọn)</div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>Tuổi</label>
+                            <input type="number" id="upcrAgeVal" inputmode="decimal" placeholder="Không nhập = Trẻ ≥ 2 tuổi">
+                        </div>
+                        <div class="form-col">
+                            <label>Đơn vị tuổi</label>
+                            <select id="upcrAgeUnit">
+                                <option value="years">Năm</option>
+                                <option value="months">Tháng</option>
+                            </select>
+                        </div>
+                    </div>
+                    <p class="note">* Trẻ nhũ nhi (< 2 tuổi) có ngưỡng UPCR sinh lý cao hơn do ống thận chưa hoàn thiện.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">2. Thông số nước tiểu (Bắt buộc)</div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>Protein niệu</label>
+                            <input type="number" id="upcrProt" inputmode="decimal" placeholder="VD: 50">
+                        </div>
+                        <div class="form-col">
+                            <label>Đơn vị</label>
+                            <select id="upcrProtUnit">
+                                <option value="mgdl">mg/dL</option>
+                                <option value="gl">g/L</option>
+                                <option value="mgl">mg/L</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>Creatinine niệu</label>
+                            <input type="number" id="upcrCrea" inputmode="decimal" placeholder="VD: 10">
+                        </div>
+                        <div class="form-col">
+                            <label>Đơn vị</label>
+                            <select id="upcrCreaUnit">
+                                <option value="mmol">mmol/L</option>
+                                <option value="umol">µmol/L</option>
+                                <option value="mgdl">mg/dL</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="calculateUPCR()">TÍNH UPCR</button>
+
+                <div id="upcrResultSection" class="result-section">
+                    <div class="result-box">
+                        <div style="font-weight: 600; color: var(--text-light);">Tỷ số UPCR</div>
+                        <div class="result-value" id="upcrResultMgMmol">--</div>
+                        <div class="result-unit">mg/mmol</div>
+                        <div style="margin-top: 12px; font-size: 18px; font-weight: 600; color: var(--primary);">~ <span id="upcrResultMgMg">--</span> mg/mg (hoặc g/g)</div>
+                    </div>
+
+                    <div class="card" style="margin-top: 16px;">
+                        <div class="card-title">Phân ngưỡng lâm sàng</div>
+                        <div id="upcrInterpretation" style="font-size: 16px; font-weight: 600; text-align: center; padding: 12px; border-radius: 8px;">--</div>
+                        <div id="upcrAgeNotice" class="note" style="text-align: center; margin-top: 8px; font-weight: 500; color: var(--primary);"></div>
+                        
+                        <table style="margin-top: 16px;">
+                            <tr>
+                                <th width="35%">Lâm sàng</th>
+                                <th>mg/mmol</th>
+                                <th>mg/mg (g/g)</th>
+                            </tr>
+                            <tr>
+                                <td><strong>Bình thường</strong></td>
+                                <td>< 22.6 (Trẻ ≥ 2t)<br>< 56.6 (Trẻ < 2t)</td>
+                                <td>< 0.2 (Trẻ ≥ 2t)<br>< 0.5 (Trẻ < 2t)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Trung bình</strong></td>
+                                <td>22.6 - 226</td>
+                                <td>0.2 - 2.0</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Ngưỡng thận hư</strong></td>
+                                <td>≥ 226</td>
+                                <td>≥ 2.0</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODULE 3: cSLE SCORING -->
+            <div id="tab-csle" class="tab-content">
+                <div class="header">
+                    <h1>Thang điểm cSLE</h1>
+                    <p>Lupus ban đỏ hệ thống khởi phát ở trẻ em</p>
+                </div>
+
+                <!-- SLICC 2012 -->
+                <button class="accordion-btn" onclick="toggleAccordion('slicc-content', this)">
+                    <span>[+] Tiêu chuẩn SLICC 2012</span>
+                </button>
+                <div id="slicc-content" class="accordion-content">
+                    <p class="note" style="margin-bottom: 12px;">Chẩn đoán xác định khi: Sinh thiết thận phù hợp Viêm thận Lupus kèm ANA/Anti-dsDNA (+) <strong>HOẶC</strong> Thỏa ≥ 4 tiêu chuẩn (ít nhất 1 Lâm sàng + 1 Miễn dịch).</p>
+                    
+                    <div class="cb-group" style="background-color: #eef2ff; border-color: #c7d2fe;">
+                        <label class="cb-label" style="font-weight: 600; color: var(--primary-dark);">
+                            <input type="checkbox" id="slicc_biopsy">
+                            Sinh thiết thận phù hợp Viêm thận Lupus KÈM ANA hoặc Anti-dsDNA (+)
+                        </label>
+                    </div>
+
+                    <div class="cb-group">
+                        <h4>Tiêu chuẩn Lâm sàng (11 mục)</h4>
+                        <div class="cb-grid">
+                            <label class="cb-label"><input type="checkbox" class="slicc-clin"> Lupus da cấp tính</label>
+                            <label class="cb-label"><input type="checkbox" class="slicc-clin"> Lupus da mạn tính</label>
+                            <label class="cb-label"><input type="checkbox" class="slicc-clin"> Loét miệng/mũi</label>
+                            <label class="cb-label"><input type="checkbox" class="slicc-clin"> Rụng tóc không sẹo</label>
+                            <label class="cb-label"><input type="checkbox" class="slicc-clin"> Viêm khớp (≥ 2 khớp)</label>
+                            <label class="cb-label"><input type="checkbox" class="slicc-clin"> Viêm thanh mạc (Màng phổi/Tim)</label>
+                            <label class="cb-label"><input type="checkbox" class="slicc-clin"> Tổn thương thận (>0.5g/24h hoặc Trụ HC)</label>
+                            <label class="cb-label"><input type="checkbox" class="slicc-clin"> Thần kinh (Co giật, Rối loạn tâm thần...)</label>
+                            <label class="cb-label"><input type="checkbox" class="slicc-clin"> Thiếu máu tán huyết</label>
+                            <label class="cb-label"><input type="checkbox" class="slicc-clin"> Giảm Bạch cầu (<4k) hoặc Lympho (<1k)</label>
+                            <label class="cb-label"><input type="checkbox" class="slicc-clin"> Giảm Tiểu cầu (<100K)</label>
+                        </div>
+                    </div>
+
+                    <div class="cb-group">
+                        <h4>Tiêu chuẩn Miễn dịch (6 mục)</h4>
+                        <div class="cb-grid">
+                            <label class="cb-label"><input type="checkbox" class="slicc-imm"> ANA (+)</label>
+                            <label class="cb-label"><input type="checkbox" class="slicc-imm"> Anti-dsDNA (+)</label>
+                            <label class="cb-label"><input type="checkbox" class="slicc-imm"> Anti-Sm (+)</label>
+                            <label class="cb-label"><input type="checkbox" class="slicc-imm"> Kháng thể kháng Phospholipid (+)</label>
+                            <label class="cb-label"><input type="checkbox" class="slicc-imm"> Giảm Bổ thể (C3, C4, CH50)</label>
+                            <label class="cb-label"><input type="checkbox" class="slicc-imm"> Coombs trực tiếp (+) (Không thiếu máu TH)</label>
+                        </div>
+                    </div>
+                    
+                    <button class="btn" onclick="calcSLICC()">ĐÁNH GIÁ SLICC</button>
+                    <div class="score-box" id="slicc-result-box" style="display:none;">
+                        <div id="slicc-result-text" class="score-val" style="font-size: 24px;">--</div>
+                        <div id="slicc-detail" class="note">--</div>
+                    </div>
+                </div>
+
+                <!-- EULAR/ACR 2019 -->
+                <button class="accordion-btn" onclick="toggleAccordion('eular-content', this)">
+                    <span>[+] Tiêu chuẩn EULAR/ACR 2019</span>
+                </button>
+                <div id="eular-content" class="accordion-content">
+                    <p class="note" style="margin-bottom: 12px; color: var(--danger); font-weight: 600;">* Cửa ải bắt buộc: Kháng thể kháng nhân (ANA) ≥ 1:80.</p>
+                    <div class="cb-group" style="background-color: #fef2f2; border-color: #fecaca;">
+                        <label class="cb-label" style="font-weight: 600;">
+                            <input type="checkbox" id="eular_ana" onchange="toggleEularForm()"> Bệnh nhân CÓ chỉ số ANA ≥ 1:80
+                        </label>
+                    </div>
+
+                    <div id="eular-form-wrapper" style="opacity: 0.5; pointer-events: none;">
+                        <p class="note" style="margin-bottom: 12px;">Hệ thống sẽ <strong>tự động chọn điểm cao nhất</strong> trong mỗi nhóm. Chẩn đoán xác định khi <strong>Tổng điểm ≥ 10</strong>.</p>
+                        
+                        <div class="cb-group">
+                            <h4>Lâm sàng: Toàn thân & Huyết học & Thần kinh</h4>
+                            <div class="cb-grid">
+                                <label class="cb-label"><input type="checkbox" class="eu-c-con" value="2"> Sốt (2)</label>
+                                <label class="cb-label"><input type="checkbox" class="eu-c-hem" value="3"> Giảm bạch cầu (3)</label>
+                                <label class="cb-label"><input type="checkbox" class="eu-c-hem" value="4"> Giảm tiểu cầu (4)</label>
+                                <label class="cb-label"><input type="checkbox" class="eu-c-hem" value="4"> Thiếu máu tán huyết tự miễn (4)</label>
+                                <label class="cb-label"><input type="checkbox" class="eu-c-neu" value="2"> Sảng (Delirium) (2)</label>
+                                <label class="cb-label"><input type="checkbox" class="eu-c-neu" value="3"> Rối loạn tâm thần (3)</label>
+                                <label class="cb-label"><input type="checkbox" class="eu-c-neu" value="5"> Co giật (5)</label>
+                            </div>
+                        </div>
+
+                        <div class="cb-group">
+                            <h4>Lâm sàng: Da niêm & Thanh mạc & Cơ xương khớp</h4>
+                            <div class="cb-grid">
+                                <label class="cb-label"><input type="checkbox" class="eu-c-muc" value="2"> Rụng tóc không sẹo (2)</label>
+                                <label class="cb-label"><input type="checkbox" class="eu-c-muc" value="2"> Loét miệng (2)</label>
+                                <label class="cb-label"><input type="checkbox" class="eu-c-muc" value="4"> Lupus da bán cấp / dạng đĩa (4)</label>
+                                <label class="cb-label"><input type="checkbox" class="eu-c-muc" value="6"> Lupus da cấp tính (6)</label>
+                                <label class="cb-label"><input type="checkbox" class="eu-c-ser" value="5"> Tràn dịch màng phổi/tim (5)</label>
+                                <label class="cb-label"><input type="checkbox" class="eu-c-ser" value="6"> Viêm màng ngoài tim cấp (6)</label>
+                                <label class="cb-label"><input type="checkbox" class="eu-c-msk" value="6"> Tổn thương khớp (6)</label>
+                            </div>
+                        </div>
+
+                        <div class="cb-group">
+                            <h4>Lâm sàng: Thận (Renal)</h4>
+                            <div class="cb-grid">
+                                <label class="cb-label"><input type="checkbox" class="eu-c-ren" value="4"> Protein niệu > 0.5g/24h (4)</label>
+                                <label class="cb-label"><input type="checkbox" class="eu-c-ren" value="8"> Viêm thận Lupus Class II/V (8)</label>
+                                <label class="cb-label"><input type="checkbox" class="eu-c-ren" value="10"> Viêm thận Lupus Class III/IV (10)</label>
+                            </div>
+                        </div>
+
+                        <div class="cb-group">
+                            <h4>Miễn dịch (Immunologic)</h4>
+                            <div class="cb-grid">
+                                <label class="cb-label"><input type="checkbox" class="eu-i-apl" value="2"> Kháng thể aPL (+) (2)</label>
+                                <label class="cb-label"><input type="checkbox" class="eu-i-com" value="3"> Giảm C3 HOẶC C4 (3)</label>
+                                <label class="cb-label"><input type="checkbox" class="eu-i-com" value="4"> Giảm C3 VÀ C4 (4)</label>
+                                <label class="cb-label"><input type="checkbox" class="eu-i-sle" value="6"> Anti-dsDNA HOẶC Anti-Sm (+) (6)</label>
+                            </div>
+                        </div>
+                        
+                        <button class="btn" onclick="calcEULAR()">TÍNH ĐIỂM EULAR</button>
+                        <div class="score-box" id="eular-result-box" style="display:none;">
+                            <div id="eular-score" class="score-val">0 Điểm</div>
+                            <div id="eular-result-text" class="badge" style="font-size: 16px; margin-top: 8px;">--</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SLEDAI-2K -->
+                <button class="accordion-btn" onclick="toggleAccordion('sledai-content', this)">
+                    <span>[+] Đánh giá SLEDAI-2K (Độ hoạt động)</span>
+                </button>
+                <div id="sledai-content" class="accordion-content">
+                    <p class="note" style="margin-bottom: 12px;">Đánh giá các triệu chứng trong <strong>30 ngày</strong> qua.</p>
+                    
+                    <div class="cb-group">
+                        <h4>Mức độ Rất nặng (8 Điểm)</h4>
+                        <div class="cb-grid">
+                            <label class="cb-label"><input type="checkbox" class="sledai-item" value="8"> Co giật</label>
+                            <label class="cb-label"><input type="checkbox" class="sledai-item" value="8"> Rối loạn tâm thần</label>
+                            <label class="cb-label"><input type="checkbox" class="sledai-item" value="8"> HC Não thực thể</label>
+                            <label class="cb-label"><input type="checkbox" class="sledai-item" value="8"> Rối loạn thị giác</label>
+                            <label class="cb-label"><input type="checkbox" class="sledai-item" value="8"> RL thần kinh sọ</label>
+                            <label class="cb-label"><input type="checkbox" class="sledai-item" value="8"> Đau đầu Lupus</label>
+                            <label class="cb-label"><input type="checkbox" class="sledai-item" value="8"> Tai biến mạch máu não</label>
+                            <label class="cb-label"><input type="checkbox" class="sledai-item" value="8"> Viêm mạch máu</label>
+                        </div>
+                    </div>
+
+                    <div class="cb-group">
+                        <h4>Mức độ Nặng (4 Điểm)</h4>
+                        <div class="cb-grid">
+                            <label class="cb-label"><input type="checkbox" class="sledai-item" value="4"> Viêm khớp</label>
+                            <label class="cb-label"><input type="checkbox" class="sledai-item" value="4"> Viêm cơ</label>
+                            <label class="cb-label"><input type="checkbox" class="sledai-item" value="4"> Trụ niệu (Hạt/HC)</label>
+                            <label class="cb-label"><input type="checkbox" class="sledai-item" value="4"> Tiểu máu (>5 HC)</label>
+                            <label class="cb-label"><input type="checkbox" class="sledai-item" value="4"> Protein niệu (>0.5g/24h)</label>
+                            <label class="cb-label"><input type="checkbox" class="sledai-item" value="4"> Tiểu mủ (>5 BC)</label>
+                        </div>
+                    </div>
+
+                    <div class="cb-group">
+                        <h4>Mức độ Trung bình (2 Điểm)</h4>
+                        <div class="cb-grid">
+                            <label class="cb-label"><input type="checkbox" class="sledai-item" value="2"> Ban da mới</label>
+                            <label class="cb-label"><input type="checkbox" class="sledai-item" value="2"> Rụng tóc</label>
+                            <label class="cb-label"><input type="checkbox" class="sledai-item" value="2"> Loét niêm mạc</label>
+                            <label class="cb-label"><input type="checkbox" class="sledai-item" value="2"> Viêm màng phổi</label>
+                            <label class="cb-label"><input type="checkbox" class="sledai-item" value="2"> Viêm ngoài tim</label>
+                            <label class="cb-label"><input type="checkbox" class="sledai-item" value="2"> Giảm bổ thể</label>
+                            <label class="cb-label"><input type="checkbox" class="sledai-item" value="2"> Tăng gắn kết DNA</label>
+                        </div>
+                    </div>
+
+                    <div class="cb-group">
+                        <h4>Mức độ Nhẹ (1 Điểm)</h4>
+                        <div class="cb-grid">
+                            <label class="cb-label"><input type="checkbox" class="sledai-item" value="1"> Sốt (>38°C)</label>
+                            <label class="cb-label"><input type="checkbox" class="sledai-item" value="1"> Giảm tiểu cầu (<100K)</label>
+                            <label class="cb-label"><input type="checkbox" class="sledai-item" value="1"> Giảm bạch cầu (<3K)</label>
+                        </div>
+                    </div>
+                    
+                    <button class="btn" onclick="calcSLEDAI()">TÍNH ĐIỂM SLEDAI-2K</button>
+                    <div class="score-box" id="sledai-result-box" style="display:none;">
+                        <div id="sledai-score" class="score-val">0 Điểm</div>
+                        <div id="sledai-result-text" class="badge" style="font-size: 16px; margin-top: 8px;">--</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODULE 4: BLOOD PRESSURE PERCENTILES -->
+            <div id="tab-bp" class="tab-content">
+                <div class="header">
+                    <h1>Phân độ Huyết áp</h1>
+                    <p>Theo tiêu chuẩn AAP 2017 & KDIGO 2021</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">1. Thông tin Bệnh nhi</div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>Tuổi (Năm)</label>
+                            <input type="number" id="bpAge" inputmode="decimal" placeholder="1 - 17">
+                        </div>
+                        <div class="form-col">
+                            <label>Giới tính</label>
+                            <select id="bpGender">
+                                <option value="male">Nam</option>
+                                <option value="female">Nữ</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">2. Thông số Huyết áp</div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>Tâm thu (SBP)</label>
+                            <input type="number" id="bpSys" inputmode="decimal" placeholder="mmHg">
+                        </div>
+                        <div class="form-col">
+                            <label>Tâm trương (DBP)</label>
+                            <input type="number" id="bpDia" inputmode="decimal" placeholder="mmHg">
+                        </div>
+                    </div>
+                    <div class="form-row" style="margin-top: 10px;">
+                        <div class="form-col">
+                            <label>MAP đo từ máy <span style="font-weight:normal; color:var(--text-light);">(Tùy chọn)</span></label>
+                            <input type="number" id="bpMap" inputmode="decimal" placeholder="mmHg">
+                        </div>
+                    </div>
+                    <p class="note">* Nếu không nhập, App sẽ tự động ước tính MAP = (SBP + 2xDBP) / 3</p>
+                </div>
+
+                <button class="btn" onclick="calculateBP()">PHÂN ĐỘ HUYẾT ÁP</button>
+
+                <div id="bpResultSection" class="result-section">
+                    
+                    <div class="result-box" style="padding: 16px;">
+                        <div style="font-weight: 600; color: var(--text-light); font-size: 14px;">Chẩn đoán Phân độ (AAP 2017)</div>
+                        <div class="result-value" id="bpStageText" style="font-size: 24px; margin-top: 8px;">--</div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Chi tiết Bách phân vị (Percentiles)</div>
+                        <table>
+                            <tr>
+                                <td><strong>Tâm thu (SBP)</strong></td>
+                                <td id="bpSysDetail">--</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Tâm trương (DBP)</strong></td>
+                                <td id="bpDiaDetail">--</td>
+                            </tr>
+                            <tr>
+                                <td><strong>MAP</strong> <span id="mapSource" style="font-size:11px; font-weight:normal;"></span></td>
+                                <td id="bpMapDetail">--</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="card" style="background-color: #f0fdf4; border-color: #bbf7d0;">
+                        <div class="card-title" style="color: var(--success); border-bottom-color: #bbf7d0;">Mục tiêu Điều trị (BP Target)</div>
+                        <ul style="padding-left: 20px; font-size: 14px; color: var(--text);">
+                            <li style="margin-bottom: 8px;">
+                                <strong>Trẻ không có CKD:</strong> <br>
+                                <span id="targetNormal">--</span>
+                            </li>
+                            <li>
+                                <strong>Trẻ có CKD / Protein niệu (KDIGO 2021):</strong> <br>
+                                <span id="targetCkd">--</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div> <!-- END TAB BP -->
+
+            <!-- MODULE 5: STEROID PROTOCOL (IPNA 2022) -->
+            <div id="tab-steroid" class="tab-content">
+                <div class="header">
+                    <h1>Phác đồ Corticosteroid</h1>
+                    <p>Hội chứng thận hư nhạy Steroid (IPNA 2022)</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">1. Thông tin Thể trạng</div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>Cân nặng (kg)</label>
+                            <input type="number" id="stWeight" inputmode="decimal" placeholder="VD: 25">
+                        </div>
+                        <div class="form-col">
+                            <label>Chiều cao (cm) <span style="font-weight:normal; color:var(--text-light);">(Tùy chọn)</span></label>
+                            <input type="number" id="stHeight" inputmode="decimal" placeholder="VD: 120">
+                        </div>
+                    </div>
+                    <p class="note">* Khuyến cáo nhập cả Chiều cao để hệ thống tính liều theo BSA (Diện tích cơ thể), giúp tránh ngộ độc ở trẻ béo phì.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">2. Giai đoạn Bệnh</div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>Lựa chọn Phác đồ</label>
+                            <select id="stEpisode">
+                                <option value="initial">Đợt đầu tiên (Initial Episode)</option>
+                                <option value="relapse">Tái phát (Relapse)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="calculateSteroid()">TÍNH LIỀU PREDNISOLONE</button>
+
+                <div id="stResultSection" class="result-section">
+                    
+                    <div class="card" style="background-color: #f8fafc; border-color: #cbd5e1;">
+                        <div class="card-title" style="font-size: 14px; margin-bottom: 8px; border:none;">Chỉ số Thể trạng</div>
+                        <div style="display: flex; justify-content: space-between; font-size: 15px;">
+                            <span>Cân nặng: <strong id="stResWeight">--</strong></span>
+                            <span>BSA: <strong id="stResBSA">--</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- KẾT QUẢ ĐỢT ĐẦU -->
+                    <div id="stInitialResults" style="display: none;">
+                        <div class="card" style="border-left: 4px solid var(--danger);">
+                            <div class="card-title" style="color: var(--danger);">Giai đoạn Tấn công (4 Tuần)</div>
+                            <div style="font-size: 14px; color: var(--text-light); margin-bottom: 8px;">Uống 1 lần vào buổi sáng hàng ngày.</div>
+                            
+                            <div style="background: #fef2f2; padding: 12px; border-radius: 8px; text-align: center; margin-bottom: 12px;">
+                                <div style="font-size: 32px; font-weight: 700; color: #b91c1c;" id="stInitDailyRound">--</div>
+                                <div style="font-size: 14px; color: #7f1d1d; margin-top: 4px;">(Liều chính xác: <span id="stInitDailyExact">--</span>)</div>
+                            </div>
+                            
+                            <ul style="font-size: 13px; color: var(--text-light); padding-left: 20px;">
+                                <li>Tính theo: <span id="stInitDailyBasis">--</span></li>
+                                <li>Trần tối đa (Max): 60 mg/ngày.</li>
+                            </ul>
+                        </div>
+
+                        <div class="card" style="border-left: 4px solid var(--warning);">
+                            <div class="card-title" style="color: var(--warning);">Giai đoạn Cách ngày (4 Tuần)</div>
+                            <div style="font-size: 14px; color: var(--text-light); margin-bottom: 8px;">Uống 1 lần vào buổi sáng CÁCH NGÀY.</div>
+                            
+                            <div style="background: #fffbeb; padding: 12px; border-radius: 8px; text-align: center; margin-bottom: 12px;">
+                                <div style="font-size: 32px; font-weight: 700; color: #b45309;" id="stInitAltRound">--</div>
+                                <div style="font-size: 14px; color: #92400e; margin-top: 4px;">(Liều chính xác: <span id="stInitAltExact">--</span>)</div>
+                            </div>
+                            
+                            <ul style="font-size: 13px; color: var(--text-light); padding-left: 20px;">
+                                <li>Tính theo: <span id="stInitAltBasis">--</span></li>
+                                <li>Trần tối đa (Max): 40 mg/ngày (cách ngày).</li>
+                                <li>Sau 4 tuần này: Ngưng thuốc HOẶC giảm dần (Tapering) thêm 2-4 tháng tùy đáp ứng.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- KẾT QUẢ TÁI PHÁT -->
+                    <div id="stRelapseResults" style="display: none;">
+                        <div class="card" style="border-left: 4px solid var(--danger);">
+                            <div class="card-title" style="color: var(--danger);">Giai đoạn Tấn công</div>
+                            <div style="font-size: 14px; color: var(--text-light); margin-bottom: 8px;">Uống 1 lần/sáng hàng ngày cho đến khi lui bệnh (Protein niệu âm tính hoặc Vết ≥ 3 ngày liên tiếp).</div>
+                            
+                            <div style="background: #fef2f2; padding: 12px; border-radius: 8px; text-align: center; margin-bottom: 12px;">
+                                <div style="font-size: 32px; font-weight: 700; color: #b91c1c;" id="stRelDailyRound">--</div>
+                                <div style="font-size: 14px; color: #7f1d1d; margin-top: 4px;">(Liều chính xác: <span id="stRelDailyExact">--</span>)</div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="border-left: 4px solid var(--warning);">
+                            <div class="card-title" style="color: var(--warning);">Giai đoạn Cách ngày (4 Tuần)</div>
+                            <div style="font-size: 14px; color: var(--text-light); margin-bottom: 8px;">Ngay sau khi lui bệnh, chuyển sang uống CÁCH NGÀY.</div>
+                            
+                            <div style="background: #fffbeb; padding: 12px; border-radius: 8px; text-align: center; margin-bottom: 12px;">
+                                <div style="font-size: 32px; font-weight: 700; color: #b45309;" id="stRelAltRound">--</div>
+                                <div style="font-size: 14px; color: #92400e; margin-top: 4px;">(Liều chính xác: <span id="stRelAltExact">--</span>)</div>
+                            </div>
+                            <p class="note" style="text-align: center;">Sau 4 tuần cách ngày: Cắt Steroid.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div> <!-- END TAB STEROID -->
+
+        </div> <!-- END CONTAINER -->
+    </div> <!-- END MAIN WRAPPER -->
+</div> <!-- END APP LAYOUT -->
+
+<script>
+    // --- SIDEBAR LOGIC ---
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('open');
+        document.getElementById('overlay').classList.toggle('active');
+    }
+
+    function switchTab(tabId, element) {
+        document.querySelectorAll('.menu-item').forEach(nav => nav.classList.remove('active'));
+        element.classList.add('active');
+        
+        const titleText = element.innerText.trim();
+        document.getElementById('mobile-title').innerText = titleText;
+
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('overlay').classList.remove('active');
+        window.scrollTo(0, 0);
+    }
+
+    // --- MODULE eGFR LOGIC ---
+    function calculate() {
+        const ageVal = parseFloat(document.getElementById('ageValue').value);
+        const ageUnit = document.getElementById('ageUnit').value;
+        const gender = document.getElementById('gender').value;
+        const height = parseFloat(document.getElementById('height').value);
+        let serumCrea = parseFloat(document.getElementById('serumCrea').value);
+        const creaUnit = document.getElementById('creaUnit').value;
+        const urineAlb = parseFloat(document.getElementById('urineAlb').value);
+        const urineCrea = parseFloat(document.getElementById('urineCrea').value);
+
+        if (isNaN(ageVal) || isNaN(height) || isNaN(serumCrea)) {
+            alert("Đại Hiệp vui lòng nhập đầy đủ Tuổi, Chiều cao và Creatinine máu!");
+            return;
+        }
+
+        let ageInWeeks = 0; let ageInYears = 0;
+        if (ageUnit === 'weeks') { ageInWeeks = ageVal; ageInYears = ageVal / 52.14; } 
+        else if (ageUnit === 'months') { ageInWeeks = ageVal * 4.345; ageInYears = ageVal / 12; } 
+        else { ageInYears = ageVal; ageInWeeks = ageVal * 52.14; }
+
+        let creaUmol = serumCrea;
+        if (creaUnit === 'mgdl') { creaUmol = serumCrea * 88.4; }
+
+        let K = 0;
+        if (ageInWeeks <= 1) { K = 29.2; } 
+        else if (ageInWeeks > 1 && ageInYears <= 2) { K = 39.78; } 
+        else if (ageInYears > 2 && ageInYears <= 12) { K = 48.6; } 
+        else if (ageInYears > 12) { K = (gender === 'female') ? 48.6 : 61.88; }
+
+        const eGFR = (K * height) / creaUmol;
+        let acr = null;
+        if (!isNaN(urineAlb) && !isNaN(urineCrea) && urineCrea > 0) { acr = (urineAlb / urineCrea) * 100; }
+
+        document.getElementById('resultSection').style.display = 'block';
+        document.getElementById('egfrResult').innerText = eGFR.toFixed(1);
+        document.getElementById('kFactorUsed').innerText = K;
+
+        const isInfant = ageInYears < 2;
+        if (isInfant) {
+            document.getElementById('warningInfant').style.display = 'block';
+            document.getElementById('infantReference').style.display = 'block';
+            document.getElementById('ckdClassification').style.display = 'none';
+        } else {
+            document.getElementById('warningInfant').style.display = 'none';
+            document.getElementById('infantReference').style.display = 'none';
+            document.getElementById('ckdClassification').style.display = 'block';
+
+            let gStageStr = ''; let gCode = '';
+            if (eGFR >= 90) { gCode = 'G1'; gStageStr = 'G1 (≥ 90) - Bình thường/Cao'; }
+            else if (eGFR >= 60) { gCode = 'G2'; gStageStr = 'G2 (60-89) - Giảm nhẹ'; }
+            else if (eGFR >= 45) { gCode = 'G3a'; gStageStr = 'G3a (45-59) - Giảm nhẹ-TB'; }
+            else if (eGFR >= 30) { gCode = 'G3b'; gStageStr = 'G3b (30-44) - Giảm TB-Nặng'; }
+            else if (eGFR >= 15) { gCode = 'G4'; gStageStr = 'G4 (15-29) - Giảm nặng'; }
+            else { gCode = 'G5'; gStageStr = 'G5 (< 15) - Suy thận mạn giai đoạn cuối'; }
+            document.getElementById('kdigoG').innerText = gStageStr;
+
+            let aCode = ''; let aStageStr = 'Thiếu dữ liệu ACR'; let acrText = 'ACR: N/A';
+            if (acr !== null) {
+                acrText = `ACR: ${acr.toFixed(1)} mg/g`;
+                if (acr < 30) { aCode = 'A1'; aStageStr = 'A1 (< 30) - BT/Tăng nhẹ'; }
+                else if (acr <= 300) { aCode = 'A2'; aStageStr = 'A2 (30-300) - Tăng vừa'; }
+                else { aCode = 'A3'; aStageStr = 'A3 (> 300) - Tăng nặng'; }
+            }
+            document.getElementById('kdigoA').innerText = aStageStr;
+            document.getElementById('acrBadge').innerText = acrText;
+            document.getElementById('acrBadge').className = acr !== null ? 'badge bg-primary' : 'badge bg-gray';
+
+            let riskHTML = '<span class="badge bg-gray">Chưa đủ dữ liệu</span>';
+            if (aCode !== '') {
+                if (gCode === 'G1' || gCode === 'G2') {
+                    if (aCode === 'A1') riskHTML = '<span class="badge bg-green">Nguy cơ THẤP</span>';
+                    else if (aCode === 'A2') riskHTML = '<span class="badge bg-yellow">Nguy cơ TRUNG BÌNH</span>';
+                    else riskHTML = '<span class="badge bg-orange">Nguy cơ CAO</span>';
+                } else if (gCode === 'G3a') {
+                    if (aCode === 'A1') riskHTML = '<span class="badge bg-yellow">Nguy cơ TRUNG BÌNH</span>';
+                    else if (aCode === 'A2') riskHTML = '<span class="badge bg-orange">Nguy cơ CAO</span>';
+                    else riskHTML = '<span class="badge bg-red">Nguy cơ RẤT CAO</span>';
+                } else if (gCode === 'G3b') {
+                    if (aCode === 'A1') riskHTML = '<span class="badge bg-orange">Nguy cơ CAO</span>';
+                    else riskHTML = '<span class="badge bg-red">Nguy cơ RẤT CAO</span>';
+                } else { riskHTML = '<span class="badge bg-red">Nguy cơ RẤT CAO</span>'; }
+            }
+            document.getElementById('kdigoRisk').innerHTML = riskHTML;
+
+            let kdoqiStr = ''; let hasKidneyDamage = (acr !== null && acr >= 30);
+            if (eGFR >= 90) { kdoqiStr = hasKidneyDamage ? 'Giai đoạn 1 (Tổn thương thận, GFR ≥ 90)' : 'Không đủ TC GĐ 1 (Cần ACR ≥ 30)'; } 
+            else if (eGFR >= 60) { kdoqiStr = hasKidneyDamage ? 'Giai đoạn 2 (Tổn thương thận, GFR 60-89)' : 'Không đủ TC GĐ 2 (Cần ACR ≥ 30)'; } 
+            else if (eGFR >= 30) { kdoqiStr = 'Giai đoạn 3 (GFR 30-59)'; } 
+            else if (eGFR >= 15) { kdoqiStr = 'Giai đoạn 4 (GFR 15-29)'; } 
+            else { kdoqiStr = 'Giai đoạn 5 (GFR < 15)'; }
+            document.getElementById('kdoqiStage').innerText = kdoqiStr;
+        }
+        setTimeout(() => { document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' }); }, 100);
+    }
+
+    // --- MODULE UPCR LOGIC ---
+    function calculateUPCR() {
+        const ageVal = parseFloat(document.getElementById('upcrAgeVal').value);
+        const ageUnit = document.getElementById('upcrAgeUnit').value;
+        const protVal = parseFloat(document.getElementById('upcrProt').value);
+        const protUnit = document.getElementById('upcrProtUnit').value;
+        const creaVal = parseFloat(document.getElementById('upcrCrea').value);
+        const creaUnit = document.getElementById('upcrCreaUnit').value;
+
+        if (isNaN(protVal) || isNaN(creaVal)) {
+            alert("Đại Hiệp vui lòng nhập đầy đủ Protein và Creatinine niệu!");
+            return;
+        }
+
+        let isInfant = false; 
+        let ageMessage = "(Mặc định đối chiếu theo chuẩn trẻ lớn ≥ 2 tuổi)";
+        if (!isNaN(ageVal)) {
+            let ageInYears = ageUnit === 'months' ? ageVal / 12 : ageVal;
+            isInfant = ageInYears < 2;
+            ageMessage = isInfant ? "(Đang đối chiếu theo chuẩn trẻ nhỏ < 2 tuổi)" : "(Đang đối chiếu theo chuẩn trẻ lớn ≥ 2 tuổi)";
+        }
+
+        let protMgDl = protVal;
+        if (protUnit === 'gl') protMgDl = protVal * 100;
+        else if (protUnit === 'mgl') protMgDl = protVal / 10;
+
+        let creaMgDl = creaVal;
+        if (creaUnit === 'mmol') creaMgDl = creaVal * 11.312;
+        else if (creaUnit === 'umol') creaMgDl = creaVal / 88.4;
+
+        if (creaMgDl === 0) {
+            alert("Creatinine niệu không thể bằng 0!");
+            return;
+        }
+
+        const upcrMgMg = protMgDl / creaMgDl;
+        const upcrMgMmol = upcrMgMg * 113.12;
+
+        document.getElementById('upcrResultSection').style.display = 'block';
+        document.getElementById('upcrResultMgMmol').innerText = upcrMgMmol.toFixed(1);
+        document.getElementById('upcrResultMgMg').innerText = upcrMgMg.toFixed(2);
+        document.getElementById('upcrAgeNotice').innerText = ageMessage;
+
+        let interpText = ""; let interpClass = "";
+        const thresholdNormal = isInfant ? 0.5 : 0.2;
+
+        if (upcrMgMg < thresholdNormal) { interpText = "Bình thường (Ngưỡng sinh lý)"; interpClass = "bg-green"; } 
+        else if (upcrMgMg >= thresholdNormal && upcrMgMg < 2.0) { interpText = "Bất thường (Ngưỡng trung bình / Ống thận)"; interpClass = "bg-orange"; } 
+        else { interpText = "Ngưỡng Hội chứng thận hư (Nephrotic range)"; interpClass = "bg-red"; }
+
+        const interpEl = document.getElementById('upcrInterpretation');
+        interpEl.innerText = interpText;
+        interpEl.className = ""; 
+        interpEl.classList.add(interpClass);
+        interpEl.style.color = "#fff";
+
+        setTimeout(() => { document.getElementById('upcrResultSection').scrollIntoView({ behavior: 'smooth' }); }, 100);
+    }
+
+    // --- MODULE CSLE LOGIC ---
+    function toggleAccordion(contentId, btn) {
+        const content = document.getElementById(contentId);
+        const isOpen = content.classList.contains('show');
+        if (!isOpen) {
+            content.classList.add('show');
+            btn.classList.add('active');
+            btn.innerHTML = btn.innerHTML.replace('[+]', '[-]');
+        } else {
+            content.classList.remove('show');
+            btn.classList.remove('active');
+            btn.innerHTML = btn.innerHTML.replace('[-]', '[+]');
+        }
+    }
+
+    function calcSLICC() {
+        const biopsy = document.getElementById('slicc_biopsy').checked;
+        const clinChecks = document.querySelectorAll('.slicc-clin:checked').length;
+        const immChecks = document.querySelectorAll('.slicc-imm:checked').length;
+        
+        const resBox = document.getElementById('slicc-result-box');
+        const resText = document.getElementById('slicc-result-text');
+        const resDetail = document.getElementById('slicc-detail');
+        
+        resBox.style.display = 'block';
+        resDetail.innerText = `Lâm sàng: ${clinChecks} mục | Miễn dịch: ${immChecks} mục`;
+
+        if (biopsy) {
+            resText.innerText = "ĐÃ CHẨN ĐOÁN (Sinh thiết)";
+            resText.style.color = "var(--success)";
+        } else if (clinChecks + immChecks >= 4 && clinChecks >= 1 && immChecks >= 1) {
+            resText.innerText = "CHẨN ĐOÁN XÁC ĐỊNH";
+            resText.style.color = "var(--success)";
+        } else {
+            resText.innerText = "CHƯA ĐỦ TIÊU CHUẨN";
+            resText.style.color = "var(--danger)";
+        }
+    }
+
+    function toggleEularForm() {
+        const hasANA = document.getElementById('eular_ana').checked;
+        const wrapper = document.getElementById('eular-form-wrapper');
+        if (hasANA) {
+            wrapper.style.opacity = '1'; wrapper.style.pointerEvents = 'auto';
+        } else {
+            wrapper.style.opacity = '0.5'; wrapper.style.pointerEvents = 'none';
+        }
+    }
+
+    function calcEULAR() {
+        const domains = ['eu-c-con', 'eu-c-hem', 'eu-c-neu', 'eu-c-muc', 'eu-c-ser', 'eu-c-msk', 'eu-c-ren', 'eu-i-apl', 'eu-i-com', 'eu-i-sle'];
+        let totalScore = 0; let hasClinical = false;
+
+        domains.forEach(domainClass => {
+            const checkboxes = document.querySelectorAll(`.${domainClass}:checked`);
+            if (checkboxes.length > 0) {
+                let maxVal = 0;
+                checkboxes.forEach(cb => { if (parseInt(cb.value) > maxVal) maxVal = parseInt(cb.value); });
+                totalScore += maxVal;
+                if (domainClass.startsWith('eu-c-')) hasClinical = true;
+            }
+        });
+
+        const resBox = document.getElementById('eular-result-box');
+        const scoreEl = document.getElementById('eular-score');
+        const badgeEl = document.getElementById('eular-result-text');
+        
+        resBox.style.display = 'block';
+        scoreEl.innerText = `${totalScore} Điểm`;
+
+        if (totalScore >= 10 && hasClinical) {
+            badgeEl.innerText = "CHẨN ĐOÁN XÁC ĐỊNH";
+            badgeEl.className = "badge bg-green";
+        } else {
+            badgeEl.innerText = "CHƯA ĐỦ TIÊU CHUẨN (Cần ≥ 10 điểm)";
+            badgeEl.className = "badge bg-red";
+        }
+    }
+
+    function calcSLEDAI() {
+        let total = 0;
+        document.querySelectorAll('.sledai-item:checked').forEach(cb => { total += parseInt(cb.value); });
+
+        const resBox = document.getElementById('sledai-result-box');
+        const scoreEl = document.getElementById('sledai-score');
+        const badgeEl = document.getElementById('sledai-result-text');
+
+        resBox.style.display = 'block';
+        scoreEl.innerText = `${total} Điểm`;
+        badgeEl.className = "badge";
+
+        if (total === 0) {
+            badgeEl.innerText = "Lui bệnh (Remission)";
+            badgeEl.classList.add("bg-green");
+        } else if (total <= 5) {
+            badgeEl.innerText = "Hoạt động Nhẹ (Mild)";
+            badgeEl.classList.add("bg-yellow");
+        } else if (total <= 10) {
+            badgeEl.innerText = "Hoạt động Trung bình (Moderate)";
+            badgeEl.classList.add("bg-orange");
+        } else if (total <= 19) {
+            badgeEl.innerText = "Hoạt động Nặng (High)";
+            badgeEl.classList.add("bg-red");
+        } else {
+            badgeEl.innerText = "Hoạt động RẤT NẶNG (Very High)";
+            badgeEl.classList.add("bg-red");
+        }
+    }
+
+    // --- MODULE BLOOD PRESSURE (AAP 2017) LOGIC ---
+    function calculateBP() {
+        const age = parseInt(document.getElementById('bpAge').value);
+        const gender = document.getElementById('bpGender').value;
+        const sys = parseFloat(document.getElementById('bpSys').value);
+        const dia = parseFloat(document.getElementById('bpDia').value);
+        let mapInput = parseFloat(document.getElementById('bpMap').value);
+
+        if (isNaN(age) || isNaN(sys) || isNaN(dia)) {
+            alert("Đại Hiệp vui lòng nhập đầy đủ Tuổi, Huyết áp Tâm thu và Tâm trương!");
+            return;
+        }
+
+        let mapVal = mapInput;
+        let mapSource = "(Nhập từ máy)";
+        if (isNaN(mapInput)) {
+            mapVal = (sys + 2 * dia) / 3;
+            mapSource = "(Tính toán)";
+        }
+
+        document.getElementById('mapSource').innerText = mapSource;
+
+        const aapData = {
+            male: {
+                1: [85, 98, 102, 42, 53, 57], 2: [88, 101, 105, 47, 58, 62], 3: [91, 104, 108, 51, 62, 66],
+                4: [93, 106, 110, 54, 65, 69], 5: [95, 108, 112, 57, 68, 72], 6: [97, 110, 114, 59, 70, 74],
+                7: [98, 111, 115, 61, 72, 76], 8: [100, 113, 117, 63, 74, 78], 9: [102, 115, 119, 64, 75, 79],
+                10: [104, 117, 121, 65, 76, 80], 11: [106, 119, 123, 66, 77, 81], 12: [108, 121, 125, 67, 78, 82]
+            },
+            female: {
+                1: [86, 98, 102, 44, 55, 59], 2: [88, 101, 105, 48, 59, 63], 3: [91, 103, 107, 52, 63, 67],
+                4: [93, 105, 109, 55, 66, 70], 5: [95, 107, 111, 57, 68, 72], 6: [96, 109, 113, 59, 70, 74],
+                7: [98, 110, 114, 61, 72, 76], 8: [100, 112, 116, 62, 73, 77], 9: [102, 114, 118, 64, 75, 79],
+                10: [104, 116, 120, 65, 76, 80], 11: [106, 118, 122, 67, 77, 82], 12: [108, 120, 124, 68, 79, 83]
+            }
+        };
+
+        let stageText = ""; let stageClass = "";
+        let sysDetail = ""; let diaDetail = "";
+        let targetNormal = ""; let targetCkd = "";
+
+        if (age >= 13) {
+            if (sys >= 140 || dia >= 90) { stageText = "TĂNG HA ĐỘ 2"; stageClass = "bg-red"; }
+            else if (sys >= 130 || dia >= 80) { stageText = "TĂNG HA ĐỘ 1"; stageClass = "bg-orange"; }
+            else if (sys >= 120 && dia < 80) { stageText = "HA TĂNG CAO (Elevated)"; stageClass = "bg-yellow"; }
+            else { stageText = "BÌNH THƯỜNG"; stageClass = "bg-green"; }
+
+            sysDetail = `${sys} mmHg`;
+            diaDetail = `${dia} mmHg`;
+            targetNormal = "Mục tiêu: < 120 / 80 mmHg";
+            targetCkd = "Mục tiêu SBP / MAP: ≤ 120 / 80 mmHg (Theo KDIGO 2021)";
+            
+        } else {
+            let safeAge = age < 1 ? 1 : (age > 12 ? 12 : age);
+            let refs = aapData[gender][safeAge];
+            
+            let s50 = refs[0], s90 = refs[1], s95 = refs[2];
+            let d50 = refs[3], d90 = refs[4], d95 = refs[5];
+
+            let sysStage = 0;
+            if (sys >= s95 + 12 || sys >= 140) sysStage = 3;
+            else if (sys >= s95 || (sys >= 130 && sys <= 139)) sysStage = 2;
+            else if (sys >= s90 || (sys >= 120 && sys < 130)) sysStage = 1;
+
+            let diaStage = 0;
+            if (dia >= d95 + 12 || dia >= 90) diaStage = 3;
+            else if (dia >= d95 || (dia >= 80 && dia <= 89)) diaStage = 2;
+            else if (dia >= d90 || (dia >= 80 && dia < 80)) diaStage = 1;
+
+            let finalStage = Math.max(sysStage, diaStage);
+
+            if (finalStage === 3) { stageText = "TĂNG HA ĐỘ 2"; stageClass = "bg-red"; }
+            else if (finalStage === 2) { stageText = "TĂNG HA ĐỘ 1"; stageClass = "bg-orange"; }
+            else if (finalStage === 1) { stageText = "HA TĂNG CAO (Elevated)"; stageClass = "bg-yellow"; }
+            else { stageText = "BÌNH THƯỜNG"; stageClass = "bg-green"; }
+
+            sysDetail = `${sys} mmHg (Ngưỡng 95th: ${s95})`;
+            diaDetail = `${dia} mmHg (Ngưỡng 95th: ${d95})`;
+            
+            targetNormal = `Mục tiêu (Bách phân vị < 90th): < ${s90} / ${d90} mmHg`;
+            targetCkd = `Mục tiêu (Bách phân vị < 50th): ≤ ${s50} / ${d50} mmHg`;
+        }
+
+        const stageEl = document.getElementById('bpStageText');
+        stageEl.innerText = stageText;
+        stageEl.className = `result-value badge ${stageClass}`;
+        stageEl.style.color = "white";
+        stageEl.style.padding = "10px 20px";
+        stageEl.style.borderRadius = "8px";
+
+        document.getElementById('bpSysDetail').innerText = sysDetail;
+        document.getElementById('bpDiaDetail').innerText = diaDetail;
+        document.getElementById('bpMapDetail').innerText = `${mapVal.toFixed(1)} mmHg`;
+        
+        document.getElementById('targetNormal').innerText = targetNormal;
+        document.getElementById('targetCkd').innerText = targetCkd;
+
+        document.getElementById('bpResultSection').style.display = 'block';
+        setTimeout(() => { document.getElementById('bpResultSection').scrollIntoView({ behavior: 'smooth' }); }, 100);
+    }
+
+    // --- MODULE STEROID PROTOCOL LOGIC ---
+    function roundDose(exactDose) {
+        return Math.round(exactDose / 2.5) * 2.5;
+    }
+
+    function calculateSteroid() {
+        const wt = parseFloat(document.getElementById('stWeight').value);
+        const ht = parseFloat(document.getElementById('stHeight').value);
+        const episode = document.getElementById('stEpisode').value;
+
+        if (isNaN(wt) || wt <= 0) {
+            alert("Đại Hiệp vui lòng nhập Cân nặng hợp lệ!");
+            return;
+        }
+
+        let bsa = null;
+        let useBsa = false;
+        
+        if (!isNaN(ht) && ht > 0) {
+            bsa = Math.sqrt((ht * wt) / 3600);
+            useBsa = true;
+        }
+
+        document.getElementById('stResWeight').innerText = `${wt} kg`;
+        document.getElementById('stResBSA').innerText = useBsa ? `${bsa.toFixed(2)} m²` : 'Không có (Thiếu Chiều cao)';
+
+        let dailyExact = 0;
+        let altExact = 0;
+        let dailyBasisStr = "";
+        let altBasisStr = "";
+
+        if (useBsa) {
+            dailyExact = bsa * 60;
+            altExact = bsa * 40;
+            dailyBasisStr = "60 mg/m² (Dựa trên BSA)";
+            altBasisStr = "40 mg/m² (Dựa trên BSA)";
+        } else {
+            dailyExact = wt * 2;
+            altExact = wt * 1.5;
+            dailyBasisStr = "2 mg/kg (Dựa trên Cân nặng)";
+            altBasisStr = "1.5 mg/kg (Dựa trên Cân nặng)";
+        }
+
+        if (dailyExact > 60) dailyExact = 60;
+        if (altExact > 40) altExact = 40;
+
+        let dailyRound = roundDose(dailyExact);
+        let altRound = roundDose(altExact);
+
+        document.getElementById('stResultSection').style.display = 'block';
+
+        if (episode === 'initial') {
+            document.getElementById('stInitialResults').style.display = 'block';
+            document.getElementById('stRelapseResults').style.display = 'none';
+
+            document.getElementById('stInitDailyRound').innerText = `${dailyRound} mg`;
+            document.getElementById('stInitDailyExact').innerText = `${dailyExact.toFixed(1)} mg`;
+            document.getElementById('stInitDailyBasis').innerText = dailyBasisStr;
+
+            document.getElementById('stInitAltRound').innerText = `${altRound} mg`;
+            document.getElementById('stInitAltExact').innerText = `${altExact.toFixed(1)} mg`;
+            document.getElementById('stInitAltBasis').innerText = altBasisStr;
+
+        } else if (episode === 'relapse') {
+            document.getElementById('stInitialResults').style.display = 'none';
+            document.getElementById('stRelapseResults').style.display = 'block';
+
+            document.getElementById('stRelDailyRound').innerText = `${dailyRound} mg`;
+            document.getElementById('stRelDailyExact').innerText = `${dailyExact.toFixed(1)} mg`;
+
+            document.getElementById('stRelAltRound').innerText = `${altRound} mg`;
+            document.getElementById('stRelAltExact').innerText = `${altExact.toFixed(1)} mg`;
+        }
+
+        setTimeout(() => { document.getElementById('stResultSection').scrollIntoView({ behavior: 'smooth' }); }, 100);
+    }
+</script>
+</body>
+</html>
