@@ -1,1 +1,135 @@
+<div class="header">
+    <h1>Chỉ số UPCR</h1>
+    <p>Tỷ số Protein/Creatinin niệu (Mẫu nước tiểu bất kỳ)</p>
+</div>
 
+<div class="card">
+    <div class="card-title">1. Thông tin lâm sàng</div>
+    <div class="form-row">
+        <div class="form-col">
+            <label>Tuổi</label>
+            <input type="number" id="upcrAge" placeholder="Nhập số tuổi">
+        </div>
+        <div class="form-col">
+            <label>Đơn vị tuổi</label>
+            <select id="upcrAgeUnit">
+                <option value="years">Năm</option>
+                <option value="months">Tháng</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-title">2. Cận lâm sàng (Nước tiểu)</div>
+    <div class="form-row">
+        <div class="form-col">
+            <label>Protein niệu</label>
+            <input type="number" id="urinePro" placeholder="VD: 0.5">
+        </div>
+        <div class="form-col">
+            <label>Đơn vị</label>
+            <select id="proUnit">
+                <option value="gl">g/L</option>
+                <option value="mgdl">mg/dL</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-col">
+            <label>Creatinin niệu</label>
+            <input type="number" id="urineCrea" placeholder="VD: 4500">
+        </div>
+        <div class="form-col">
+            <label>Đơn vị</label>
+            <select id="creaUnit">
+                <option value="umoll">umol/L</option>
+                <option value="mgdl">mg/dL</option>
+                <option value="mmoll">mmol/L</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<button class="btn" onclick="calculateUPCR()">TÍNH UPCR</button>
+
+<div id="upcrResultSection" class="result-section" style="display: none;">
+    <div class="result-box">
+        <div style="font-weight: 600; color: var(--text-light);">Tỷ số UPCR</div>
+        <div class="result-value" id="upcrValue">--</div>
+        <div class="result-unit">mg/mg (Hoặc <span id="upcrMmolValue">--</span> mg/mmol)</div>
+    </div>
+
+    <div class="card" style="margin-top: 15px;">
+        <div class="card-title">Biện luận lâm sàng</div>
+        <table>
+            <tr><td width="35%"><strong>Phân loại</strong></td><td id="upcrClass" style="font-weight: 600;">--</td></tr>
+            <tr><td><strong>Ngưỡng theo tuổi</strong></td><td id="upcrThreshold">--</td></tr>
+        </table>
+    </div>
+</div>
+
+<script>
+    function calculateUPCR() {
+        const ageVal = parseFloat(document.getElementById('upcrAge').value);
+        const ageUnit = document.getElementById('upcrAgeUnit').value;
+        const proVal = parseFloat(document.getElementById('urinePro').value);
+        const proUnit = document.getElementById('proUnit').value;
+        const creaVal = parseFloat(document.getElementById('urineCrea').value);
+        const creaUnit = document.getElementById('creaUnit').value;
+
+        if (isNaN(ageVal) || isNaN(proVal) || isNaN(creaVal) || creaVal === 0) {
+            alert("Đại Hiệp vui lòng nhập đầy đủ và chính xác các thông số!");
+            return;
+        }
+
+        // Quy đổi tuổi ra năm
+        let ageInYears = (ageUnit === 'months') ? ageVal / 12 : ageVal;
+        let isInfant = ageInYears < 2;
+
+        // Quy đổi Protein về mg/dL
+        // 1 g/L = 100 mg/dL
+        let pro_mg_dl = (proUnit === 'gl') ? proVal * 100 : proVal;
+
+        // Quy đổi Creatinin về mg/dL
+        // 1 mg/dL = 88.4 umol/L
+        let crea_mg_dl = creaVal;
+        if (creaUnit === 'umoll') { crea_mg_dl = creaVal / 88.4; }
+        else if (creaUnit === 'mmoll') { crea_mg_dl = (creaVal * 1000) / 88.4; }
+
+        // Tính toán UPCR (mg/mg) và (mg/mmol)
+        const upcr_mg_mg = pro_mg_dl / crea_mg_dl;
+        const upcr_mg_mmol = upcr_mg_mg * 113.12; // 1 mg/mg = 113.12 mg/mmol
+
+        // Biện luận theo Nelson Textbook of Pediatrics
+        let normalThreshold = isInfant ? 0.5 : 0.2;
+        let classification = "";
+        let colorClass = "";
+
+        if (upcr_mg_mg < normalThreshold) {
+            classification = "Bình thường (Normal)";
+            colorClass = "var(--success-color, #27ae60)";
+        } else if (upcr_mg_mg >= 2.0) {
+            classification = "Ngưỡng Thận hư (Nephrotic-range)";
+            colorClass = "var(--danger-color, #e74c3c)";
+        } else {
+            classification = "Protein niệu ngưỡng trung bình (Intermediate)";
+            colorClass = "var(--warning-color, #f39c12)";
+        }
+
+        // Hiển thị kết quả
+        document.getElementById('upcrResultSection').style.display = 'block';
+        document.getElementById('upcrValue').innerText = upcr_mg_mg.toFixed(2);
+        document.getElementById('upcrMmolValue').innerText = upcr_mg_mmol.toFixed(1);
+        
+        let classEl = document.getElementById('upcrClass');
+        classEl.innerText = classification;
+        classEl.style.color = colorClass;
+
+        document.getElementById('upcrThreshold').innerText = isInfant 
+            ? "Trẻ < 2 tuổi: Bình thường < 0.5 mg/mg" 
+            : "Trẻ ≥ 2 tuổi: Bình thường < 0.2 mg/mg";
+
+        setTimeout(() => document.getElementById('upcrResultSection').scrollIntoView({ behavior: 'smooth' }), 100);
+    }
+</script>
