@@ -1,0 +1,137 @@
+<!-- CSS ĐẶC THÙ CHỈ DÙNG CHO MODULE THUỐC -->
+<style>
+    .search-wrapper { position: relative; margin-bottom: 16px; }
+    .suggestions-box { position: absolute; top: 100%; left: 0; right: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-height: 250px; overflow-y: auto; z-index: 50; display: none; margin-top: 4px; }
+    .suggestion-item { padding: 12px 16px; border-bottom: 1px solid var(--bg); cursor: pointer; transition: background 0.2s; }
+    .suggestion-item:last-child { border-bottom: none; }
+    .suggestion-item:hover { background: #eff6ff; }
+    .drug-detail-row { display: flex; flex-direction: column; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed var(--border); }
+    .drug-detail-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .drug-lbl { font-size: 13px; color: var(--text-light); text-transform: uppercase; font-weight: 600; margin-bottom: 4px; }
+    .drug-val { font-size: 15px; color: var(--text); }
+</style>
+
+<!-- GIAO DIỆN HTML CỦA MODULE -->
+<div class="header">
+    <h1>Tra cứu Thuốc</h1>
+    <p>Cơ sở dữ liệu khoa Thận nhi</p>
+</div>
+
+<div class="search-wrapper">
+    <input type="text" id="drugSearch" placeholder="Gõ tên thuốc (VD: enalapril, furo...)" oninput="handleSearch()">
+    <div id="drugSuggestions" class="suggestions-box"></div>
+</div>
+
+<div id="drugResultCard" class="card" style="display: none; border-top: 4px solid var(--primary);">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+        <div>
+            <h2 id="drName" style="color: var(--primary-dark); font-size: 22px; margin-bottom: 4px;">--</h2>
+            <span id="drClass" class="badge bg-gray">--</span>
+            <div id="drBrandNames" style="font-size: 13px; color: var(--text-light); margin-top: 8px; font-style: italic;">--</div>
+        </div>
+    </div>
+
+    <div class="drug-detail-row">
+        <div class="drug-lbl">Liều lượng & Chỉ định</div>
+        <div class="drug-val" id="drDosing">--</div>
+    </div>
+
+    <div class="drug-detail-row" id="rowRenal">
+        <div class="drug-lbl" style="color: var(--danger);">Chỉnh liều theo chức năng thận</div>
+        <div class="drug-val" id="drRenal">--</div>
+    </div>
+
+    <div class="drug-detail-row" id="rowSideEffects">
+        <div class="drug-lbl" style="color: var(--warning);">Tác dụng phụ</div>
+        <div class="drug-val" id="drSideEffects">--</div>
+    </div>
+
+    <div class="drug-detail-row" id="rowContra">
+        <div class="drug-lbl" style="color: var(--danger);">Chống chỉ định</div>
+        <div class="drug-val" id="drContraindications">--</div>
+    </div>
+
+    <div class="drug-detail-row">
+        <div class="drug-lbl">Lưu ý lâm sàng</div>
+        <div class="drug-val" id="drNote" style="font-style: italic;">--</div>
+    </div>
+</div>
+
+<!-- JAVASCRIPT CHỈ CHẠY RIÊNG TRONG MODULE NÀY -->
+<script>
+    function handleSearch() {
+        const query = document.getElementById('drugSearch').value.toLowerCase().trim();
+        const sugBox = document.getElementById('drugSuggestions');
+        sugBox.innerHTML = '';
+        
+        if (query.length < 2) { 
+            sugBox.style.display = 'none'; 
+            return; 
+        }
+
+        if (typeof drugDatabase === 'undefined') {
+            sugBox.innerHTML = '<div class="suggestion-item" style="color:var(--danger);">Lỗi: Không tìm thấy file data_thuoc.js</div>';
+            sugBox.style.display = 'block';
+            return;
+        }
+
+        const matches = drugDatabase.filter(d => 
+            d.name.toLowerCase().includes(query) || 
+            d.class.toLowerCase().includes(query) ||
+            (d.brand_names && d.brand_names.toLowerCase().includes(query))
+        );
+
+        if (matches.length === 0) {
+            sugBox.innerHTML = '<div class="suggestion-item" style="color:var(--text-light);">Không tìm thấy thuốc phù hợp...</div>';
+            sugBox.style.display = 'block';
+            return;
+        }
+
+        matches.forEach(drug => {
+            const div = document.createElement('div');
+            div.className = 'suggestion-item';
+            div.innerHTML = `<strong>${drug.name}</strong> <br><span style="font-size:12px; color:var(--text-light);">${drug.class}</span>`;
+            div.onclick = () => displayDrugProfile(drug);
+            sugBox.appendChild(div);
+        });
+        
+        sugBox.style.display = 'block';
+    }
+
+    function displayDrugProfile(drug) {
+        document.getElementById('drugSearch').value = drug.name;
+        document.getElementById('drugSuggestions').style.display = 'none';
+
+        document.getElementById('drName').innerText = drug.name;
+        document.getElementById('drClass').innerText = drug.class;
+        
+        const brandEl = document.getElementById('drBrandNames');
+        if (drug.brand_names) {
+            brandEl.innerText = `Biệt dược: ${drug.brand_names}`;
+            brandEl.style.display = 'block';
+        } else {
+            brandEl.style.display = 'none';
+        }
+
+        // Tự động ẩn dòng nếu không có dữ liệu
+        const setDetail = (id, rowId, val) => {
+            const row = document.getElementById(rowId);
+            const el = document.getElementById(id);
+            if (row && el) {
+                if (val) { el.innerText = val; row.style.display = 'flex'; } 
+                else { row.style.display = 'none'; }
+            }
+        };
+
+        setDetail('drDosing', 'rowDosing', drug.dosing);
+        setDetail('drRenal', 'rowRenal', drug.renal_adj);
+        setDetail('drSideEffects', 'rowSideEffects', drug.side_effects);
+        setDetail('drContraindications', 'rowContra', drug.contraindications);
+        setDetail('drNote', 'rowNote', drug.note);
+
+        const card = document.getElementById('drugResultCard');
+        card.style.display = 'block';
+        card.style.animation = 'none';
+        setTimeout(() => card.style.animation = 'fadeIn 0.4s', 10);
+    }
+</script>
