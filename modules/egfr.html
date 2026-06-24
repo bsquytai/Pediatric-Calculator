@@ -53,12 +53,30 @@
     <label style="margin-top: 10px; color: var(--primary-dark); border-bottom: 1px dashed var(--border); padding-bottom: 4px; margin-bottom: 10px; display: inline-block;">Thông số Nước tiểu (Tùy chọn - Phân độ CKD)</label>
     <div class="form-row">
         <div class="form-col">
-            <label>Albumin niệu (mg/L)</label>
-            <input type="number" id="urineAlb" placeholder="VD: 40">
+            <label>Albumin niệu</label>
+            <input type="number" id="urineAlb" placeholder="VD: 0.5">
         </div>
         <div class="form-col">
-            <label>Creatinine niệu (mg/dL)</label>
-            <input type="number" id="urineCrea" placeholder="VD: 100">
+            <label>Đơn vị</label>
+            <select id="albUnit">
+                <option value="gl">g/L</option>
+                <option value="mgl">mg/L</option>
+                <option value="mgdl">mg/dL</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-col">
+            <label>Creatinine niệu</label>
+            <input type="number" id="urineCrea" placeholder="VD: 4500">
+        </div>
+        <div class="form-col">
+            <label>Đơn vị</label>
+            <select id="urineCreaUnit">
+                <option value="umol">µmol/L</option>
+                <option value="mmol">mmol/L</option>
+                <option value="mgdl">mg/dL</option>
+            </select>
         </div>
     </div>
 </div>
@@ -115,7 +133,9 @@
         let serumCrea = parseFloat(document.getElementById('serumCrea').value);
         const creaUnit = document.getElementById('creaUnit').value;
         const urineAlb = parseFloat(document.getElementById('urineAlb').value);
+        const albUnit = document.getElementById('albUnit').value;
         const urineCrea = parseFloat(document.getElementById('urineCrea').value);
+        const urineCreaUnit = document.getElementById('urineCreaUnit').value;
 
         if (isNaN(ageVal) || isNaN(height) || isNaN(serumCrea)) {
             alert("Đại Hiệp vui lòng nhập đầy đủ Tuổi, Chiều cao và Creatinine máu!");
@@ -138,7 +158,17 @@
 
         const eGFR = (K * height) / creaUmol;
         let acr = null;
-        if (!isNaN(urineAlb) && !isNaN(urineCrea) && urineCrea > 0) { acr = (urineAlb / urineCrea) * 100; }
+        if (!isNaN(urineAlb) && !isNaN(urineCrea) && urineCrea > 0) { 
+            let alb_mg_L = urineAlb;
+            if (albUnit === 'gl') alb_mg_L = urineAlb * 1000;
+            else if (albUnit === 'mgdl') alb_mg_L = urineAlb * 10;
+
+            let crea_mg_dl = urineCrea;
+            if (urineCreaUnit === 'umol') crea_mg_dl = urineCrea / 88.4;
+            else if (urineCreaUnit === 'mmol') crea_mg_dl = (urineCrea * 1000) / 88.4;
+
+            acr = (alb_mg_L / crea_mg_dl) * 100; 
+        }
 
         document.getElementById('resultSection').style.display = 'block';
         document.getElementById('egfrResult').innerText = eGFR.toFixed(1);
