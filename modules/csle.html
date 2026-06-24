@@ -1,3 +1,48 @@
+<style>
+    /* CSS Ép khung thu gọn và tạo hiệu ứng Accordion */
+    .accordion-btn {
+        width: 100%;
+        text-align: left;
+        background-color: var(--primary);
+        color: #ffffff;
+        padding: 14px 16px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: background-color 0.2s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .accordion-btn:hover { background-color: var(--primary-dark); }
+    .accordion-btn.active { background-color: var(--primary-dark); border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+
+    .accordion-content {
+        display: none; /* Mặc định ẨN tất cả nội dung */
+        padding: 16px;
+        border: 1px solid var(--border);
+        border-top: none;
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+        margin-top: -10px;
+        margin-bottom: 16px;
+        background-color: #ffffff;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .accordion-content.show { display: block; }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-5px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
 <div class="header">
     <h1>Thang điểm cSLE</h1>
     <p>Lupus ban đỏ hệ thống khởi phát ở trẻ em</p>
@@ -47,9 +92,9 @@
     </div>
     
     <button class="btn" onclick="calcSLICC()">ĐÁNH GIÁ SLICC</button>
-    <div class="score-box" id="slicc-result-box" style="display:none;">
-        <div id="slicc-result-text" class="score-val" style="font-size: 24px;">--</div>
-        <div id="slicc-detail" class="note">--</div>
+    <div class="score-box" id="slicc-result-box" style="display:none; text-align: center; margin-top: 15px; padding: 15px; border-radius: 8px; border: 1px solid var(--border);">
+        <div id="slicc-result-text" class="score-val" style="font-size: 20px; font-weight: bold;">--</div>
+        <div id="slicc-detail" class="note" style="margin-top: 5px;">--</div>
     </div>
 </div>
 
@@ -114,9 +159,9 @@
         </div>
         
         <button class="btn" onclick="calcEULAR()">TÍNH ĐIỂM EULAR</button>
-        <div class="score-box" id="eular-result-box" style="display:none;">
-            <div id="eular-score" class="score-val">0 Điểm</div>
-            <div id="eular-result-text" class="badge" style="font-size: 16px; margin-top: 8px;">--</div>
+        <div class="score-box" id="eular-result-box" style="display:none; text-align: center; margin-top: 15px; padding: 15px; border-radius: 8px; border: 1px solid var(--border);">
+            <div id="eular-score" class="score-val" style="font-size: 24px; font-weight: bold; color: var(--primary);">0 Điểm</div>
+            <div id="eular-result-text" class="badge" style="font-size: 16px; margin-top: 8px; padding: 6px 12px; color: white;">--</div>
         </div>
     </div>
 </div>
@@ -177,9 +222,9 @@
     </div>
     
     <button class="btn" onclick="calcSLEDAI()">TÍNH ĐIỂM SLEDAI-2K</button>
-    <div class="score-box" id="sledai-result-box" style="display:none;">
-        <div id="sledai-score" class="score-val">0 Điểm</div>
-        <div id="sledai-result-text" class="badge" style="font-size: 16px; margin-top: 8px; color: white;">--</div>
+    <div class="score-box" id="sledai-result-box" style="display:none; text-align: center; margin-top: 15px; padding: 15px; border-radius: 8px; border: 1px solid var(--border);">
+        <div id="sledai-score" class="score-val" style="font-size: 24px; font-weight: bold; color: var(--primary);">0 Điểm</div>
+        <div id="sledai-result-text" class="badge" style="font-size: 16px; margin-top: 8px; padding: 6px 12px; color: white;">--</div>
     </div>
 </div>
 
@@ -237,7 +282,6 @@
 
     // Thuật toán EULAR/ACR 2019 (Chỉ lấy điểm cao nhất mỗi nhóm)
     function calcEULAR() {
-        // Danh sách các class đại diện cho các nhóm cơ quan (Domains)
         const domains = ['eu-c-con', 'eu-c-hem', 'eu-c-neu', 'eu-c-muc', 'eu-c-ser', 'eu-c-msk', 'eu-c-ren', 'eu-i-apl', 'eu-i-com', 'eu-i-sle'];
         let totalScore = 0; 
         let hasClinical = false;
@@ -246,12 +290,10 @@
             const checkboxes = document.querySelectorAll(`.${domainClass}:checked`);
             if (checkboxes.length > 0) {
                 let maxVal = 0;
-                // Tìm giá trị lớn nhất trong nhóm được chọn
                 checkboxes.forEach(cb => { 
                     if (parseInt(cb.value) > maxVal) maxVal = parseInt(cb.value); 
                 });
                 totalScore += maxVal;
-                // Đánh dấu nếu có ít nhất 1 triệu chứng lâm sàng (bắt buộc)
                 if (domainClass.startsWith('eu-c-')) hasClinical = true;
             }
         });
@@ -291,16 +333,16 @@
             badgeEl.innerText = "Lui bệnh (Remission)"; 
             badgeEl.classList.add("bg-green"); 
         } else if (total >= 1 && total <= 5) { 
-            badgeEl.innerText = "Hoạt động Nhẹ (Mild)"; 
+            badgeEl.innerText = "Hoạt động Nhẹ (Mild activity)"; 
             badgeEl.classList.add("bg-yellow"); 
         } else if (total >= 6 && total <= 10) { 
-            badgeEl.innerText = "Hoạt động Trung bình (Moderate)"; 
+            badgeEl.innerText = "Hoạt động Trung bình (Moderate activity)"; 
             badgeEl.classList.add("bg-orange"); 
         } else if (total >= 11 && total <= 19) { 
-            badgeEl.innerText = "Hoạt động Nặng (High)"; 
+            badgeEl.innerText = "Hoạt động Nặng (High activity)"; 
             badgeEl.classList.add("bg-red"); 
         } else { 
-            badgeEl.innerText = "Hoạt động RẤT NẶNG (Very High)"; 
+            badgeEl.innerText = "Hoạt động RẤT NẶNG (Very High activity)"; 
             badgeEl.classList.add("bg-red"); 
         }
     }
