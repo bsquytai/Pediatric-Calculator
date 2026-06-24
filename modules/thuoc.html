@@ -1,24 +1,20 @@
-<!-- CSS ĐẶC THÙ CHỈ DÙNG CHO MODULE THUỐC -->
 <style>
-    .search-wrapper { position: relative; margin-bottom: 16px; }
-    .suggestions-box { position: absolute; top: 100%; left: 0; right: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-height: 250px; overflow-y: auto; z-index: 50; display: none; margin-top: 4px; }
-    .suggestion-item { padding: 12px 16px; border-bottom: 1px solid var(--bg); cursor: pointer; transition: background 0.2s; }
-    .suggestion-item:last-child { border-bottom: none; }
-    .suggestion-item:hover { background: #eff6ff; }
-    .drug-detail-row { display: flex; flex-direction: column; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed var(--border); }
-    .drug-detail-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-    .drug-lbl { font-size: 13px; color: var(--text-light); text-transform: uppercase; font-weight: 600; margin-bottom: 4px; }
-    .drug-val { font-size: 15px; color: var(--text); }
+    /* Bổ sung CSS cục bộ để văn bản dài hiển thị đẹp, tự động xuống dòng */
+    .drug-val {
+        font-size: 15px; 
+        color: var(--text);
+        white-space: pre-line; /* Giữ nguyên định dạng xuống dòng nếu có trong JSON */
+        line-height: 1.6;
+    }
 </style>
 
-<!-- GIAO DIỆN HTML CỦA MODULE -->
 <div class="header">
     <h1>Tra cứu Thuốc</h1>
     <p>Cơ sở dữ liệu khoa Thận nhi</p>
 </div>
 
 <div class="search-wrapper">
-    <input type="text" id="drugSearch" placeholder="Gõ tên thuốc (VD: enalapril, furo...)" oninput="handleSearch()">
+    <input type="text" id="drugSearch" placeholder="Gõ tên thuốc (VD: captopril, enalapril...)" oninput="handleSearch()">
     <div id="drugSuggestions" class="suggestions-box"></div>
 </div>
 
@@ -36,17 +32,17 @@
         <div class="drug-val" id="drDosing">--</div>
     </div>
 
-    <div class="drug-detail-row" id="rowRenal">
+    <div class="drug-detail-row">
         <div class="drug-lbl" style="color: var(--danger);">Chỉnh liều theo chức năng thận</div>
         <div class="drug-val" id="drRenal">--</div>
     </div>
 
-    <div class="drug-detail-row" id="rowSideEffects">
+    <div class="drug-detail-row">
         <div class="drug-lbl" style="color: var(--warning);">Tác dụng phụ</div>
         <div class="drug-val" id="drSideEffects">--</div>
     </div>
 
-    <div class="drug-detail-row" id="rowContra">
+    <div class="drug-detail-row">
         <div class="drug-lbl" style="color: var(--danger);">Chống chỉ định</div>
         <div class="drug-val" id="drContraindications">--</div>
     </div>
@@ -57,8 +53,8 @@
     </div>
 </div>
 
-<!-- JAVASCRIPT CHỈ CHẠY RIÊNG TRONG MODULE NÀY -->
 <script>
+    // Thuật toán xử lý tìm kiếm
     function handleSearch() {
         const query = document.getElementById('drugSearch').value.toLowerCase().trim();
         const sugBox = document.getElementById('drugSuggestions');
@@ -69,15 +65,17 @@
             return; 
         }
 
+        // Kiểm tra xem database từ index.html đã được nạp chưa
         if (typeof drugDatabase === 'undefined') {
-            sugBox.innerHTML = '<div class="suggestion-item" style="color:var(--danger);">Lỗi: Không tìm thấy file data_thuoc.js</div>';
+            sugBox.innerHTML = '<div class="suggestion-item" style="color:var(--danger);">Lỗi: Chưa kết nối được data_thuoc.js</div>';
             sugBox.style.display = 'block';
             return;
         }
 
+        // Lọc dữ liệu thông minh (Tìm theo tên, nhóm thuốc, hoặc biệt dược)
         const matches = drugDatabase.filter(d => 
-            d.name.toLowerCase().includes(query) || 
-            d.class.toLowerCase().includes(query) ||
+            (d.name && d.name.toLowerCase().includes(query)) || 
+            (d.class && d.class.toLowerCase().includes(query)) ||
             (d.brand_names && d.brand_names.toLowerCase().includes(query))
         );
 
@@ -87,10 +85,12 @@
             return;
         }
 
+        // Đổ danh sách gợi ý ra màn hình
         matches.forEach(drug => {
             const div = document.createElement('div');
             div.className = 'suggestion-item';
             div.innerHTML = `<strong>${drug.name}</strong> <br><span style="font-size:12px; color:var(--text-light);">${drug.class}</span>`;
+            // Khi người dùng click vào gợi ý
             div.onclick = () => displayDrugProfile(drug);
             sugBox.appendChild(div);
         });
@@ -98,13 +98,17 @@
         sugBox.style.display = 'block';
     }
 
+    // Thuật toán hiển thị Thẻ thông tin thuốc
     function displayDrugProfile(drug) {
+        // Cập nhật thanh tìm kiếm & ẩn dropdown
         document.getElementById('drugSearch').value = drug.name;
         document.getElementById('drugSuggestions').style.display = 'none';
 
-        document.getElementById('drName').innerText = drug.name;
-        document.getElementById('drClass').innerText = drug.class;
+        // Đổ dữ liệu cơ bản
+        document.getElementById('drName').innerText = drug.name || 'Chưa rõ tên';
+        document.getElementById('drClass').innerText = drug.class || 'Chưa phân nhóm';
         
+        // Xử lý Biệt dược (Nếu không có trong DB thì tự động ẩn)
         const brandEl = document.getElementById('drBrandNames');
         if (drug.brand_names) {
             brandEl.innerText = `Biệt dược: ${drug.brand_names}`;
@@ -113,25 +117,38 @@
             brandEl.style.display = 'none';
         }
 
-        // Tự động ẩn dòng nếu không có dữ liệu
-        const setDetail = (id, rowId, val) => {
-            const row = document.getElementById(rowId);
+        // Hàm nội bộ để ánh xạ và tự động ẩn/hiện các hàng (rows)
+        const setDetail = (id, val) => {
             const el = document.getElementById(id);
-            if (row && el) {
-                if (val) { el.innerText = val; row.style.display = 'flex'; } 
-                else { row.style.display = 'none'; }
+            if (val && val.trim() !== "") {
+                el.innerText = val;
+                el.parentElement.style.display = 'flex'; // Hiện hàng này lên
+            } else {
+                el.parentElement.style.display = 'none'; // Giấu hàng này đi nếu JSON không có dữ liệu
             }
         };
 
-        setDetail('drDosing', 'rowDosing', drug.dosing);
-        setDetail('drRenal', 'rowRenal', drug.renal_adj);
-        setDetail('drSideEffects', 'rowSideEffects', drug.side_effects);
-        setDetail('drContraindications', 'rowContra', drug.contraindications);
-        setDetail('drNote', 'rowNote', drug.note);
+        // Ánh xạ toàn bộ dữ liệu từ JSON vào HTML
+        setDetail('drDosing', drug.dosing);
+        setDetail('drRenal', drug.renal_adj);
+        setDetail('drSideEffects', drug.side_effects);
+        setDetail('drContraindications', drug.contraindications);
+        setDetail('drNote', drug.note);
 
+        // Hiển thị thẻ Card với hiệu ứng
         const card = document.getElementById('drugResultCard');
         card.style.display = 'block';
         card.style.animation = 'none';
-        setTimeout(() => card.style.animation = 'fadeIn 0.4s', 10);
+        // Kích hoạt lại hiệu ứng fadeIn
+        setTimeout(() => card.style.animation = 'fadeIn 0.4s ease', 10);
     }
+
+    // Lắng nghe sự kiện click ra ngoài để đóng hộp gợi ý
+    document.addEventListener('click', function(e) {
+        const searchInput = document.getElementById('drugSearch');
+        const sugBox = document.getElementById('drugSuggestions');
+        if (searchInput && sugBox && !searchInput.contains(e.target)) {
+            sugBox.style.display = 'none';
+        }
+    });
 </script>
