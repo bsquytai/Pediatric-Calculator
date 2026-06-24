@@ -1,1 +1,189 @@
+<div class="header">
+    <h1>Phân độ Huyết áp</h1>
+    <p>Theo tiêu chuẩn AAP 2017 & KDIGO 2021</p>
+</div>
 
+<div class="card">
+    <div class="card-title">1. Thông tin Bệnh nhi</div>
+    <div class="form-row">
+        <div class="form-col">
+            <label>Tuổi (Năm)</label>
+            <input type="number" id="bpAge" inputmode="decimal" placeholder="1 - 17">
+        </div>
+        <div class="form-col">
+            <label>Giới tính</label>
+            <select id="bpGender">
+                <option value="male">Nam</option>
+                <option value="female">Nữ</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-title">2. Thông số Huyết áp</div>
+    <div class="form-row">
+        <div class="form-col">
+            <label>Tâm thu (SBP)</label>
+            <input type="number" id="bpSys" inputmode="decimal" placeholder="mmHg">
+        </div>
+        <div class="form-col">
+            <label>Tâm trương (DBP)</label>
+            <input type="number" id="bpDia" inputmode="decimal" placeholder="mmHg">
+        </div>
+    </div>
+    <div class="form-row" style="margin-top: 10px;">
+        <div class="form-col">
+            <label>MAP đo từ máy <span style="font-weight:normal; color:var(--text-light);">(Tùy chọn)</span></label>
+            <input type="number" id="bpMap" inputmode="decimal" placeholder="mmHg">
+        </div>
+    </div>
+    <p class="note">* Nếu không nhập, hệ thống sẽ tự động ước tính MAP = (SBP + 2xDBP) / 3</p>
+</div>
+
+<button class="btn" onclick="calculateBP()">PHÂN ĐỘ HUYẾT ÁP</button>
+
+<div id="bpResultSection" class="result-section" style="display: none;">
+    <div class="result-box" style="padding: 16px;">
+        <div style="font-weight: 600; color: var(--text-light); font-size: 14px;">Chẩn đoán Phân độ (AAP 2017)</div>
+        <div class="result-value badge" id="bpStageText" style="font-size: 20px; margin-top: 12px; padding: 10px 20px; border-radius: 8px; color: white;">--</div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Chi tiết Bách phân vị (Percentiles)</div>
+        <table>
+            <tr>
+                <td width="40%"><strong>Tâm thu (SBP)</strong></td>
+                <td id="bpSysDetail">--</td>
+            </tr>
+            <tr>
+                <td><strong>Tâm trương (DBP)</strong></td>
+                <td id="bpDiaDetail">--</td>
+            </tr>
+            <tr>
+                <td><strong>MAP</strong> <span id="mapSource" style="font-size:11px; font-weight:normal;"></span></td>
+                <td id="bpMapDetail">--</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="card" style="background-color: #f0fdf4; border-color: #bbf7d0;">
+        <div class="card-title" style="color: var(--success); border-bottom-color: #bbf7d0;">Mục tiêu Điều trị (BP Target)</div>
+        <ul style="padding-left: 20px; font-size: 14px; color: var(--text);">
+            <li style="margin-bottom: 8px;">
+                <strong>Trẻ không có CKD:</strong> <br>
+                <span id="targetNormal">--</span>
+            </li>
+            <li>
+                <strong>Trẻ có CKD / Protein niệu (KDIGO 2021):</strong> <br>
+                <span id="targetCkd">--</span>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    function calculateBP() {
+        const age = parseInt(document.getElementById('bpAge').value);
+        const gender = document.getElementById('bpGender').value;
+        const sys = parseFloat(document.getElementById('bpSys').value);
+        const dia = parseFloat(document.getElementById('bpDia').value);
+        let mapInput = parseFloat(document.getElementById('bpMap').value);
+
+        if (isNaN(age) || isNaN(sys) || isNaN(dia)) {
+            alert("Đại Hiệp vui lòng nhập đầy đủ Tuổi, Huyết áp Tâm thu và Tâm trương!");
+            return;
+        }
+
+        let mapVal = mapInput;
+        let mapSource = "(Nhập từ máy đo)";
+        if (isNaN(mapInput)) {
+            mapVal = (sys + 2 * dia) / 3;
+            mapSource = "(Từ công thức)";
+        }
+
+        document.getElementById('mapSource').innerText = mapSource;
+
+        // Bảng dữ liệu nội suy giản lược theo chuẩn AAP 2017 (Chiều cao ở bách phân vị 50th)
+        // Cấu trúc mảng: [SBP_50, SBP_90, SBP_95, DBP_50, DBP_90, DBP_95]
+        const aapData = {
+            male: {
+                1: [85, 98, 102, 42, 53, 57], 2: [88, 101, 105, 47, 58, 62], 3: [91, 104, 108, 51, 62, 66],
+                4: [93, 106, 110, 54, 65, 69], 5: [95, 108, 112, 57, 68, 72], 6: [97, 110, 114, 59, 70, 74],
+                7: [98, 111, 115, 61, 72, 76], 8: [100, 113, 117, 63, 74, 78], 9: [102, 115, 119, 64, 75, 79],
+                10: [104, 117, 121, 65, 76, 80], 11: [106, 119, 123, 66, 77, 81], 12: [108, 121, 125, 67, 78, 82]
+            },
+            female: {
+                1: [86, 98, 102, 44, 55, 59], 2: [88, 101, 105, 48, 59, 63], 3: [91, 103, 107, 52, 63, 67],
+                4: [93, 105, 109, 55, 66, 70], 5: [95, 107, 111, 57, 68, 72], 6: [96, 109, 113, 59, 70, 74],
+                7: [98, 110, 114, 61, 72, 76], 8: [100, 112, 116, 62, 73, 77], 9: [102, 114, 118, 64, 75, 79],
+                10: [104, 116, 120, 65, 76, 80], 11: [106, 118, 122, 67, 77, 82], 12: [108, 120, 124, 68, 79, 83]
+            }
+        };
+
+        let stageText = ""; 
+        let stageClass = "";
+        let sysDetail = ""; 
+        let diaDetail = "";
+        let targetNormal = ""; 
+        let targetCkd = "";
+
+        if (age >= 13) {
+            // AAP 2017: Trẻ >= 13 tuổi áp dụng ngưỡng tuyệt đối
+            if (sys >= 140 || dia >= 90) { stageText = "TĂNG HA ĐỘ 2"; stageClass = "bg-red"; }
+            else if (sys >= 130 || dia >= 80) { stageText = "TĂNG HA ĐỘ 1"; stageClass = "bg-orange"; }
+            else if (sys >= 120 && dia < 80) { stageText = "HA TĂNG CAO (Elevated)"; stageClass = "bg-yellow"; }
+            else { stageText = "BÌNH THƯỜNG"; stageClass = "bg-green"; }
+
+            sysDetail = `${sys} mmHg`;
+            diaDetail = `${dia} mmHg`;
+            targetNormal = "Mục tiêu: < 120 / 80 mmHg";
+            targetCkd = "Mục tiêu SBP / MAP: ≤ 120 / 80 mmHg (Theo KDIGO 2021)";
+            
+        } else {
+            // AAP 2017: Trẻ < 13 tuổi áp dụng bách phân vị
+            let safeAge = age < 1 ? 1 : (age > 12 ? 12 : age);
+            let refs = aapData[gender][safeAge];
+            
+            let s50 = refs[0], s90 = refs[1], s95 = refs[2];
+            let d50 = refs[3], d90 = refs[4], d95 = refs[5];
+
+            let sysStage = 0;
+            if (sys >= s95 + 12 || sys >= 140) sysStage = 3;
+            else if (sys >= s95 || (sys >= 130 && sys <= 139)) sysStage = 2;
+            else if (sys >= s90 || (sys >= 120 && sys < 130)) sysStage = 1;
+
+            let diaStage = 0;
+            if (dia >= d95 + 12 || dia >= 90) diaStage = 3;
+            else if (dia >= d95 || (dia >= 80 && dia <= 89)) diaStage = 2;
+            else if (dia >= d90 || (dia >= 80 && dia < 80)) diaStage = 1;
+
+            let finalStage = Math.max(sysStage, diaStage);
+
+            if (finalStage === 3) { stageText = "TĂNG HA ĐỘ 2"; stageClass = "bg-red"; }
+            else if (finalStage === 2) { stageText = "TĂNG HA ĐỘ 1"; stageClass = "bg-orange"; }
+            else if (finalStage === 1) { stageText = "HA TĂNG CAO (Elevated)"; stageClass = "bg-yellow"; }
+            else { stageText = "BÌNH THƯỜNG"; stageClass = "bg-green"; }
+
+            sysDetail = `${sys} mmHg (Ngưỡng 95th: ${s95})`;
+            diaDetail = `${dia} mmHg (Ngưỡng 95th: ${d95})`;
+            
+            targetNormal = `Mục tiêu (Bách phân vị < 90th): < ${s90} / ${d90} mmHg`;
+            targetCkd = `Mục tiêu (Bách phân vị < 50th): ≤ ${s50} / ${d50} mmHg`;
+        }
+
+        const stageEl = document.getElementById('bpStageText');
+        stageEl.innerText = stageText;
+        stageEl.className = `result-value badge ${stageClass}`;
+
+        document.getElementById('bpSysDetail').innerText = sysDetail;
+        document.getElementById('bpDiaDetail').innerText = diaDetail;
+        document.getElementById('bpMapDetail').innerText = `${mapVal.toFixed(1)} mmHg`;
+        
+        document.getElementById('targetNormal').innerText = targetNormal;
+        document.getElementById('targetCkd').innerText = targetCkd;
+
+        document.getElementById('bpResultSection').style.display = 'block';
+        setTimeout(() => { document.getElementById('bpResultSection').scrollIntoView({ behavior: 'smooth' }); }, 100);
+    }
+</script>
