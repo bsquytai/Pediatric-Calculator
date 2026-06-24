@@ -1,0 +1,62 @@
+<div class="header">
+    <h1>Tính Diện tích Da (BSA)</h1>
+    <p>Body Surface Area - Theo công thức Mosteller</p>
+</div>
+
+<div class="card">
+    <div class="card-title">Chỉ số Thể trạng (Anthropometry)</div>
+    <div class="form-row">
+        <div class="form-col">
+            <label>Chiều cao (cm)</label>
+            <input type="number" id="bsaHeight" inputmode="decimal" placeholder="VD: 120">
+        </div>
+        <div class="form-col">
+            <label>Cân nặng (kg)</label>
+            <input type="number" id="bsaWeight" inputmode="decimal" placeholder="VD: 25">
+        </div>
+    </div>
+</div>
+
+<button class="btn" onclick="calculateBSA()">TÍNH BSA</button>
+
+<div id="bsaResultSection" class="result-section" style="display: none;">
+    <div class="result-box" style="padding: 24px;">
+        <div style="font-weight: 600; color: var(--text-light); font-size: 16px;">Diện tích cơ thể (BSA)</div>
+        <div class="result-value" id="bsaResult" style="font-size: 42px; margin: 12px 0;">--</div>
+        <div class="result-unit" style="font-size: 18px; font-weight: bold; color: var(--primary);">m²</div>
+    </div>
+
+    <div class="card" style="background-color: #f8fafc; border-color: #cbd5e1; margin-top: 16px;">
+        <div class="card-title" style="font-size: 14px; border-bottom: none; color: var(--text-light); text-align: center; margin-bottom: 0;">
+            Cơ sở thuật toán (Algorithm)
+        </div>
+        <p style="text-align: center; font-size: 13px; color: var(--text-light); margin-top: 8px;">
+            Áp dụng công thức Mosteller (1987):<br>
+            <strong>BSA = √((Chiều cao × Cân nặng) / 3600)</strong>
+        </p>
+    </div>
+</div>
+
+<script>
+    function calculateBSA() {
+        // Lấy giá trị đầu vào
+        const h = parseFloat(document.getElementById('bsaHeight').value);
+        const w = parseFloat(document.getElementById('bsaWeight').value);
+
+        // Kiểm tra tính hợp lệ của dữ liệu
+        if (isNaN(h) || isNaN(w) || h <= 0 || w <= 0) {
+            alert("Đại Hiệp vui lòng nhập đầy đủ và chính xác Chiều cao (>0) và Cân nặng (>0)!");
+            return;
+        }
+
+        // Áp dụng công thức Mosteller
+        const bsa = Math.sqrt((h * w) / 3600);
+
+        // Hiển thị kết quả
+        document.getElementById('bsaResultSection').style.display = 'block';
+        document.getElementById('bsaResult').innerText = bsa.toFixed(2);
+
+        // Tự động cuộn màn hình xuống khu vực kết quả
+        setTimeout(() => document.getElementById('bsaResultSection').scrollIntoView({ behavior: 'smooth' }), 100);
+    }
+</script>
