@@ -1,1 +1,204 @@
+<div class="header">
+    <h1>Tính eGFR & Phân độ CKD</h1>
+    <p>Công thức Schwartz gốc & KDIGO 2012</p>
+</div>
 
+<div class="card">
+    <div class="card-title">1. Thông tin lâm sàng</div>
+    <div class="form-row">
+        <div class="form-col">
+            <label>Tuổi</label>
+            <input type="number" id="ageValue" placeholder="Nhập số">
+        </div>
+        <div class="form-col">
+            <label>Đơn vị tuổi</label>
+            <select id="ageUnit">
+                <option value="years">Năm</option>
+                <option value="months">Tháng</option>
+                <option value="weeks">Tuần</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-col">
+            <label>Giới tính</label>
+            <select id="gender">
+                <option value="male">Nam</option>
+                <option value="female">Nữ</option>
+            </select>
+        </div>
+        <div class="form-col">
+            <label>Chiều cao (cm)</label>
+            <input type="number" id="height" placeholder="VD: 110">
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-title">2. Cận lâm sàng</div>
+    <div class="form-row">
+        <div class="form-col">
+            <label>Creatinine máu</label>
+            <input type="number" id="serumCrea" placeholder="VD: 45">
+        </div>
+        <div class="form-col">
+            <label>Đơn vị</label>
+            <select id="creaUnit">
+                <option value="umol">µmol/L</option>
+                <option value="mgdl">mg/dL</option>
+            </select>
+        </div>
+    </div>
+
+    <label style="margin-top: 10px; color: var(--primary-dark); border-bottom: 1px dashed var(--border); padding-bottom: 4px; margin-bottom: 10px; display: inline-block;">Thông số Nước tiểu (Tùy chọn - Phân độ CKD)</label>
+    <div class="form-row">
+        <div class="form-col">
+            <label>Albumin niệu (mg/L)</label>
+            <input type="number" id="urineAlb" placeholder="VD: 40">
+        </div>
+        <div class="form-col">
+            <label>Creatinine niệu (mg/dL)</label>
+            <input type="number" id="urineCrea" placeholder="VD: 100">
+        </div>
+    </div>
+</div>
+
+<button class="btn" onclick="calculateEGFR()">TÍNH eGFR</button>
+
+<div id="resultSection" class="result-section" style="display: none;">
+    <div id="warningInfant" class="warning-box" style="display: none;">
+        <strong>Lưu ý:</strong> Trẻ dưới 2 tuổi chức năng thận chưa hoàn thiện. Không áp dụng phân độ CKD G1-G5.
+    </div>
+    <div class="result-box">
+        <div style="font-weight: 600; color: var(--text-light);">eGFR (Mức lọc cầu thận)</div>
+        <div class="result-value" id="egfrResult">--</div>
+        <div class="result-unit">mL/phút/1.73m² (Hệ số K: <span id="kFactorUsed">--</span>)</div>
+    </div>
+
+    <div class="card" id="infantReference" style="display: none;">
+        <div class="card-title">Tham chiếu sinh lý (Trẻ < 2 tuổi)</div>
+        <table>
+            <tr><th>Tuổi</th><th>eGFR Bình thường (Mean ± SD)</th></tr>
+            <tr><td>1 tuần</td><td>40.6 ± 14.8</td></tr>
+            <tr><td>2 - 8 tuần</td><td>65.8 ± 24.8</td></tr>
+            <tr><td>2 tháng - 1 tuổi</td><td>95.7 ± 21.7</td></tr>
+            <tr><td>1 - 2 tuổi</td><td>133.0 ± 27.0</td></tr>
+        </table>
+    </div>
+
+    <div id="ckdClassification" style="display: none;">
+        <div class="card">
+            <div class="card-title" style="display: flex; justify-content: space-between;">
+                <span>Phân loại KDIGO 2012</span>
+                <span id="acrBadge" class="badge bg-gray">ACR: --</span>
+            </div>
+            <table>
+                <tr><td width="35%"><strong>Mức GFR</strong></td><td id="kdigoG" style="font-weight: 600;">--</td></tr>
+                <tr><td><strong>Albumin niệu</strong></td><td id="kdigoA">--</td></tr>
+                <tr><td><strong>Nguy cơ</strong></td><td id="kdigoRisk">--</td></tr>
+            </table>
+        </div>
+        <div class="card">
+            <div class="card-title">Giai đoạn NKF/KDOQI</div>
+            <table><tr><td><strong>Chẩn đoán</strong></td><td id="kdoqiStage" style="font-weight: 600; color: var(--primary-dark);">--</td></tr></table>
+            <p class="note" style="margin-top: 10px;">* Giai đoạn 1 & 2 của KDOQI bắt buộc cần bằng chứng tổn thương thận (ACR ≥ 30 mg/g).</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function calculateEGFR() {
+        const ageVal = parseFloat(document.getElementById('ageValue').value);
+        const ageUnit = document.getElementById('ageUnit').value;
+        const gender = document.getElementById('gender').value;
+        const height = parseFloat(document.getElementById('height').value);
+        let serumCrea = parseFloat(document.getElementById('serumCrea').value);
+        const creaUnit = document.getElementById('creaUnit').value;
+        const urineAlb = parseFloat(document.getElementById('urineAlb').value);
+        const urineCrea = parseFloat(document.getElementById('urineCrea').value);
+
+        if (isNaN(ageVal) || isNaN(height) || isNaN(serumCrea)) {
+            alert("Đại Hiệp vui lòng nhập đầy đủ Tuổi, Chiều cao và Creatinine máu!");
+            return;
+        }
+
+        let ageInWeeks = 0; let ageInYears = 0;
+        if (ageUnit === 'weeks') { ageInWeeks = ageVal; ageInYears = ageVal / 52.14; } 
+        else if (ageUnit === 'months') { ageInWeeks = ageVal * 4.345; ageInYears = ageVal / 12; } 
+        else { ageInYears = ageVal; ageInWeeks = ageVal * 52.14; }
+
+        let creaUmol = serumCrea;
+        if (creaUnit === 'mgdl') { creaUmol = serumCrea * 88.4; }
+
+        let K = 0;
+        if (ageInWeeks <= 1) { K = 29.2; } 
+        else if (ageInWeeks > 1 && ageInYears <= 2) { K = 39.78; } 
+        else if (ageInYears > 2 && ageInYears <= 12) { K = 48.6; } 
+        else if (ageInYears > 12) { K = (gender === 'female') ? 48.6 : 61.88; }
+
+        const eGFR = (K * height) / creaUmol;
+        let acr = null;
+        if (!isNaN(urineAlb) && !isNaN(urineCrea) && urineCrea > 0) { acr = (urineAlb / urineCrea) * 100; }
+
+        document.getElementById('resultSection').style.display = 'block';
+        document.getElementById('egfrResult').innerText = eGFR.toFixed(1);
+        document.getElementById('kFactorUsed').innerText = K;
+
+        const isInfant = ageInYears < 2;
+        if (isInfant) {
+            document.getElementById('warningInfant').style.display = 'block';
+            document.getElementById('infantReference').style.display = 'block';
+            document.getElementById('ckdClassification').style.display = 'none';
+        } else {
+            document.getElementById('warningInfant').style.display = 'none';
+            document.getElementById('infantReference').style.display = 'none';
+            document.getElementById('ckdClassification').style.display = 'block';
+
+            let gStageStr = ''; let gCode = '';
+            if (eGFR >= 90) { gCode = 'G1'; gStageStr = 'G1 (≥ 90) - Bình thường/Cao'; }
+            else if (eGFR >= 60) { gCode = 'G2'; gStageStr = 'G2 (60-89) - Giảm nhẹ'; }
+            else if (eGFR >= 45) { gCode = 'G3a'; gStageStr = 'G3a (45-59) - Giảm nhẹ-TB'; }
+            else if (eGFR >= 30) { gCode = 'G3b'; gStageStr = 'G3b (30-44) - Giảm TB-Nặng'; }
+            else if (eGFR >= 15) { gCode = 'G4'; gStageStr = 'G4 (15-29) - Giảm nặng'; }
+            else { gCode = 'G5'; gStageStr = 'G5 (< 15) - Suy thận mạn giai đoạn cuối'; }
+            document.getElementById('kdigoG').innerText = gStageStr;
+
+            let aCode = ''; let aStageStr = 'Thiếu dữ liệu ACR'; let acrText = 'ACR: N/A';
+            if (acr !== null) {
+                acrText = `ACR: ${acr.toFixed(1)} mg/g`;
+                if (acr < 30) { aCode = 'A1'; aStageStr = 'A1 (< 30) - BT/Tăng nhẹ'; }
+                else if (acr <= 300) { aCode = 'A2'; aStageStr = 'A2 (30-300) - Tăng vừa'; }
+                else { aCode = 'A3'; aStageStr = 'A3 (> 300) - Tăng nặng'; }
+            }
+            document.getElementById('kdigoA').innerText = aStageStr;
+            document.getElementById('acrBadge').innerText = acrText;
+            document.getElementById('acrBadge').className = acr !== null ? 'badge bg-primary' : 'badge bg-gray';
+
+            let riskHTML = '<span class="badge bg-gray">Chưa đủ dữ liệu</span>';
+            if (aCode !== '') {
+                if (gCode === 'G1' || gCode === 'G2') {
+                    if (aCode === 'A1') riskHTML = '<span class="badge bg-green">Nguy cơ THẤP</span>';
+                    else if (aCode === 'A2') riskHTML = '<span class="badge bg-yellow">Nguy cơ TRUNG BÌNH</span>';
+                    else riskHTML = '<span class="badge bg-orange">Nguy cơ CAO</span>';
+                } else if (gCode === 'G3a') {
+                    if (aCode === 'A1') riskHTML = '<span class="badge bg-yellow">Nguy cơ TRUNG BÌNH</span>';
+                    else if (aCode === 'A2') riskHTML = '<span class="badge bg-orange">Nguy cơ CAO</span>';
+                    else riskHTML = '<span class="badge bg-red">Nguy cơ RẤT CAO</span>';
+                } else if (gCode === 'G3b') {
+                    if (aCode === 'A1') riskHTML = '<span class="badge bg-orange">Nguy cơ CAO</span>';
+                    else riskHTML = '<span class="badge bg-red">Nguy cơ RẤT CAO</span>';
+                } else { riskHTML = '<span class="badge bg-red">Nguy cơ RẤT CAO</span>'; }
+            }
+            document.getElementById('kdigoRisk').innerHTML = riskHTML;
+
+            let kdoqiStr = ''; let hasKidneyDamage = (acr !== null && acr >= 30);
+            if (eGFR >= 90) { kdoqiStr = hasKidneyDamage ? 'Giai đoạn 1 (Tổn thương thận, GFR ≥ 90)' : 'Không đủ TC GĐ 1 (Cần ACR ≥ 30)'; } 
+            else if (eGFR >= 60) { kdoqiStr = hasKidneyDamage ? 'Giai đoạn 2 (Tổn thương thận, GFR 60-89)' : 'Không đủ TC GĐ 2 (Cần ACR ≥ 30)'; } 
+            else if (eGFR >= 30) { kdoqiStr = 'Giai đoạn 3 (GFR 30-59)'; } 
+            else if (eGFR >= 15) { kdoqiStr = 'Giai đoạn 4 (GFR 15-29)'; } 
+            else { kdoqiStr = 'Giai đoạn 5 (GFR < 15)'; }
+            document.getElementById('kdoqiStage').innerText = kdoqiStr;
+        }
+        setTimeout(() => document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' }), 100);
+    }
+</script>
