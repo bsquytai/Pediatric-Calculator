@@ -11,7 +11,7 @@ const drugDatabase = [
     },
     {
         "name": "Enalapril",
-        "class": "Nhóm ACEI",
+        "class": "Nhóm ức chế men chuyển - ACEI",
         "dosing": "0.08 – 0.6 mg/kg; liều tối đa 1 mg/kg/ngày hoặc 40 mg/ngày; chia 1 - 2 lần dùng.",
         "renal_adj": "",
         "side_effects": "Tương tự Captopril (tăng Kali máu, nguy cơ tổn thương thận cấp).",
@@ -21,7 +21,7 @@ const drugDatabase = [
     },
     {
         "name": "Ramipril",
-        "class": "Nhóm ACEI",
+        "class": "Nhóm ức chế men chuyển - ACEI",
         "dosing": "1.6 mg/m²/ngày hoặc khởi đầu 0.05 – 0.2 mg/kg/ngày; liều tối đa 10 mg; dùng 1 lần/ngày.",
         "renal_adj": "",
         "side_effects": "Tương tự Captopril.",
@@ -31,7 +31,7 @@ const drugDatabase = [
     },
     {
         "name": "Lisinopril",
-        "class": "Nhóm ACEI",
+        "class": "Nhóm ức chế men chuyển - ACEI",
         "dosing": "Áp dụng cho trẻ > 6 tuổi với liều 0.07 mg/kg/ngày; tối đa 0.6 mg/kg/ngày hoặc 20 mg; dùng 1 lần/ngày.",
         "renal_adj": "",
         "side_effects": "Tương tự Captopril.",
@@ -210,7 +210,7 @@ const drugDatabase = [
         "note": "Theo dõi: Lấy mẫu đo nồng độ đáy C0 (ngay trước liều tiếp theo). Đích HCTH là 4 – 8 microgam/L; Lupus là 8 – 10 microgam/L; kháng thuốc nâng lên 12 – 15 microgam/L. Bắt buộc làm xét nghiệm Đường máu, HbA1C, Magie máu và Creatinin máu thường quy."
     },
     {
-        "name": "Mycophenolate Mofetil / Cellcept",
+        "name": "Mycophenolate Mofetil (MMF)",
         "class": "Thuốc chống chuyển hóa",
         "dosing": "HCTH: 600 mg/m²/liều x 2 lần/ngày (tương đương 15 – 23 mg/kg/liều x 2 lần/ngày); tối đa 2 g/ngày. RPGN: 1200 mg/m²/24 giờ hoặc 30 mg/kg/24 giờ chia 2 lần.",
         "renal_adj": "",
