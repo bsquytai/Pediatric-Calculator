@@ -1,15 +1,15 @@
 <style>
-    /* Bổ sung CSS khuôn mẫu Accordion/Collapsible TUYỆT ĐỐI theo Quy chuẩn III.1 */
+    /* KHUÔN MẪU ACCORDION (Quy chuẩn III.1) */
     .accordion-btn { width: 100%; text-align: left; background-color: var(--surface); color: var(--text); padding: 16px 20px; border: 1px solid var(--border); border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
     .accordion-btn.active { background-color: var(--primary); color: #ffffff; border-color: var(--primary); border-bottom-left-radius: 0; border-bottom-right-radius: 0; margin-bottom: 0; }
     .accordion-content { display: none; padding: 20px; border: 1px solid var(--primary); border-top: none; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; margin-top: 0; margin-bottom: 16px; background-color: #f9fafb; animation: fadeIn 0.3s ease-in-out; box-sizing: border-box; width: 100%; }
     .accordion-content.show { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* CSS khuôn mẫu Hộp thông tin phân màu theo Quy chuẩn III.2 */
+    /* KHUÔN MẪU HỘP THÔNG TIN PHÂN MÀU (Quy chuẩn III.2) */
     .info-box { padding: 16px; border-radius: 10px; margin-bottom: 16px; background-color: #f9fafb; border-left: 4px solid var(--border); }
-    .info-box-title { font-size: 12px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-    .info-box-content { font-size: 15px; color: var(--text); line-height: 1.6; white-space: pre-line; } /* Quy chuẩn IV: white-space: pre-line */
+    .info-box-title { font-size: 14px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .info-box-content { font-size: 15px; color: var(--text); line-height: 1.6; white-space: pre-line; }
     
     .box-primary { background-color: #eff6ff; border-left-color: var(--primary); } 
     .box-primary .info-box-title { color: var(--primary-dark); }
@@ -19,29 +19,41 @@
     
     .box-warning { background-color: #fffbeb; border-left-color: var(--warning); } 
     .box-warning .info-box-title { color: #b45309; }
+
+    /* Bổ sung hộp màu xanh cho trạng thái Bình thường */
+    .box-success { background-color: #f0fdf4; border-left-color: var(--success); }
+    .box-success .info-box-title { color: #15803d; }
+
+    /* UI Cho Bảng kiểm (Checklist) */
+    .check-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px dashed var(--border); cursor: pointer; transition: background 0.2s; }
+    .check-item:last-child { border-bottom: none; }
+    .check-item:hover { background-color: rgba(37, 99, 235, 0.05); }
+    .check-item input[type="checkbox"] { margin-top: 4px; width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; flex-shrink: 0; }
+    .check-item.danger-item input[type="checkbox"] { accent-color: var(--danger); }
+    .check-item.danger-item:hover { background-color: rgba(220, 38, 38, 0.05); }
+    .check-label { font-size: 15px; color: var(--text); line-height: 1.5; flex: 1; cursor: pointer; }
 </style>
 
 <div class="header">
-    <h1>Mốc Phát Triển AAP-Test</h1>
-    <p>Giám sát kỹ năng vận động, ngôn ngữ và nhận thức</p>
+    <h1>Bảng Kiểm Phát Triển AAP</h1>
+    <p>Chấm điểm & đánh giá lâm sàng theo mốc tuổi</p>
 </div>
 
 <div class="card">
-    <div class="card-title">Lựa chọn tháng tuổi</div>
+    <div class="card-title">1. Chọn mốc tuổi đánh giá</div>
     <div class="form-row">
         <div class="form-col">
-            <label>Mốc khám sàng lọc (Tháng tuổi):</label>
-            <select id="ageSelect" onchange="renderMilestone(this.value)">
-                <option value="" disabled selected>-- Chọn mốc tuổi để đánh giá --</option>
+            <select id="ageSelect" onchange="renderMilestoneChecklist(this.value)">
+                <option value="" disabled selected>-- Chọn độ tuổi của trẻ --</option>
                 <option value="2_months">2 Tháng tuổi</option>
                 <option value="4_months">4 Tháng tuổi</option>
                 <option value="6_months">6 Tháng tuổi</option>
-                <option value="9_months">9 Tháng tuổi (Sàng lọc tiêu chuẩn)</option>
+                <option value="9_months">9 Tháng tuổi (Sàng lọc chuẩn)</option>
                 <option value="12_months">12 Tháng tuổi (1 tuổi)</option>
                 <option value="15_months">15 Tháng tuổi</option>
-                <option value="18_months">18 Tháng tuổi (Sàng lọc ASD & Tiêu chuẩn)</option>
-                <option value="24_months">24 Tháng tuổi (Sàng lọc ASD & Tiêu chuẩn)</option>
-                <option value="30_months">30 Tháng tuổi (Sàng lọc tiêu chuẩn)</option>
+                <option value="18_months">18 Tháng tuổi (Sàng lọc ASD)</option>
+                <option value="24_months">24 Tháng tuổi (Sàng lọc ASD)</option>
+                <option value="30_months">30 Tháng tuổi (Sàng lọc chuẩn)</option>
                 <option value="36_months">36 Tháng tuổi (3 tuổi)</option>
                 <option value="48_months">48 Tháng tuổi (4 tuổi)</option>
                 <option value="60_months">60 Tháng tuổi (5 tuổi)</option>
@@ -53,95 +65,157 @@
 <div id="milestone-display"></div>
 
 <div class="card bg-gray" style="margin-top: 24px;">
-    <h4 style="color: var(--text); border-bottom: 1px solid #d1d5db; padding-bottom: 8px;">📚 Hướng dẫn Thực hành & Tham chiếu Y khoa</h4>
+    <h4 style="color: var(--text); border-bottom: 1px solid #d1d5db; padding-bottom: 8px; font-size: 15px; font-weight: 600;">📚 Cơ Sở Lâm Sàng (AAP/CDC 2022)</h4>
     <div class="info-box-content" style="font-size: 14px; margin-top: 12px;">
-        - Nguồn tham chiếu: AAP / CDC "Learn the Signs. Act Early." (Cập nhật 2022).
-        - Khuyến cáo sàng lọc phát triển: Mọi trẻ cần được đánh giá bằng công cụ chuẩn hóa tại mốc 9, 18, 24 hoặc 30 tháng.
-        - Khuyến cáo sàng lọc Tự kỷ (ASD): Bắt buộc thực hiện M-CHAT-R/F tại mốc 18 và 24 tháng tuổi.
+        - Tiêu chuẩn 75%: Các mốc kỳ vọng hiện tại được thiết lập dựa trên mức 75% trẻ em làm được (thay vì 50% như trước 2022). Do đó, trẻ thiếu <b>BẤT KỲ</b> mốc nào ở độ tuổi tương ứng cũng yêu cầu hành động, loại bỏ phương pháp "chờ đợi".
+        - Sàng lọc ASD (Tự kỷ): Bắt buộc thực hiện thang điểm M-CHAT-R/F ở mốc 18 và 24 tháng.
         - Hiệu chỉnh sinh non: Bắt buộc áp dụng tuổi hiệu chỉnh đối với trẻ sinh < 37 tuần cho đến khi trẻ tròn 24 tháng tuổi.
-        - Lưu ý: Bất kỳ hiện tượng THOÁI TRIỂN (mất đi kỹ năng đã có) ở bất kỳ độ tuổi nào đều là "Cờ Đỏ" yêu cầu đánh giá thần kinh chuyên sâu.
+        - Thoái triển (Regression): Mất đi kỹ năng đã có là dấu hiệu báo động đỏ ở mọi lứa tuổi.
     </div>
 </div>
 
 <script>
-    // Logic điều khiển Accordion theo quy chuẩn
+    // Logic điều khiển Accordion chuẩn
     function toggleAccordion(contentId, btnElement) {
         btnElement.classList.toggle("active");
-        
-        // Cập nhật text nút [+] / [-]
         const span = btnElement.querySelector('span');
         if (btnElement.classList.contains('active')) {
             span.innerHTML = span.innerHTML.replace('[+]', '[-]');
         } else {
             span.innerHTML = span.innerHTML.replace('[-]', '[+]');
         }
-
         const content = document.getElementById(contentId);
         content.classList.toggle("show");
     }
 
-    // Logic Render nội dung mốc phát triển
-    function renderMilestone(ageKey) {
+    // Hàm phụ: Tạo danh sách checklist HTML
+    function buildChecklist(items, isRedFlag = false) {
+        if (!items || items.length === 0) return '';
+        const itemClass = isRedFlag ? "danger-item" : "";
+        const checkboxClass = isRedFlag ? "redflag-check" : "milestone-check";
+        
+        return items.map((item, index) => {
+            // Tạo ID ngẫu nhiên cho thẻ label liên kết với checkbox
+            const uniqueId = Math.random().toString(36).substr(2, 9);
+            return `
+                <label class="check-item ${itemClass}" for="${uniqueId}">
+                    <input type="checkbox" id="${uniqueId}" class="${checkboxClass}">
+                    <span class="check-label">${item}</span>
+                </label>
+            `;
+        }).join('');
+    }
+
+    // Tải bảng kiểm
+    function renderMilestoneChecklist(ageKey) {
         const displayDiv = document.getElementById('milestone-display');
         
         if (typeof milestoneData === 'undefined' || !milestoneData[ageKey]) {
             displayDiv.innerHTML = `
                 <div class="info-box box-warning">
                     <div class="info-box-title">⚠️ Đang cập nhật</div>
-                    <div class="info-box-content">Chưa tải được dữ liệu cho mốc tuổi này. Vui lòng kiểm tra file data_milestones.js.</div>
+                    <div class="info-box-content">Chưa tải được dữ liệu file data_milestones.js.</div>
                 </div>`;
             return;
         }
 
         const data = milestoneData[ageKey];
         
-        // Hàm phụ: Chuyển mảng array thành chuỗi có gạch đầu dòng, tận dụng white-space: pre-line
-        const formatText = (arr) => arr.map(item => `• ${item}`).join('\n');
+        let html = `<div class="card" style="margin-bottom: 12px;"><div class="card-title">2. Bảng kiểm lâm sàng (Tích vào các mốc trẻ ĐÃ ĐẠT ĐƯỢC)</div>`;
 
-        let html = '';
-
-        // 1. Accordion Nhóm: Xã hội / Cảm xúc
         html += `
-            <button class="accordion-btn" onclick="toggleAccordion('acc-social', this)"><span>[+] Xã hội / Cảm xúc (Social/Emotional)</span></button>
-            <div id="acc-social" class="accordion-content">
-                <div class="info-box-content">${formatText(data.social)}</div>
-            </div>`;
+            <button class="accordion-btn active" onclick="toggleAccordion('acc-social', this)"><span>[-] Xã hội / Cảm xúc</span></button>
+            <div id="acc-social" class="accordion-content show">${buildChecklist(data.social)}</div>
+            
+            <button class="accordion-btn active" onclick="toggleAccordion('acc-lang', this)"><span>[-] Ngôn ngữ / Giao tiếp</span></button>
+            <div id="acc-lang" class="accordion-content show">${buildChecklist(data.language)}</div>
+            
+            <button class="accordion-btn active" onclick="toggleAccordion('acc-cog', this)"><span>[-] Nhận thức / Học hỏi</span></button>
+            <div id="acc-cog" class="accordion-content show">${buildChecklist(data.cognitive)}</div>
+            
+            <button class="accordion-btn active" onclick="toggleAccordion('acc-motor', this)"><span>[-] Vận động (Thô & Tinh)</span></button>
+            <div id="acc-motor" class="accordion-content show">${buildChecklist(data.motor)}</div>
+        `;
 
-        // 2. Accordion Nhóm: Ngôn ngữ / Giao tiếp
-        html += `
-            <button class="accordion-btn" onclick="toggleAccordion('acc-lang', this)"><span>[+] Ngôn ngữ / Giao tiếp (Language)</span></button>
-            <div id="acc-lang" class="accordion-content">
-                <div class="info-box-content">${formatText(data.language)}</div>
-            </div>`;
+        html += `</div>`; // Đóng card bảng kiểm
 
-        // 3. Accordion Nhóm: Nhận thức
-        html += `
-            <button class="accordion-btn" onclick="toggleAccordion('acc-cog', this)"><span>[+] Nhận thức / Học hỏi (Cognitive)</span></button>
-            <div id="acc-cog" class="accordion-content">
-                <div class="info-box-content">${formatText(data.cognitive)}</div>
-            </div>`;
+        // Cờ Đỏ
+        html += `<div class="card" style="border: 1px solid #fecaca; background-color: #fef2f2;">
+            <div class="card-title" style="color: #dc2626; border-bottom-color: #fecaca;">🚨 Dấu hiệu Cờ Đỏ (Tích nếu trẻ CÓ biểu hiện này)</div>
+            ${buildChecklist(data.red_flags, true)}
+        </div>`;
 
-        // 4. Accordion Nhóm: Vận động
-        html += `
-            <button class="accordion-btn" onclick="toggleAccordion('acc-motor', this)"><span>[+] Vận động Thô & Tinh (Motor)</span></button>
-            <div id="acc-motor" class="accordion-content">
-                <div class="info-box-content">${formatText(data.motor)}</div>
-            </div>`;
+        // Nút đánh giá
+        html += `<button class="btn" onclick="evaluateMilestone()">Tính điểm & Đánh giá Kết quả</button>`;
+        
+        // Vùng chứa kết quả
+        html += `<div id="evaluation-result" style="margin-top: 20px;"></div>`;
 
-        // 5. Cảnh báo Đỏ (Red Flags) - Hiển thị dạng Info Box đỏ mở sẵn
+        // Lời khuyên
         html += `
-            <div class="info-box box-danger" style="margin-top: 20px;">
-                <div class="info-box-title">🚨 Dấu hiệu Cờ đỏ (Red Flags)</div>
-                <div class="info-box-content">${formatText(data.red_flags)}</div>
-            </div>`;
-
-        // 6. Lời khuyên tư vấn (Anticipatory Guidance) - Hiển thị dạng Info Box xanh mở sẵn
-        html += `
-            <div class="info-box box-primary">
+            <div class="info-box box-primary" style="margin-top: 16px;">
                 <div class="info-box-title">💡 Bác sĩ tư vấn cho gia đình</div>
-                <div class="info-box-content">${formatText(data.advice)}</div>
+                <div class="info-box-content">${data.advice.map(i => `• ${i}`).join('\n')}</div>
             </div>`;
 
         displayDiv.innerHTML = html;
+    }
+
+    // Logic Đánh giá dựa theo tiêu chuẩn AAP 2022
+    function evaluateMilestone() {
+        const resultDiv = document.getElementById('evaluation-result');
+        
+        const totalMilestones = document.querySelectorAll('.milestone-check').length;
+        const checkedMilestones = document.querySelectorAll('.milestone-check:checked').length;
+        const checkedRedFlags = document.querySelectorAll('.redflag-check:checked').length;
+
+        // Bỏ qua nếu chưa tích cái nào để tránh lỗi
+        if (checkedMilestones === 0 && checkedRedFlags === 0) {
+            resultDiv.innerHTML = `
+                <div class="info-box box-warning">
+                    <div class="info-box-title">⚠️ Nhắc nhở</div>
+                    <div class="info-box-content">Vui lòng đánh dấu vào các biểu hiện của trẻ để hệ thống có thể kết luận.</div>
+                </div>`;
+            return;
+        }
+
+        let html = '';
+
+        // Tình huống 1: Có Cờ Đỏ (Mức độ nghiêm trọng nhất)
+        if (checkedRedFlags > 0) {
+            html = `
+                <div class="info-box box-danger">
+                    <div class="info-box-title">🚨 BÁO ĐỘNG ĐỎ: YÊU CẦU CAN THIỆP CHUYÊN KHOA</div>
+                    <div class="info-box-content">Phát hiện <b>${checkedRedFlags} dấu hiệu Cờ Đỏ</b>. Trẻ cần được chuyển gửi ngay lập tức đến bác sĩ chuyên khoa Thần kinh Nhi, Tâm lý học, hoặc trung tâm can thiệp sớm để đánh giá toàn diện. Không áp dụng chiến lược theo dõi.</div>
+                </div>`;
+        } 
+        // Tình huống 2: Thiếu mốc phát triển (Cảnh báo vàng)
+        else if (checkedMilestones < totalMilestones) {
+            const missedCount = totalMilestones - checkedMilestones;
+            html = `
+                <div class="info-box box-warning">
+                    <div class="info-box-title">⚠️ THEO DÕI SÁT: THIẾU MỐC PHÁT TRIỂN</div>
+                    <div class="info-box-content">Trẻ ĐẠT: ${checkedMilestones}/${totalMilestones} mốc. 
+                    Bị thiếu <b>${missedCount} mốc</b> so với kỳ vọng (chuẩn 75% của AAP).
+                    
+                    Khuyến cáo: Cần thực hiện các bảng hỏi sàng lọc chuẩn hóa sâu hơn (ví dụ: ASQ-3). Trao đổi kỹ với phụ huynh và hẹn lịch tái khám đánh giá lại sớm. Không chủ quan bỏ qua.</div>
+                </div>`;
+        } 
+        // Tình huống 3: Bình thường
+        else {
+            html = `
+                <div class="info-box box-success">
+                    <div class="info-box-title">✅ PHÁT TRIỂN BÌNH THƯỜNG / PHÙ HỢP LỨA TUỔI</div>
+                    <div class="info-box-content">Trẻ ĐẠT: ${checkedMilestones}/${totalMilestones} mốc (100%).
+                    Không ghi nhận dấu hiệu cờ đỏ nào.
+                    
+                    Khuyến cáo: Trẻ đang phát triển hoàn toàn phù hợp với độ tuổi. Tiếp tục duy trì các biện pháp giáo dục, dinh dưỡng và tư vấn phòng ngừa sinh hoạt cho gia đình.</div>
+                </div>`;
+        }
+
+        resultDiv.innerHTML = html;
+        
+        // Cuộn màn hình tới kết quả
+        resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 </script>
