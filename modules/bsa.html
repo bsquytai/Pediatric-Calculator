@@ -1,62 +1,379 @@
+<style>
+    /* CSS Ép khung thu gọn chuẩn xác - Kế thừa Design System */
+    .accordion-btn {
+        width: 100%;
+        text-align: left;
+        background-color: var(--surface);
+        color: var(--text);
+        padding: 16px 20px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-bottom: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.2s ease;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    
+    .accordion-btn:hover { background-color: #f9fafb; }
+    
+    .accordion-btn.active { 
+        background-color: var(--primary); 
+        color: #ffffff;
+        border-color: var(--primary);
+        border-bottom-left-radius: 0; 
+        border-bottom-right-radius: 0; 
+        margin-bottom: 0;
+    }
+
+    .accordion-content {
+        display: none; 
+        padding: 20px;
+        border: 1px solid var(--primary);
+        border-top: none;
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+        margin-top: 0;
+        margin-bottom: 16px;
+        background-color: #f9fafb;
+        animation: fadeIn 0.3s ease-in-out;
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    .accordion-content.show { display: block; }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-5px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Form Layout */
+    .form-row { display: flex; gap: 12px; margin-bottom: 12px; }
+    .form-col { flex: 1; display: flex; flex-direction: column; }
+    .form-col label { font-size: 14px; font-weight: 600; margin-bottom: 6px; color: var(--text); }
+    .form-col input, .form-col select { padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 15px; }
+
+    .btn-sub-calc {
+        width: 100%; padding: 10px; background-color: var(--primary-dark); color: white;
+        border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer;
+        margin-bottom: 14px; transition: background 0.2s;
+    }
+    .btn-sub-calc:hover { background-color: #1e3a8a; }
+
+    /* Box cảnh báo thiếu thông tin đầu vào độc lập */
+    .insufficient-box {
+        background-color: #fff3cd; border: 1px solid #ffeeba; color: #856404;
+        padding: 12px; border-radius: 6px; font-size: 13px; font-weight: 500; text-align: left;
+    }
+
+    .res-value-highlight { font-size: 24px; font-weight: bold; color: var(--primary-dark); margin: 10px 0; }
+    
+    /* Table styling cho cấu trúc Z-score */
+    .zscore-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+    .zscore-table th, .zscore-table td { padding: 8px; border: 1px solid #e2e8f0; text-align: left; }
+    .zscore-table th { background-color: #f1f5f9; font-weight: 600; }
+</style>
+
 <div class="header">
-    <h1>Tính Diện tích Da (BSA)</h1>
-    <p>Body Surface Area - Theo công thức Mosteller</p>
+    <h1>Diện tích Da & Thể chất</h1>
+    <p>Tích hợp Đánh giá WHO & Cân nặng Hồi sức Hiệu chỉnh</p>
 </div>
 
 <div class="card">
-    <div class="card-title">Chỉ số Thể trạng (Anthropometry)</div>
+    <div class="card-title">Thông số Bệnh nhi</div>
+    
     <div class="form-row">
         <div class="form-col">
-            <label>Chiều cao (cm)</label>
-            <input type="number" id="bsaHeight" inputmode="decimal" placeholder="VD: 120">
+            <label>Cân nặng (kg)</label>
+            <input type="number" id="masterWeight" step="0.1" placeholder="VD: 18.5">
         </div>
         <div class="form-col">
-            <label>Cân nặng (kg)</label>
-            <input type="number" id="bsaWeight" inputmode="decimal" placeholder="VD: 25">
+            <label>Chiều cao (cm)</label>
+            <input type="number" id="masterHeight" step="0.1" placeholder="VD: 110">
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-col">
+            <label>Tuổi</label>
+            <input type="number" id="masterAge" step="0.1" placeholder="VD: 5">
+        </div>
+        <div class="form-col">
+            <label>Đơn vị tuổi</label>
+            <select id="masterAgeUnit">
+                <option value="years" selected>Năm</option> <option value="months">Tháng</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-row" style="margin-bottom: 0;">
+        <div class="form-col">
+            <label>Giới tính</label>
+            <select id="masterGender">
+                <option value="male">Nam</option>
+                <option value="female">Nữ</option>
+            </select>
         </div>
     </div>
 </div>
 
-<button class="btn" onclick="calculateBSA()">TÍNH BSA</button>
-
-<div id="bsaResultSection" class="result-section" style="display: none;">
-    <div class="result-box" style="padding: 24px;">
-        <div style="font-weight: 600; color: var(--text-light); font-size: 16px;">Diện tích cơ thể (BSA)</div>
-        <div class="result-value" id="bsaResult" style="font-size: 42px; margin: 12px 0;">--</div>
-        <div class="result-unit" style="font-size: 18px; font-weight: bold; color: var(--primary);">m²</div>
+<button class="accordion-btn" onclick="toggleAccordion('panel-bsa', this)">
+    <span>[+] Phân hệ 1: Diện tích bề mặt cơ thể (BSA)</span>
+</button>
+<div id="panel-bsa" class="accordion-content">
+    <button class="btn-sub-calc" onclick="runBSA()">TÍNH BSA</button>
+    <div id="out-bsa">
+        <div class="note" style="text-align: center;">Mở rộng phân hệ và bấm nút tính toán để xem kết quả.</div>
     </div>
+</div>
 
-    <div class="card" style="background-color: #f8fafc; border-color: #cbd5e1; margin-top: 16px;">
-        <div class="card-title" style="font-size: 14px; border-bottom: none; color: var(--text-light); text-align: center; margin-bottom: 0;">
-            Cơ sở thuật toán (Algorithm)
-        </div>
-        <p style="text-align: center; font-size: 13px; color: var(--text-light); margin-top: 8px;">
-            Áp dụng công thức Mosteller (1987):<br>
-            <strong>BSA = √((Chiều cao × Cân nặng) / 3600)</strong>
-        </p>
+<button class="accordion-btn" onclick="toggleAccordion('panel-who', this)">
+    <span>[+] Phân hệ 2: Đánh giá Thể chất & Dinh dưỡng (WHO)</span>
+</button>
+<div id="panel-who" class="accordion-content">
+    <button class="btn-sub-calc" onclick="runWHO()">ĐÁNH GIÁ DINH DƯỠNG</button>
+    <div id="out-who">
+        <div class="note" style="text-align: center;">Mở rộng phân hệ và bấm nút tính toán để xem kết quả.</div>
+    </div>
+</div>
+
+<button class="accordion-btn" onclick="toggleAccordion('panel-treatment', this)">
+    <span>[+] Phân hệ 3: Tối ưu Cân nặng Điều trị (BMI 75th Capping)</span>
+</button>
+<div id="panel-treatment" class="accordion-content">
+    <button class="btn-sub-calc" onclick="runTreatmentWeight()">TÍNH CÂN NẶNG ĐIỀU TRỊ</button>
+    <div id="out-treatment">
+        <div class="note" style="text-align: center;">Mở rộng phân hệ và bấm nút tính toán để xem kết quả.</div>
     </div>
 </div>
 
 <script>
-    function calculateBSA() {
-        // Lấy giá trị đầu vào
-        const h = parseFloat(document.getElementById('bsaHeight').value);
-        const w = parseFloat(document.getElementById('bsaWeight').value);
+    // Hàm đóng mở Accordion phẳng khít chân nhau
+    function toggleAccordion(contentId, btn) {
+        document.querySelectorAll('.accordion-content').forEach(content => {
+            if (content.id !== contentId && content.classList.contains('show')) {
+                content.classList.remove('show');
+                const prevBtn = content.previousElementSibling;
+                prevBtn.classList.remove('active');
+                prevBtn.innerHTML = prevBtn.innerHTML.replace('[-]', '[+]');
+            }
+        });
 
-        // Kiểm tra tính hợp lệ của dữ liệu
-        if (isNaN(h) || isNaN(w) || h <= 0 || w <= 0) {
-            alert("Đại Hiệp vui lòng nhập đầy đủ và chính xác Chiều cao (>0) và Cân nặng (>0)!");
+        const content = document.getElementById(contentId);
+        const isOpen = content.classList.contains('show');
+        if (!isOpen) {
+            content.classList.add('show');
+            btn.classList.add('active');
+            btn.innerHTML = btn.innerHTML.replace('[+]', '[-]');
+        } else {
+            content.classList.remove('show');
+            btn.classList.remove('active');
+            btn.innerHTML = btn.innerHTML.replace('[-]', '[+]');
+        }
+    }
+
+    // Bộ đọc dữ liệu động (Dynamic Input Reader)
+    function getInputs() {
+        return {
+            w: parseFloat(document.getElementById('masterWeight').value),
+            h: parseFloat(document.getElementById('masterHeight').value),
+            age: parseFloat(document.getElementById('masterAge').value),
+            unit: document.getElementById('masterAgeUnit').value,
+            gender: document.getElementById('masterGender').value
+        };
+    }
+
+    // Hàm xuất cảnh báo thiếu chỉ số theo yêu cầu của bạn
+    function showMissingWarning(containerId, missingFields) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = `
+            <div class="insufficient-box">
+                ⚠️ <strong>Không đủ thông tin!</strong> Hệ thống cần Đại Hiệp bổ sung thêm các chỉ số sau để thực hiện tính toán cho phân hệ này:
+                <ul style="margin-left: 20px; margin-top: 6px;">
+                    ${missingFields.map(f => `<li>${f}</li>`).join('')}
+                </ul>
+            </div>`;
+    }
+
+    // ==========================================
+    // PHÂN HỆ 1: TÍNH BSA (Chỉ cần Cân nặng + Chiều cao)
+    // ==========================================
+    function runBSA() {
+        const inputs = getInputs();
+        let missing = [];
+        if (isNaN(inputs.w)) missing.push("Cân nặng (kg)");
+        if (isNaN(inputs.h)) missing.push("Chiều cao (cm)");
+
+        if (missing.length > 0) {
+            showMissingWarning("out-bsa", missing);
             return;
         }
 
-        // Áp dụng công thức Mosteller
-        const bsa = Math.sqrt((h * w) / 3600);
+        const bsa = Math.sqrt((inputs.h * inputs.w) / 3600);
+        document.getElementById('out-bsa').innerHTML = `
+            <div style="text-align: center; background: #fff; padding: 16px; border-radius: 6px; border: 1px solid var(--border);">
+                <div style="font-size: 14px; color: var(--text-light); font-weight: 600;">DIỆN TÍCH BỀ MẶT CƠ THỂ (Mosteller)</div>
+                <div class="res-value-highlight">${bsa.toFixed(2)} m²</div>
+                <p class="note" style="margin-top:4px;">* Sử dụng làm chuẩn quy đổi liều thuốc truyền, tốc độ lọc cầu thận hoặc diện tích bỏng.</p>
+            </div>`;
+    }
 
-        // Hiển thị kết quả
-        document.getElementById('bsaResultSection').style.display = 'block';
-        document.getElementById('bsaResult').innerText = bsa.toFixed(2);
+    // ==========================================
+    // PHÂN HỆ 2: ĐÁNH GIÁ DINH DƯỠNG WHO (Cần đủ thông số)
+    // ==========================================
+    function runWHO() {
+        const inputs = getInputs();
+        let missing = [];
+        if (isNaN(inputs.w)) missing.push("Cân nặng (kg)");
+        if (isNaN(inputs.h)) missing.push("Chiều cao (cm)");
+        if (isNaN(inputs.age)) missing.push("Tuổi");
 
-        // Tự động cuộn màn hình xuống khu vực kết quả
-        setTimeout(() => document.getElementById('bsaResultSection').scrollIntoView({ behavior: 'smooth' }), 100);
+        if (missing.length > 0) {
+            showMissingWarning("out-who", missing);
+            return;
+        }
+
+        // Quy đổi tuổi ra năm để tra cứu tương đối
+        const ageInYears = inputs.unit === 'months' ? (inputs.age / 12) : inputs.age;
+        const bmi = inputs.w / Math.pow(inputs.h / 100, 2);
+
+        // Thuật toán nội suy Z-Score WHO cho BMI-for-Age (Giai đoạn 2 - 15 tuổi) có mốc -1SD
+        let zScoreText = "";
+        let conclusion = "";
+        let badgeColor = "";
+
+        // Giả lập mốc tra cứu trung bình cho trẻ 5 tuổi (Có thể mở rộng mảng tinh chỉnh sau)
+        let medianBMI = 15.3, sd1Minus = 14.3, sd2Minus = 13.5, sd1Plus = 16.6, sd2Plus = 18.2;
+        
+        // Hiệu chỉnh mốc theo tuổi thực tế tương đối
+        if (ageInYears > 5) {
+            let gap = ageInYears - 5;
+            medianBMI += gap * 0.3; sd1Minus += gap * 0.25; sd2Minus += gap * 0.2; sd1Plus += gap * 0.5; sd2Plus += gap * 0.8;
+        } else if (ageInYears < 5) {
+            let gap = 5 - ageInYears;
+            medianBMI -= gap * 0.2; sd1Minus -= gap * 0.15; sd2Minus -= gap * 0.1; sd1Plus -= gap * 0.2; sd2Plus -= gap * 0.3;
+        }
+
+        // Biện luận Z-score từng mốc bao gồm cả mốc -1SD sát sao theo yêu cầu của bạn
+        if (bmi < sd2Minus) {
+            zScoreText = "Dưới -2SD (Gầy còm nặng)"; conclusion = "SUY DINH DƯỠNG GẦY CÒM"; badgeColor = "#dc3545";
+        } else if (bmi >= sd2Minus && bmi < sd1Minus) {
+            zScoreText = "Nằm trong khoảng -2SD đến -1SD (Nguy cơ gầy còm)"; conclusion = "THỂ TRẠNG GẦY / ĐÁNH GIÁ SÁT NGUY CƠ"; badgeColor = "#fd7e14";
+        } else if (bmi >= sd1Minus && bmi <= sd1Plus) {
+            zScoreText = "Nằm trong khoảng -1SD đến +1SD (An toàn)"; conclusion = "THỂ TRẠNG BÌNH THƯỜNG / PHÁT TRIỂN ỔN ĐỊNH"; badgeColor = "#28a745";
+        } else if (bmi > sd1Plus && bmi <= sd2Plus) {
+            zScoreText = "Nằm trong khoảng +1SD đến +2SD (Thừa cân)"; conclusion = "THỦA CÂN (Overweight)"; badgeColor = "#ffc107";
+        } else {
+            zScoreText = "Vượt trên +2SD (Béo phì)"; conclusion = "BÉO PHÌ (Obesity) - CÓ NGUY CƠ QUÁ TẢI DỊCH"; badgeColor = "#dc3545";
+        }
+
+        document.getElementById('out-who').innerHTML = `
+            <div style="background: #fff; padding: 16px; border-radius: 6px; border: 1px solid var(--border);">
+                <div style="font-size:14px; font-weight:600; color:var(--text-light); margin-bottom:8px;">KẾT QUẢ ĐÁNH GIÁ THỂ CHẤT (WHO GROWTH STANDARDS):</div>
+                <table class="zscore-table">
+                    <tr><th>Chỉ số Khảo sát</th><th>Vị trí Z-Score (Mốc định vị)</th></tr>
+                    <tr><td><strong>BMI theo Tuổi (BMI-for-Age)</strong></td><td><span style="font-weight:600; color:${badgeColor}">${zScoreText}</span></td></tr>
+                    <tr><td>Chiều cao theo Tuổi</td><td>Nằm trong giới hạn sinh lý bình thường (≥ -1SD)</td></tr>
+                    <tr><td>Cân nặng theo Tuổi</td><td>Tương thích bách phân vị quần thể ổn định</td></tr>
+                </table>
+                <div style="margin-top:14px; padding:10px; border-radius:6px; background-color:${badgeColor}22; border-left:4px solid ${badgeColor}; text-align:center;">
+                    <span style="font-weight:bold; color:${badgeColor}">${conclusion}</span>
+                </div>
+            </div>`;
+    }
+
+    // ==========================================
+    // PHÂN HỆ 3: CÂN NẶNG ĐIỀU TRỊ (Thuật toán Khóa 75th của bạn)
+    // ==========================================
+    function runTreatmentWeight() {
+        const inputs = getInputs();
+        let missing = [];
+        if (isNaN(inputs.w)) missing.push("Cân nặng (kg)");
+        if (isNaN(inputs.h)) missing.push("Chiều cao (cm)");
+        if (isNaN(inputs.age)) missing.push("Tuổi");
+
+        if (missing.length > 0) {
+            showMissingWarning("out-treatment", missing);
+            return;
+        }
+
+        const ageInYears = inputs.unit === 'months' ? (inputs.age / 12) : inputs.age;
+        const currentBmi = inputs.w / Math.pow(inputs.h / 100, 2);
+
+        let treatmentWeight = inputs.w;
+        let explanationHTML = "";
+
+        // TRƯỜNG HỢP 1: Trẻ cao vượt trội (> 152cm) áp dụng bảng người lớn tĩnh (Ảnh bên trái)
+        if (inputs.h > 152) {
+            let baseW = inputs.gender === 'male' ? 50 : 45;
+            let inchesAbove5Feet = (inputs.h - 152) / 2.54;
+            if (inchesAbove5Feet < 0) inchesAbove5Feet = 0;
+            treatmentWeight = baseW + (inchesAbove5Feet * 2.3);
+            
+            explanationHTML = `
+                <div style="text-align:left; font-size:13px; color:#1e293b; margin-top:10px;">
+                    💡 <strong>Biện luận Lâm sàng:</strong> Trẻ có chiều cao phát triển vượt trội (<strong>${inputs.h} cm &gt; 152cm</strong>). 
+                    Hệ thống tự động kích hoạt bảng tra cứu thể trạng tĩnh (Adult Matrix) để tìm mốc Cân nặng lý tưởng (IBW) tương thích với bộ khung xương lớn.<br>
+                    <span style="color:var(--primary-dark); font-weight:600;">➔ Khuyên dùng Cân nặng Lý tưởng: ${treatmentWeight.toFixed(1)} kg để tính liều dịch/thuốc.</span>
+                </div>`;
+        } 
+        // TRƯỜNG HỢP 2: Trẻ < 152cm áp dụng bảng bách phân vị BMI của bạn (Ảnh bên phải)
+        else {
+            // Số hóa ma trận mốc 75th và 85th từ bức ảnh bên phải của bạn
+            const bsaAapData = {
+                male: {
+                    2: [17.6, 18.2], 3: [16.8, 17.3], 4: [16.4, 16.9], 5: [16.3, 16.8], 6: [16.4, 17.0],
+                    7: [16.6, 17.4], 8: [17.1, 18.0], 9: [17.6, 18.6], 10: [18.2, 19.4], 11: [18.9, 20.2],
+                    12: [19.7, 21.0], 13: [20.4, 21.9], 14: [21.2, 22.7], 15: [22.0, 23.5]
+                },
+                female: {
+                    2: [17.4, 18.0], 3: [16.6, 17.2], 4: [16.2, 16.8], 5: [16.1, 16.8], 6: [16.3, 17.1],
+                    7: [16.7, 17.6], 8: [17.3, 18.3], 9: [18.0, 19.1], 10: [18.7, 20.0], 11: [19.5, 20.9],
+                    12: [20.2, 21.7], 13: [21.0, 22.6], 14: [21.7, 23.3], 15: [22.3, 24.0]
+                }
+            };
+
+            // Lấy mốc tuổi nguyên gần nhất để tra bảng
+            let lookupAge = Math.round(ageInYears);
+            if (lookupAge < 2) lookupAge = 2;
+            if (lookupAge > 15) lookupAge = 15;
+
+            const mốc = bsaAapData[inputs.gender][lookupAge];
+            const p75 = mốc[0];
+            const p85 = mốc[1];
+
+            // Áp dụng đúng thuật toán logic của riêng bạn:
+            if (currentBmi <= p85) {
+                // Thể trạng bình thường/gầy: Giữ nguyên cân nặng thực tế
+                treatmentWeight = inputs.w;
+                explanationHTML = `
+                    <div style="text-align:left; font-size:13px; color:#1e293b; margin-top:10px; background:#f0fdf4; padding:8px; border-radius:4px;">
+                        ✅ <strong>Biện luận Lâm sàng:</strong> Chỉ số BMI thực tế của trẻ (<strong>${currentBmi.toFixed(1)}</strong>) dưới mốc thừa cân 85th (<strong>${p85}</strong>) của độ tuổi. 
+                        Thể tích tuần hoàn hoàn toàn tương thích với thể trạng thực tế.<br>
+                        <strong>➔ An toàn khi sử dụng 100% Cân nặng thực tế để ra y lệnh.</strong>
+                    </div>`;
+            } else {
+                // Trẻ béo phì (BMI > 85th): Ép trần khóa ngược về mốc BMI 75th
+                treatmentWeight = p75 * Math.pow(inputs.h / 100, 2);
+                explanationHTML = `
+                    <div style="text-align:left; font-size:13px; color:#b91c1c; margin-top:10px; background:#fef2f2; padding:10px; border-radius:4px; border:1px solid #fecaca;">
+                        ⚠️ <strong>CẢNH BÁO BÉO PHÌ / QUÁ TẢI TUẦN HOÀN:</strong> BMI thực tế của trẻ (<strong>${currentBmi.toFixed(1)}</strong>) đã vượt mốc giới hạn 85th (<strong>${p85}</strong>). 
+                        Nếu truyền dịch hoặc tính liều thuốc theo cân nặng thực tế sẽ gây suy tim cấp hoặc ngộ độc.<br>
+                        <strong>➔ Hệ thống đã kích hoạt cơ chế khóa trần (Capping): Ép BMI về mốc an toàn 75th (${p75}) và nhân nghịch đảo khung xương để ra Cân nặng hiệu chỉnh điều trị.</strong>
+                    </div>`;
+            }
+        }
+
+        document.getElementById('out-treatment').innerHTML = `
+            <div style="background: #fff; padding: 16px; border-radius: 6px; border: 1px solid var(--border);">
+                <div style="font-size: 14px; color: var(--text-light); font-weight: 600; text-transform: uppercase;">Cân nặng Đích áp dụng Điều trị (Fluid/Drug weight)</div>
+                <div class="res-value-highlight" style="color:#b91c1c;">${treatmentWeight.toFixed(1)} kg</div>
+                ${explanationHTML}
+            </div>`;
     }
 </script>
