@@ -44,8 +44,26 @@
         <div class="form-col">
             <label>Đơn vị</label>
             <select id="creaUnit">
-                <option value="umol">µmol/L</option>
-                <option value="mgdl">mg/dL</option>
+                <option value="umol" selected>µmol/L</option> <option value="mgdl">mg/dL</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-row" style="margin-top: 14px; margin-bottom: 2px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <input type="checkbox" id="hasCystatin" onchange="toggleCystatin()" style="width: 16px; height: 16px; cursor: pointer;">
+            <label for="hasCystatin" style="margin-bottom: 0; cursor: pointer; font-weight: 600; color: var(--primary-dark);">Có dữ liệu Cystatin C (Tùy chọn)</label>
+        </div>
+    </div>
+    <div class="form-row" id="cysInputRow" style="display: none; margin-top: 6px; margin-bottom: 14px;">
+        <div class="form-col">
+            <label>Cystatin C máu</label>
+            <input type="number" id="cystatinVal" step="0.01" placeholder="VD: 0.8">
+        </div>
+        <div class="form-col">
+            <label>Đơn vị</label>
+            <select id="cysUnit" disabled>
+                <option value="mgl">mg/L</option>
             </select>
         </div>
     </div>
@@ -87,10 +105,30 @@
     <div id="warningInfant" class="warning-box" style="display: none;">
         <strong>Lưu ý:</strong> Trẻ dưới 2 tuổi chức năng thận chưa hoàn thiện. Không áp dụng phân độ CKD G1-G5.
     </div>
+    
     <div class="result-box">
-        <div style="font-weight: 600; color: var(--text-light);">eGFR (Mức lọc cầu thận)</div>
+        <div style="font-weight: 600; color: var(--text-light);">eGFR (Mức lọc cầu thận - Schwartz)</div>
         <div class="result-value" id="egfrResult">--</div>
         <div class="result-unit">mL/phút/1.73m² (Hệ số K: <span id="kFactorUsed">--</span>)</div>
+    </div>
+
+    <div class="card" id="ckidReferenceCard">
+        <div class="card-title" style="color: var(--text-light); font-size: 14px; border-bottom: 1px solid #eee; padding-bottom: 6px; margin-bottom: 10px;">Đối chiếu lâm sàng: Hệ sinh thái CKiD U25 (2021)</div>
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr id="ckidCrRow">
+                <td style="padding: 6px 0;"><strong>CKiD U25 - Creatinine</strong></td>
+                <td id="ckidCrResult" style="font-weight: 600; text-align: right; color: var(--primary);">--</td>
+            </tr>
+            <tr id="ckidCysRow" style="display: none; border-top: 1px dashed #eee;">
+                <td style="padding: 6px 0;"><strong>CKiD U25 - Cystatin C</strong></td>
+                <td id="ckidCysResult" style="font-weight: 600; text-align: right; color: var(--primary);">--</td>
+            </tr>
+            <tr id="ckidCombinedRow" style="display: none; border-top: 1px solid #ddd; background-color: #f8fafc;">
+                <td style="padding: 8px 4px;"><strong>CKiD U25 - Kết hợp (Cr-Cys)</strong></td>
+                <td id="ckidCombinedResult" style="font-weight: bold; text-align: right; padding: 8px 4px; color: #0f172a;">--</td>
+            </tr>
+        </table>
+        <p class="note" style="margin-top: 8px; font-size: 11px; color: var(--text-light);">* CKiD U25 khuyến cáo bởi NIH hỗ trợ theo dõi liên tục tiến trình chức năng thận đến lứa tuổi thanh niên (25 tuổi).</p>
     </div>
 
     <div class="card" id="infantReference" style="display: none;">
@@ -125,6 +163,12 @@
 </div>
 
 <script>
+    // Hàm ẩn/hiện form nhập dữ liệu Cystatin C
+    function toggleCystatin() {
+        const hasCys = document.getElementById('hasCystatin').checked;
+        document.getElementById('cysInputRow').style.display = hasCys ? 'flex' : 'none';
+    }
+
     function calculateEGFR() {
         const ageVal = parseFloat(document.getElementById('ageValue').value);
         const ageUnit = document.getElementById('ageUnit').value;
@@ -150,6 +194,7 @@
         let creaUmol = serumCrea;
         if (creaUnit === 'mgdl') { creaUmol = serumCrea * 88.4; }
 
+        // 1. TÍNH SCHWARTZ TRUYỀN THỐNG (GIỮ NGUYÊN BẢN GỐC CỦA BẠN)
         let K = 0;
         if (ageInWeeks <= 1) { K = 29.2; } 
         else if (ageInWeeks > 1 && ageInYears <= 2) { K = 39.78; } 
@@ -157,6 +202,52 @@
         else if (ageInYears > 12) { K = (gender === 'female') ? 48.6 : 61.88; }
 
         const eGFR = (K * height) / creaUmol;
+
+        // 2. TÍNH TOÁN CKiD U25 ĐỂ THAM CHIẾU ĐỐI CHIẾU (MỚI BỔ SUNG)
+        let heightM = height / 100;
+        let serumCreaMgDl = creaUmol / 88.4;
+        let k_cr = 0;
+
+        if (gender === 'male') {
+            if (ageInYears < 12) k_cr = 39.0 * Math.pow(1.008, ageInYears - 12);
+            else if (ageInYears <= 18) k_cr = 39.0 * Math.pow(1.045, ageInYears - 12);
+            else k_cr = 50.8;
+        } else {
+            if (ageInYears < 12) k_cr = 36.1 * Math.pow(1.008, ageInYears - 12);
+            else if (ageInYears <= 18) k_cr = 36.1 * Math.pow(1.023, ageInYears - 12);
+            else k_cr = 41.4;
+        }
+        let ckidCrResult = k_cr * (heightM / serumCreaMgDl);
+        document.getElementById('ckidCrResult').innerText = ckidCrResult.toFixed(1) + " mL/phút";
+
+        // Xử lý bài toán Cystatin C nếu được chọn
+        const hasCys = document.getElementById('hasCystatin').checked;
+        const cystatinVal = parseFloat(document.getElementById('cystatinVal').value);
+
+        if (hasCys && !isNaN(cystatinVal) && cystatinVal > 0) {
+            let k_cys = 0;
+            if (gender === 'male') {
+                if (ageInYears < 15) k_cys = 87.2 * Math.pow(1.011, ageInYears - 15);
+                else if (ageInYears <= 18) k_cys = 87.2 * Math.pow(0.960, ageInYears - 15);
+                else k_cys = 77.1;
+            } else {
+                if (ageInYears < 12) k_cys = 79.9 * Math.pow(1.004, ageInYears - 12);
+                else if (ageInYears <= 18) k_cys = 79.9 * Math.pow(0.974, ageInYears - 12);
+                else k_cys = 68.3;
+            }
+            let ckidCysResult = k_cys * (1 / cystatinVal);
+            let ckidCombined = (ckidCrResult + ckidCysResult) / 2;
+
+            document.getElementById('ckidCysRow').style.display = 'table-row';
+            document.getElementById('ckidCombinedRow').style.display = 'table-row';
+            document.getElementById('ckidCysResult').innerText = ckidCysResult.toFixed(1) + " mL/phút";
+            document.getElementById('ckidCombinedResult').innerText = ckidCombined.toFixed(1) + " mL/phút";
+        } else {
+            document.getElementById('ckidCysRow').style.display = 'none';
+            document.getElementById('ckidCombinedRow').style.display = 'none';
+        }
+
+        // 3. TÍNH ACR & PHÂN ĐỘ THEO SCHWARTZ (GIỮ NGUYÊN BẢN GỐC CỦA BẠN)
         let acr = null;
         if (!isNaN(urineAlb) && !isNaN(urineCrea) && urineCrea > 0) { 
             let alb_mg_L = urineAlb;
@@ -216,7 +307,7 @@
                     else riskHTML = '<span class="badge bg-red">Nguy cơ RẤT CAO</span>';
                 } else if (gCode === 'G3b') {
                     if (aCode === 'A1') riskHTML = '<span class="badge bg-orange">Nguy cơ CAO</span>';
-                    else riskHTML = '<span class="badge bg-red">Nguy cơ RẤT CAO</span>';
+                    else if (aCode === 'A2') riskHTML = '<span class="badge bg-red">Nguy cơ RẤT CAO</span>';
                 } else { riskHTML = '<span class="badge bg-red">Nguy cơ RẤT CAO</span>'; }
             }
             document.getElementById('kdigoRisk').innerHTML = riskHTML;
