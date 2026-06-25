@@ -44,7 +44,8 @@
         <div class="form-col">
             <label>Đơn vị</label>
             <select id="creaUnit">
-                <option value="umol" selected>µmol/L</option> <option value="mgdl">mg/dL</option>
+                <option value="umol" selected>µmol/L</option>
+                <option value="mgdl">mg/dL</option>
             </select>
         </div>
     </div>
@@ -68,33 +69,41 @@
         </div>
     </div>
 
-    <label style="margin-top: 10px; color: var(--primary-dark); border-bottom: 1px dashed var(--border); padding-bottom: 4px; margin-bottom: 10px; display: inline-block;">Thông số Nước tiểu (Tùy chọn - Phân độ CKD)</label>
-    <div class="form-row">
-        <div class="form-col">
-            <label>Albumin niệu</label>
-            <input type="number" id="urineAlb" placeholder="VD: 0.5">
-        </div>
-        <div class="form-col">
-            <label>Đơn vị</label>
-            <select id="albUnit">
-                <option value="gl">g/L</option>
-                <option value="mgl">mg/L</option>
-                <option value="mgdl">mg/dL</option>
-            </select>
+    <div class="form-row" style="margin-top: 10px; margin-bottom: 2px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <input type="checkbox" id="hasUrine" onchange="toggleUrine()" style="width: 16px; height: 16px; cursor: pointer;">
+            <label for="hasUrine" style="margin-bottom: 0; cursor: pointer; font-weight: 600; color: var(--primary-dark);">Có thông số Nước tiểu (Tùy chọn - Phân độ CKD)</label>
         </div>
     </div>
-    <div class="form-row">
-        <div class="form-col">
-            <label>Creatinine niệu</label>
-            <input type="number" id="urineCrea" placeholder="VD: 4500">
+
+    <div id="urineInputBlock" style="display: none; margin-top: 10px;">
+        <div class="form-row">
+            <div class="form-col">
+                <label>Albumin niệu</label>
+                <input type="number" id="urineAlb" placeholder="VD: 0.5">
+            </div>
+            <div class="form-col">
+                <label>Đơn vị</label>
+                <select id="albUnit">
+                    <option value="gl">g/L</option>
+                    <option value="mgl">mg/L</option>
+                    <option value="mgdl">mg/dL</option>
+                </select>
+            </div>
         </div>
-        <div class="form-col">
-            <label>Đơn vị</label>
-            <select id="urineCreaUnit">
-                <option value="umol">µmol/L</option>
-                <option value="mmol">mmol/L</option>
-                <option value="mgdl">mg/dL</option>
-            </select>
+        <div class="form-row">
+            <div class="form-col">
+                <label>Creatinine niệu</label>
+                <input type="number" id="urineCrea" placeholder="VD: 4500">
+            </div>
+            <div class="form-col">
+                <label>Đơn vị</label>
+                <select id="urineCreaUnit">
+                    <option value="umol">µmol/L</option>
+                    <option value="mmol">mmol/L</option>
+                    <option value="mgdl">mg/dL</option>
+                </select>
+            </div>
         </div>
     </div>
 </div>
@@ -169,6 +178,12 @@
         document.getElementById('cysInputRow').style.display = hasCys ? 'flex' : 'none';
     }
 
+    // Hàm ẩn/hiện form nhập dữ liệu nước tiểu (Mới bổ sung)
+    function toggleUrine() {
+        const hasUrine = document.getElementById('hasUrine').checked;
+        document.getElementById('urineInputBlock').style.display = hasUrine ? 'block' : 'none';
+    }
+
     function calculateEGFR() {
         const ageVal = parseFloat(document.getElementById('ageValue').value);
         const ageUnit = document.getElementById('ageUnit').value;
@@ -176,6 +191,8 @@
         const height = parseFloat(document.getElementById('height').value);
         let serumCrea = parseFloat(document.getElementById('serumCrea').value);
         const creaUnit = document.getElementById('creaUnit').value;
+        
+        // Đọc thông số nước tiểu từ giao diện
         const urineAlb = parseFloat(document.getElementById('urineAlb').value);
         const albUnit = document.getElementById('albUnit').value;
         const urineCrea = parseFloat(document.getElementById('urineCrea').value);
@@ -194,7 +211,7 @@
         let creaUmol = serumCrea;
         if (creaUnit === 'mgdl') { creaUmol = serumCrea * 88.4; }
 
-        // 1. TÍNH SCHWARTZ TRUYỀN THỐNG (GIỮ NGUYÊN BẢN GỐC CỦA BẠN)
+        // 1. TÍNH SCHWARTZ TRUYỀN THỐNG
         let K = 0;
         if (ageInWeeks <= 1) { K = 29.2; } 
         else if (ageInWeeks > 1 && ageInYears <= 2) { K = 39.78; } 
@@ -203,7 +220,7 @@
 
         const eGFR = (K * height) / creaUmol;
 
-        // 2. TÍNH TOÁN CKiD U25 ĐỂ THAM CHIẾU ĐỐI CHIẾU (MỚI BỔ SUNG)
+        // 2. TÍNH TOÁN CKiD U25 ĐỂ THAM CHIẾU ĐỐI CHIẾU
         let heightM = height / 100;
         let serumCreaMgDl = creaUmol / 88.4;
         let k_cr = 0;
@@ -247,9 +264,11 @@
             document.getElementById('ckidCombinedRow').style.display = 'none';
         }
 
-        // 3. TÍNH ACR & PHÂN ĐỘ THEO SCHWARTZ (GIỮ NGUYÊN BẢN GỐC CỦA BẠN)
+        // 3. TÍNH ACR & PHÂN ĐỘ THEO SCHWARTZ
         let acr = null;
-        if (!isNaN(urineAlb) && !isNaN(urineCrea) && urineCrea > 0) { 
+        // Chỉ tính toán ACR khi checkbox nước tiểu được bật và điền đủ thông số hợp lệ
+        const hasUrine = document.getElementById('hasUrine').checked;
+        if (hasUrine && !isNaN(urineAlb) && !isNaN(urineCrea) && urineCrea > 0) { 
             let alb_mg_L = urineAlb;
             if (albUnit === 'gl') alb_mg_L = urineAlb * 1000;
             else if (albUnit === 'mgdl') alb_mg_L = urineAlb * 10;
@@ -295,7 +314,7 @@
             document.getElementById('acrBadge').innerText = acrText;
             document.getElementById('acrBadge').className = acr !== null ? 'badge bg-primary' : 'badge bg-gray';
 
-            let riskHTML = '<span class="badge bg-gray">Chưa đủ dữ liệu</span>';
+            let riskHTML = '<span class="badge bg-gray">Chưa đủ dữ liệu nước tiểu</span>';
             if (aCode !== '') {
                 if (gCode === 'G1' || gCode === 'G2') {
                     if (aCode === 'A1') riskHTML = '<span class="badge bg-green">Nguy cơ THẤP</span>';
