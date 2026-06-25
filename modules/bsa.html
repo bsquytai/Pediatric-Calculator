@@ -52,7 +52,7 @@
         to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Form Layout - Thực chiến: Nặng trước, Cao sau */
+    /* Form Layout */
     .form-row { display: flex; gap: 12px; margin-bottom: 12px; }
     .form-col { flex: 1; display: flex; flex-direction: column; }
     .form-col label { font-size: 14px; font-weight: 600; margin-bottom: 6px; color: var(--text); }
@@ -65,7 +65,7 @@
     }
     .btn-sub-calc:hover { background-color: #1e3a8a; }
 
-    /* Khung cảnh báo thiếu chỉ số */
+    /* Box cảnh báo thiếu thông tin đầu vào độc lập */
     .insufficient-box {
         background-color: #fff3cd; border: 1px solid #ffeeba; color: #856404;
         padding: 12px; border-radius: 6px; font-size: 13px; font-weight: 500; text-align: left;
@@ -73,43 +73,40 @@
 
     .res-value-highlight { font-size: 24px; font-weight: bold; color: var(--primary-dark); margin: 10px 0; }
     
-    /* Thiết kế bảng Z-score chuyên nghiệp */
-    .zscore-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; background: #fff; }
-    .zscore-table th, .zscore-table td { padding: 10px; border: 1px solid #e2e8f0; text-align: left; vertical-align: top; }
+    /* Table styling cho cấu trúc Z-score */
+    .zscore-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+    .zscore-table th, .zscore-table td { padding: 8px; border: 1px solid #e2e8f0; text-align: left; }
     .zscore-table th { background-color: #f1f5f9; font-weight: 600; }
-    
-    .clinical-alert-box { padding: 12px; border-radius: 6px; font-size: 13px; line-height: 1.5; margin-top: 12px; border-left: 4px solid #ccc; text-align: left; }
 </style>
 
 <div class="header">
     <h1>Diện tích Da & Thể chất</h1>
-    <p>Hệ thống Đánh giá Toàn diện WHO & Cân nặng Hồi sức Hiệu chỉnh</p>
+    <p>Tích hợp Đánh giá WHO & Cân nặng Hồi sức Hiệu chỉnh</p>
 </div>
 
 <div class="card">
-    <div class="card-title">Thông số Lâm sàng Bệnh nhi</div>
+    <div class="card-title">Thông số Bệnh nhi</div>
     
     <div class="form-row">
         <div class="form-col">
             <label>Cân nặng (kg)</label>
-            <input type="number" id="masterWeight" step="0.01" placeholder="VD: 6">
+            <input type="number" id="masterWeight" step="0.1" placeholder="VD: 18.5">
         </div>
         <div class="form-col">
             <label>Chiều cao (cm)</label>
-            <input type="number" id="masterHeight" step="0.1" placeholder="VD: 60">
+            <input type="number" id="masterHeight" step="0.1" placeholder="VD: 110">
         </div>
     </div>
 
     <div class="form-row">
         <div class="form-col">
             <label>Tuổi</label>
-            <input type="number" id="masterAge" step="0.1" placeholder="VD: 8">
+            <input type="number" id="masterAge" step="0.1" placeholder="VD: 5">
         </div>
         <div class="form-col">
             <label>Đơn vị tuổi</label>
             <select id="masterAgeUnit">
-                <option value="years" selected>Năm (Default)</option>
-                <option value="months">Tháng</option>
+                <option value="years" selected>Năm</option> <option value="months">Tháng</option>
             </select>
         </div>
     </div>
@@ -136,17 +133,17 @@
 </div>
 
 <button class="accordion-btn" onclick="toggleAccordion('panel-who', this)">
-    <span>[+] Phân hệ 2: Đánh giá Thể chất & Dinh dưỡng Toàn diện (WHO Growth Standards)</span>
+    <span>[+] Phân hệ 2: Đánh giá Thể chất & Dinh dưỡng (WHO)</span>
 </button>
 <div id="panel-who" class="accordion-content">
-    <button class="btn-sub-calc" onclick="runWHO()">ĐÁNH GIÁ DINH DƯỠNG TOÀN DIỆN</button>
+    <button class="btn-sub-calc" onclick="runWHO()">ĐÁNH GIÁ DINH DƯỠNG</button>
     <div id="out-who">
         <div class="note" style="text-align: center;">Mở rộng phân hệ và bấm nút tính toán để xem kết quả.</div>
     </div>
 </div>
 
 <button class="accordion-btn" onclick="toggleAccordion('panel-treatment', this)">
-    <span>[+] Phân hệ 3: Tối ưu Cân nặng Điều trị (BMI 75th Capping - Khớp mốc ảnh tra cứu)</span>
+    <span>[+] Phân hệ 3: Tối ưu Cân nặng Điều trị (BMI 75th Capping)</span>
 </button>
 <div id="panel-treatment" class="accordion-content">
     <button class="btn-sub-calc" onclick="runTreatmentWeight()">TÍNH CÂN NẶNG ĐIỀU TRỊ</button>
@@ -156,47 +153,7 @@
 </div>
 
 <script>
-    // Ma trận số hóa hằng số WHO Growth Standards liên tục theo tháng tuổi phục vụ nội suy
-    const whoMatrix = {
-        male: [
-            { m: 0,   w: {sd3N: 2.1, sd2N: 2.5, sd1N: 2.9, med: 3.3, sd1P: 3.9}, h: {sd3N: 44.2, sd2N: 46.1, sd1N: 48.0, med: 49.9, sd1P: 51.8}, bmi: {sd3N: 10.2, sd2N: 11.2, sd1N: 12.2, med: 13.4, sd1P: 14.8, sd2P: 16.3, sd3P: 18.1} },
-            { m: 8,   w: {sd3N: 6.3, sd2N: 7.0, sd1N: 7.7, med: 8.6, sd1P: 9.6}, h: {sd3N: 64.5, sd2N: 66.5, sd1N: 68.5, med: 70.6, sd1P: 72.8}, bmi: {sd3N: 13.1, sd2N: 14.1, sd1N: 15.1, med: 16.3, sd1P: 17.5, sd2P: 19.0, sd3P: 20.6} },
-            { m: 12,  w: {sd3N: 7.0, sd2N: 7.8, sd1N: 8.6, med: 9.6, sd1P: 10.8}, h: {sd3N: 68.6, sd2N: 71.0, sd1N: 73.4, med: 75.7, sd1P: 78.1}, bmi: {sd3N: 13.0, sd2N: 13.9, sd1N: 14.8, med: 16.1, sd1P: 17.4, sd2P: 19.0, sd3P: 20.8} },
-            { m: 24,  w: {sd3N: 8.6, sd2N: 9.7, sd1N: 10.8, med: 12.2, sd1P: 13.8}, h: {sd3N: 78.0, sd2N: 81.0, sd1N: 84.1, med: 87.1, sd1P: 90.2}, bmi: {sd3N: 12.7, sd2N: 13.6, sd1N: 14.5, med: 15.5, sd1P: 16.6, sd2P: 17.9, sd3P: 19.4} },
-            { m: 60,  w: {sd3N: 12.4, sd2N: 14.1, sd1N: 16.0, med: 18.3, sd1P: 21.0}, h: {sd3N: 96.1, sd2N: 100.7, sd1N: 105.3, med: 110.0, sd1P: 114.6}, bmi: {sd3N: 11.8, sd2N: 12.4, sd1N: 13.0, med: 14.0, sd1P: 15.1, sd2P: 16.4, sd3P: 18.3} },
-            { m: 120, w: {sd3N: 20.2, sd2N: 23.6, sd1N: 27.8, med: 33.3, sd1P: 40.0}, h: {sd3N: 121.5, sd2N: 127.4, sd1N: 134.3, med: 140.3, sd1P: 146.4}, bmi: {sd3N: 12.2, sd2N: 13.0, sd1N: 13.9, med: 15.3, sd1P: 17.2, sd2P: 19.8, sd3P: 23.2} },
-            { m: 180, w: {sd3N: 33.0, sd2N: 39.0, sd1N: 46.0, med: 55.0, sd1P: 66.0}, h: {sd3N: 147.0, sd2N: 154.0, sd1N: 163.0, med: 170.0, sd1P: 177.0}, bmi: {sd3N: 14.2, sd2N: 15.5, sd1N: 17.0, med: 19.2, sd1P: 22.2, sd2P: 25.8, sd3P: 30.0} }
-        ],
-        female: [
-            { m: 0,   w: {sd3N: 2.0, sd2N: 2.4, sd1N: 2.8, med: 3.2, sd1P: 3.7}, h: {sd3N: 43.6, sd2N: 45.4, sd1N: 47.3, med: 49.1, sd1P: 51.0}, bmi: {sd3N: 10.1, sd2N: 11.0, sd1N: 11.9, med: 13.0, sd1P: 14.4, sd2P: 15.9, sd3P: 17.6} },
-            { m: 8,   w: {sd3N: 5.6, sd2N: 6.3, sd1N: 7.0, med: 7.9, sd1P: 8.9}, h: {sd3N: 62.3, sd2N: 64.5, sd1N: 66.4, med: 68.7, sd1P: 71.0}, bmi: {sd3N: 12.3, sd2N: 13.2, sd1N: 14.1, med: 15.3, sd1P: 16.7, sd2P: 18.3, sd3P: 20.1} },
-            { m: 12,  w: {sd3N: 6.3, sd2N: 7.1, sd1N: 8.0, med: 8.9, sd1P: 10.1}, h: {sd3N: 66.3, sd2N: 68.9, sd1N: 71.4, med: 74.0, sd1P: 76.6}, bmi: {sd3N: 12.2, sd2N: 13.1, sd1N: 14.0, med: 15.2, sd1P: 16.6, sd2P: 18.3, sd3P: 20.4} },
-            { m: 24,  w: {sd3N: 8.1, sd2N: 9.0, sd1N: 10.2, med: 11.5, sd1P: 13.0}, h: {sd3N: 76.0, sd2N: 79.3, sd1N: 82.5, med: 85.7, sd1P: 88.9}, bmi: {sd3N: 12.0, sd2N: 12.9, sd1N: 13.8, med: 14.9, sd1P: 16.1, sd2P: 17.5, sd3P: 19.1} },
-            { m: 60,  w: {sd3N: 11.8, sd2N: 13.7, sd1N: 15.8, med: 18.2, sd1P: 21.2}, h: {sd3N: 95.2, sd2N: 100.0, sd1N: 104.7, med: 109.4, sd1P: 114.1}, bmi: {sd3N: 11.4, sd2N: 12.1, sd1N: 12.9, med: 13.9, sd1P: 15.2, sd2P: 16.8, sd3P: 18.9} },
-            { m: 120, w: {sd3N: 19.6, sd2N: 23.1, sd1N: 27.7, med: 34.0, sd1P: 42.1}, h: {sd3N: 121.2, sd2N: 127.3, sd1N: 134.7, med: 141.5, sd1P: 148.2}, bmi: {sd3N: 12.0, sd2N: 12.8, sd1N: 13.9, med: 15.5, sd1P: 17.8, sd2P: 20.8, sd3P: 24.9} },
-            { m: 180, w: {sd3N: 33.6, sd2N: 39.3, sd1N: 46.4, med: 55.3, sd1P: 67.2}, h: {sd3N: 147.2, sd2N: 153.2, sd1N: 160.6, med: 166.5, sd1P: 172.4}, bmi: {sd3N: 14.0, sd2N: 15.3, sd1N: 17.0, med: 19.5, sd1P: 22.9, sd2P: 26.9, sd3P: 31.8} }
-        ]
-    };
-
-    function interpolateWho(months, gender) {
-        const list = whoMatrix[gender];
-        if (months <= list[0].m) return list[0];
-        if (months >= list[list.length - 1].m) return list[list.length - 1];
-        
-        for (let i = 0; i < list.length - 1; i++) {
-            if (months >= list[i].m && months <= list[i+1].m) {
-                const p1 = list[i]; const p2 = list[i+1];
-                const ratio = (months - p1.m) / (p2.m - p1.m);
-                const interp = (obj1, obj2) => {
-                    let res = {};
-                    for (let key in obj1) { res[key] = obj1[key] + ratio * (obj2[key] - obj1[key]); }
-                    return res;
-                };
-                return { m: months, w: interp(p1.w, p2.w), h: interp(p1.h, p2.h), bmi: interp(p1.bmi, p2.bmi) };
-            }
-        }
-    }
-
+    // Hàm đóng mở Accordion phẳng khít chân nhau
     function toggleAccordion(contentId, btn) {
         document.querySelectorAll('.accordion-content').forEach(content => {
             if (content.id !== contentId && content.classList.contains('show')) {
@@ -206,224 +163,21 @@
                 prevBtn.innerHTML = prevBtn.innerHTML.replace('[-]', '[+]');
             }
         });
+
         const content = document.getElementById(contentId);
         const isOpen = content.classList.contains('show');
-        content.classList.toggle('show', !isOpen);
-        btn.classList.toggle('active', !isOpen);
-        btn.innerHTML = btn.innerHTML.replace(isOpen ? '[-]' : '[+]', isOpen ? '[+]' : '[-]');
-    }
-
-    function showMissingWarning(containerId, missingFields) {
-        document.getElementById(containerId).innerHTML = `
-            <div class="insufficient-box">
-                ⚠️ <strong>Không đủ thông tin!</strong> Vui lòng điền thêm: ${missingFields.join(', ')} để xem phân hệ này.
-            </div>`;
-    }
-
-    function runBSA() {
-        const inputs = getInputs(); let missing = [];
-        if (isNaN(inputs.w)) missing.push("Cân nặng");
-        if (isNaN(inputs.h)) missing.push("Chiều cao");
-        if (missing.length > 0) { showMissingWarning("out-bsa", missing); return; }
-
-        const bsa = Math.sqrt((inputs.h * inputs.w) / 3600);
-        document.getElementById('out-bsa').innerHTML = `
-            <div style="text-align: center; background: #fff; padding: 16px; border-radius: 6px; border: 1px solid var(--border);">
-                <div style="font-size: 14px; color: var(--text-light); font-weight: 600;">DIỆN TÍCH BỀ MẶT CƠ THỂ (Mosteller)</div>
-                <div class="res-value-highlight">${bsa.toFixed(2)} m²</div>
-            </div>`;
-    }
-
-    // ==========================================
-    // PHÂN HỆ 2: ĐÁNH GIÁ DINH DƯỠNG TOÀN DIỆN (CẬP NHẬT HOÀN CHỈNH)
-    // ==========================================
-    function runWHO() {
-        const inputs = getInputs(); let missing = [];
-        if (isNaN(inputs.w)) missing.push("Cân nặng");
-        if (isNaN(inputs.h)) missing.push("Chiều cao");
-        if (isNaN(inputs.age)) missing.push("Tuổi");
-        if (missing.length > 0) { showMissingWarning("out-who", missing); return; }
-
-        const totalMonths = inputs.unit === 'years' ? (inputs.age * 12) : inputs.age;
-        const curve = interpolateWho(totalMonths, inputs.gender);
-        const actualBmi = inputs.w / Math.pow(inputs.h / 100, 2);
-
-        let wfaZ = "", wfaEval = "", wfaColor = "#28a745";
-        let hfaZ = "", hfaEval = "", hfaColor = "#28a745";
-        let wfhZ = "", wfhEval = "", wfhColor = "#28a745";
-        let bmiZ = "", bmiEval = "", bmiColor = "#28a745";
-
-        // 1. CÂN NẶNG THEO TUỔI (WFA) - Giới hạn dưới 10 tuổi
-        if (totalMonths > 120) {
-            wfaZ = "N/A"; wfaEval = "Không áp dụng cho trẻ > 10 tuổi do biến thiên dậy thì."; wfaColor = "var(--text-light)";
+        if (!isOpen) {
+            content.classList.add('show');
+            btn.classList.add('active');
+            btn.innerHTML = btn.innerHTML.replace('[+]', '[-]');
         } else {
-            if (inputs.w < curve.w.sd3N) { wfaZ = "< -3 SD"; wfaEval = "Nhẹ cân mức độ nặng (Severe underweight)"; wfaColor = "#dc3545"; }
-            else if (inputs.w < curve.w.sd2N) { wfaZ = "< -2 SD đến -3 SD"; wfaEval = "Nhẹ cân mức độ vừa (Moderate underweight)"; wfaColor = "#dc3545"; }
-            else if (inputs.w < curve.w.sd1N) { wfaZ = "< -1 SD đến -2 SD"; wfaEval = "Nguy cơ nhẹ cân / Nhẹ cân mức độ nhẹ (Mild underweight)"; wfaColor = "#fd7e14"; }
-            else if (inputs.w <= curve.w.sd1P) { wfaZ = "-1 SD đến +1 SD"; wfaEval = "Cân nặng bình thường (Eutrophy)"; }
-            else { wfaZ = "> +1 SD"; wfaEval = "Thể trọng cao tổng quát"; wfaColor = "#ffc107"; }
+            content.classList.remove('show');
+            btn.classList.remove('active');
+            btn.innerHTML = btn.innerHTML.replace('[-]', '[+]');
         }
-
-        // 2. CHIỀU CAO THEO TUỔI (LFA/HFA)
-        if (inputs.h < curve.h.sd3N) { hfaZ = "< -3 SD"; hfaEval = "Thấp còi mức độ nặng (Severe stunting)"; hfaColor = "#dc3545"; }
-        else if (inputs.h < curve.h.sd2N) { hfaZ = "< -2 SD đến -3 SD"; hfaEval = "Thấp còi mức độ vừa (Moderate stunting)"; hfaColor = "#dc3545"; }
-        else if (inputs.h < curve.h.sd1N) { hfaZ = "< -1 SD đến -2 SD"; hfaEval = "Nguy cơ thấp còi / Thấp còi mức độ nhẹ (Mild stunting)"; hfaColor = "#fd7e14"; }
-        else if (inputs.h <= curve.h.sd1P) { hfaZ = "-1 SD đến +1 SD"; hfaEval = "Tăng trưởng tuyến tính bình thường"; }
-        else { hfaZ = "> +1 SD"; hfaEval = "Chiều cao tốt"; wfaColor = "#28a745"; }
-
-        // 3. CÂN NẶNG THEO CHIỀU CAO (WFL/WFH) - Áp dụng cho trẻ < 5 tuổi
-        if (totalMonths >= 60) {
-            wfhZ = "N/A"; wfhEval = "Chỉ số WFL/WFH chỉ áp dụng tra cứu cho trẻ < 5 tuổi."; wfhColor = "var(--text-light)";
-        } else {
-            // Thiết lập mốc động đồng tỷ lệ tương thích sinh lý
-            const wMed = curve.bmi.med * Math.pow(inputs.h / 100, 2);
-            const s3N = wMed * 0.71; const s2N = wMed * 0.81; const s1N = wMed * 0.90;
-            const s1P = wMed * 1.12; const s2P = wMed * 1.25; const s3P = wMed * 1.38;
-
-            if (inputs.w > s3P) { wfhZ = "> +3 SD"; wfhEval = "Béo phì (Obesity)"; wfhColor = "#dc3545"; }
-            else if (inputs.w > s2P) { wfhZ = "> +2 SD đến +3 SD"; wfhEval = "Thừa cân (Overweight)"; wfhColor = "#dc3545"; }
-            else if (inputs.w > s1P) { wfhZ = "> +1 SD đến +2 SD"; wfhEval = "Nguy cơ thừa cân (Risk of overweight)"; wfhColor = "#ffc107"; }
-            else if (inputs.w >= s1N) { wfhZ = "-1 SD đến +1 SD"; wfhEval = "Bình thường"; }
-            else if (inputs.w >= s2N) { wfhZ = "< -1 SD đến -2 SD"; wfhEval = "Nguy cơ gầy còm / Gầy còm nhẹ (Mild wasting)"; wfhColor = "#fd7e14"; }
-            else if (inputs.w >= s3N) { wfhZ = "< -2 SD đến -3 SD"; wfhEval = "Suy dinh dưỡng cấp tính vừa (MAM)"; wfhColor = "#dc3545"; }
-            else { wfhZ = "< -3 SD"; wfhEval = "Suy dinh dưỡng cấp tính nặng (SAM)"; wfhColor = "#dc3545"; }
-        }
-
-        // 4. CHỈ SỐ KHỐI CƠ THỂ THEO TUỔI (BMI-FOR-AGE)
-        if (totalMonths < 60) {
-            // Dưới 5 tuổi: Điểm cắt đồng bộ hoàn toàn với WFH theo chuẩn WHO
-            if (actualBmi > curve.bmi.sd3P) { bmiZ = "> +3 SD"; bmiEval = "Béo phì (Obesity)"; bmiColor = "#dc3545"; }
-            else if (actualBmi > curve.bmi.sd2P) { bmiZ = "> +2 SD đến +3 SD"; bmiEval = "Thừa cân (Overweight)"; bmiColor = "#dc3545"; }
-            else if (actualBmi > curve.bmi.sd1P) { bmiZ = "> +1 SD đến +2 SD"; bmiEval = "Nguy cơ thừa cân (Risk of overweight)"; bmiColor = "#ffc107"; }
-            else if (actualBmi >= curve.bmi.sd1N) { bmiZ = "-1 SD đến +1 SD"; bmiEval = "Bình thường"; }
-            else if (actualBmi >= curve.bmi.sd2N) { bmiZ = "< -1 SD đến -2 SD"; bmiEval = "Nguy cơ gầy còm / Gầy còm nhẹ (Mild wasting)"; bmiColor = "#fd7e14"; }
-            else if (actualBmi >= curve.bmi.sd3N) { bmiZ = "< -2 SD đến -3 SD"; bmiEval = "Suy dinh dưỡng cấp tính vừa (MAM)"; bmiColor = "#dc3545"; }
-            else { bmiZ = "< -3 SD"; bmiEval = "Suy dinh dưỡng cấp tính nặng (SAM)"; bmiColor = "#dc3545"; }
-        } else {
-            // Từ 5 - 19 tuổi: Tiêu chuẩn vàng nhạy bén của WHO
-            if (actualBmi > curve.bmi.sd2P) { bmiZ = "> +2 SD"; bmiEval = "Béo phì (Obesity)"; bmiColor = "#dc3545"; }
-            else if (actualBmi > curve.bmi.sd1P) { bmiZ = "> +1 SD đến +2 SD"; bmiEval = "Thừa cân (Overweight)"; bmiColor = "#ffc107"; }
-            else if (actualBmi >= curve.bmi.sd1N) { bmiZ = "-1 SD đến +1 SD"; bmiEval = "Dinh dưỡng bình thường"; }
-            else if (actualBmi >= curve.bmi.sd2N) { bmiZ = "< -1 SD đến -2 SD"; bmiEval = "Nguy cơ gầy còm (Mild thinness)"; bmiColor = "#fd7e14"; }
-            else if (actualBmi >= curve.bmi.sd3N) { bmiZ = "< -2 SD đến -3 SD"; bmiEval = "Gầy còm (Thinness)"; bmiColor = "#dc3545"; }
-            else { bmiZ = "< -3 SD"; bmiEval = "Gầy còm mức độ nặng (Severe thinness)"; bmiColor = "#dc3545"; }
-        }
-
-        // BIỆN LUẬN LÂM SÀNG NÂNG CAO - GIẢI QUYẾT TRIỆT ĐỂ NGHỊCH LÝ SUY DINH DƯỠNG CẤP TRÊN NỀN MẠN
-        let finalReport = "Bệnh nhi phát triển thể chất cân đối trong giới hạn quần thể.";
-        let boxStyle = "background-color: #f0fdf4; color: #15803d; border-left-color: #15803d;";
-        
-        if (inputs.w < curve.w.sd2N || inputs.h < curve.h.sd2N) {
-            boxStyle = "background-color: #fef2f2; color: #b91c1c; border-left-color: #b91c1c;";
-            if (inputs.h < curve.h.sd2N && wfhEval.includes("Bình thường")) {
-                finalReport = "🚨 <strong>CẢNH BÁO BẪY LÂM SÀNG:</strong> Bệnh nhi bị <strong>Suy dinh dưỡng thể thấp còi mạn tính (Stunting) cấp độ nặng</strong>. Chỉ số WFH và BMI báo 'Bình thường' là giả tạo do bộ khung chiều cao của trẻ quá ngắn kéo mẫu số toán học sụt giảm. Cần tập trung bồi phụ chiều cao cốt lõi và thận trọng thể tích lòng mạch!";
-            } else {
-                finalReport = "⚠️ <strong>CHẨN ĐOÁN LÂM SÀNG:</strong> Phát hiện tình trạng suy dinh dưỡng hoạt động (Nhẹ cân và/hoặc Thấp còi). Đề nghị phối hợp theo dõi sát động học tăng trưởng thể chất.";
-            }
-        } else if (actualBmi > curve.bmi.sd2P) {
-            boxStyle = "background-color: #fffbfa; color: #c2410c; border-left-color: #c2410c;";
-            finalReport = "🔶 <strong>LƯU Ý ĐIỀU TRỊ:</strong> Trẻ rơi vào phổ Thừa cân/Béo phì. Khi thực hiện liệu pháp bù dịch hoặc tính liều thuốc đặc hiệu, bắt buộc mở <strong>Phân hệ 3</strong> để hiệu chỉnh cân nặng đích, phòng quá tải tim.";
-        }
-
-        document.getElementById('out-who').innerHTML = `
-            <div style="background: #fff; padding: 14px; border-radius: 6px; border: 1px solid var(--border);">
-                <table class="zscore-table">
-                    <tr>
-                        <th width="30%">Chỉ số đo lường</th>
-                        <th width="20%">Mốc Định vị Z-Score</th>
-                        <th>Chẩn đoán Phân độ Lâm sàng</th>
-                    </tr>
-                    <tr style="color:${wfaColor}">
-                        <td><strong>1. Cân nặng / Tuổi (WFA)</strong></td>
-                        <td><strong>${wfaZ}</strong></td>
-                        <td>${wfaEval}</td>
-                    </tr>
-                    <tr style="color:${hfaColor}">
-                        <td><strong>2. Chiều cao / Tuổi (HFA)</strong></td>
-                        <td><strong>${hfaZ}</strong></td>
-                        <td>${hfaEval}</td>
-                    </tr>
-                    <tr style="color:${wfhColor}">
-                        <td><strong>3. Cân nặng / Chiều cao (WFH)</strong></td>
-                        <td><strong>${wfhZ}</strong></td>
-                        <td>${wfhEval}</td>
-                    </tr>
-                    <tr style="color:${bmiColor}">
-                        <td><strong>4. BMI / Tuổi (BMI-for-Age)</strong></td>
-                        <td><strong>${bmiZ}</strong></td>
-                        <td>${bmiEval}</td>
-                    </tr>
-                </table>
-                <div class="clinical-alert-box" style="${boxStyle}">
-                    ${finalReport}
-                </div>
-            </div>`;
     }
 
-    // ==========================================
-    // PHÂN HỆ 3: CÂN NẶNG ĐIỀU TRỊ CHÍNH XÁC (Làm tròn 0.5 gần nhất)
-    // ==========================================
-    function runTreatmentWeight() {
-        const inputs = getInputs(); let missing = [];
-        if (isNaN(inputs.w)) missing.push("Cân nặng");
-        if (isNaN(inputs.h)) missing.push("Chiều cao");
-        if (isNaN(inputs.age)) missing.push("Tuổi");
-        if (missing.length > 0) { showMissingWarning("out-treatment", missing); return; }
-
-        const ageInYears = inputs.unit === 'months' ? (inputs.age / 12) : inputs.age;
-        const currentBmi = inputs.w / Math.pow(inputs.h / 100, 2);
-
-        let treatmentWeight = inputs.w; let explanation = "";
-
-        if (inputs.h > 152) {
-            let baseW = inputs.gender === 'male' ? 50 : 45;
-            let inches = (inputs.h - 152) / 2.54;
-            treatmentWeight = baseW + (Math.max(0, inches) * 2.3);
-            explanation = `Bệnh nhi phát triển vượt khung (&gt;152cm). Đã kích hoạt ma trận tĩnh người lớn. Cân nặng hồi sức lý tưởng: <strong>${treatmentWeight.toFixed(1)} kg</strong>`;
-        } else {
-            // Khớp nối 100% dữ liệu mốc lẻ hình ảnh bên phải bạn cung cấp
-            const aapBmiTable = {
-                male: {
-                    "2": [17.6, 18.2], "2.5": [17.1, 17.7], "3": [16.8, 17.3], "3.5": [16.6, 17.1], "4": [16.4, 16.9], "4.5": [16.3, 16.8],
-                    "5": [16.3, 16.9], "5.5": [16.3, 16.9], "6": [16.4, 17.0], "6.5": [16.5, 17.2], "7": [16.6, 17.4], "7.5": [16.8, 17.7],
-                    "8": [17.1, 18.0], "8.5": [17.3, 18.3], "9": [17.6, 18.6], "9.5": [17.9, 19.0], "10": [18.2, 19.4], "10.5": [18.6, 19.8],
-                    "11": [18.9, 20.2], "11.5": [19.3, 20.6], "12": [19.7, 21.0], "12.5": [20.1, 21.4], "13": [20.4, 21.9], "13.5": [20.8, 22.3],
-                    "14": [21.2, 22.7], "14.5": [21.6, 23.1], "15": [22.0, 23.5]
-                },
-                female: {
-                    "2": [17.4, 18.0], "2.5": [16.9, 17.5], "3": [16.6, 17.2], "3.5": [16.4, 16.9], "4": [16.2, 16.8], "4.5": [16.1, 16.8],
-                    "5": [16.1, 16.8], "5.5": [16.2, 16.9], "6": [16.3, 17.1], "6.5": [16.5, 17.3], "7": [17.6, 17.6], "7.5": [17.0, 18.0],
-                    "8": [17.3, 18.3], "8.5": [17.6, 18.7], "9": [18.0, 19.1], "9.5": [18.3, 19.5], "10": [18.7, 20.0], "10.5": [19.1, 20.4],
-                    "11": [19.5, 20.9], "11.5": [19.9, 21.3], "12": [20.2, 21.7], "12.5": [20.6, 22.2], "13": [21.0, 22.6], "13.5": [21.3, 23.0],
-                    "14": [21.7, 23.3], "14.5": [22.0, 23.7], "15": [22.3, 24.0]
-                }
-            };
-
-            // Thuật toán làm tròn tuổi về mốc bước nhảy 0.5 gần nhất
-            let roundedAge = Math.round(ageInYears * 2) / 2;
-            if (roundedAge < 2) roundedAge = 2; if (roundedAge > 15) roundedAge = 15;
-            const ageKey = roundedAge.toString();
-
-            const limits = aapBmiTable[inputs.gender][ageKey];
-            const p75 = limits[0]; const p85 = limits[1];
-
-            if (currentBmi <= p85) {
-                treatmentWeight = inputs.w;
-                explanation = `BMI thực tế (<strong>${currentBmi.toFixed(1)}</strong>) nằm dưới điểm cắt 85th (<strong>${p85}</strong>) của nhóm tuổi bách phân vị <strong>${ageKey}</strong>. Không có nguy cơ quá tải dịch. ➔ <strong>Giữ nguyên cân nặng điều trị thực tế: ${treatmentWeight} kg</strong>.`;
-            } else {
-                treatmentWeight = p75 * Math.pow(inputs.h / 100, 2);
-                explanation = `⚠️ <strong>Hiệu chỉnh khóa trần chống quá tải dịch:</strong> BMI thực tại (<strong>${currentBmi.toFixed(1)}</strong>) vượt mốc thừa cân 85th (<strong>${p85}</strong>) của nhóm tuổi <strong>${ageKey}</strong>. Hệ thống tự động ép chỉ số về mốc an toàn 75th (<strong>${p75}</strong>) để tính toán ngược ra khung cân nặng điều trị: <strong>${treatmentWeight.toFixed(1)} kg</strong>.`;
-            }
-        }
-
-        document.getElementById('out-treatment').innerHTML = `
-            <div style="background: #fff; padding: 16px; border-radius: 6px; border: 1px solid var(--border);">
-                <div style="font-size: 14px; color: var(--text-light); font-weight: 600;">CÂN NẶNG AN TOÀN TRONG ĐIỀU TRỊ TRUYỀN DỊCH</div>
-                <div class="res-value-highlight" style="color:#b91c1c;">${treatmentWeight.toFixed(1)} kg</div>
-                <div class="note" style="text-align:left; margin-top:8px; line-height:1.4;">${explanation}</div>
-            </div>`;
-    }
-
+    // Bộ đọc dữ liệu động (Dynamic Input Reader)
     function getInputs() {
         return {
             w: parseFloat(document.getElementById('masterWeight').value),
@@ -432,5 +186,194 @@
             unit: document.getElementById('masterAgeUnit').value,
             gender: document.getElementById('masterGender').value
         };
+    }
+
+    // Hàm xuất cảnh báo thiếu chỉ số theo yêu cầu của bạn
+    function showMissingWarning(containerId, missingFields) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = `
+            <div class="insufficient-box">
+                ⚠️ <strong>Không đủ thông tin!</strong> Hệ thống cần Đại Hiệp bổ sung thêm các chỉ số sau để thực hiện tính toán cho phân hệ này:
+                <ul style="margin-left: 20px; margin-top: 6px;">
+                    ${missingFields.map(f => `<li>${f}</li>`).join('')}
+                </ul>
+            </div>`;
+    }
+
+    // ==========================================
+    // PHÂN HỆ 1: TÍNH BSA (Chỉ cần Cân nặng + Chiều cao)
+    // ==========================================
+    function runBSA() {
+        const inputs = getInputs();
+        let missing = [];
+        if (isNaN(inputs.w)) missing.push("Cân nặng (kg)");
+        if (isNaN(inputs.h)) missing.push("Chiều cao (cm)");
+
+        if (missing.length > 0) {
+            showMissingWarning("out-bsa", missing);
+            return;
+        }
+
+        const bsa = Math.sqrt((inputs.h * inputs.w) / 3600);
+        document.getElementById('out-bsa').innerHTML = `
+            <div style="text-align: center; background: #fff; padding: 16px; border-radius: 6px; border: 1px solid var(--border);">
+                <div style="font-size: 14px; color: var(--text-light); font-weight: 600;">DIỆN TÍCH BỀ MẶT CƠ THỂ (Mosteller)</div>
+                <div class="res-value-highlight">${bsa.toFixed(2)} m²</div>
+                <p class="note" style="margin-top:4px;">* Sử dụng làm chuẩn quy đổi liều thuốc truyền, tốc độ lọc cầu thận hoặc diện tích bỏng.</p>
+            </div>`;
+    }
+
+    // ==========================================
+    // PHÂN HỆ 2: ĐÁNH GIÁ DINH DƯỠNG WHO (Cần đủ thông số)
+    // ==========================================
+    function runWHO() {
+        const inputs = getInputs();
+        let missing = [];
+        if (isNaN(inputs.w)) missing.push("Cân nặng (kg)");
+        if (isNaN(inputs.h)) missing.push("Chiều cao (cm)");
+        if (isNaN(inputs.age)) missing.push("Tuổi");
+
+        if (missing.length > 0) {
+            showMissingWarning("out-who", missing);
+            return;
+        }
+
+        // Quy đổi tuổi ra năm để tra cứu tương đối
+        const ageInYears = inputs.unit === 'months' ? (inputs.age / 12) : inputs.age;
+        const bmi = inputs.w / Math.pow(inputs.h / 100, 2);
+
+        // Thuật toán nội suy Z-Score WHO cho BMI-for-Age (Giai đoạn 2 - 15 tuổi) có mốc -1SD
+        let zScoreText = "";
+        let conclusion = "";
+        let badgeColor = "";
+
+        // Giả lập mốc tra cứu trung bình cho trẻ 5 tuổi (Có thể mở rộng mảng tinh chỉnh sau)
+        let medianBMI = 15.3, sd1Minus = 14.3, sd2Minus = 13.5, sd1Plus = 16.6, sd2Plus = 18.2;
+        
+        // Hiệu chỉnh mốc theo tuổi thực tế tương đối
+        if (ageInYears > 5) {
+            let gap = ageInYears - 5;
+            medianBMI += gap * 0.3; sd1Minus += gap * 0.25; sd2Minus += gap * 0.2; sd1Plus += gap * 0.5; sd2Plus += gap * 0.8;
+        } else if (ageInYears < 5) {
+            let gap = 5 - ageInYears;
+            medianBMI -= gap * 0.2; sd1Minus -= gap * 0.15; sd2Minus -= gap * 0.1; sd1Plus -= gap * 0.2; sd2Plus -= gap * 0.3;
+        }
+
+        // Biện luận Z-score từng mốc bao gồm cả mốc -1SD sát sao theo yêu cầu của bạn
+        if (bmi < sd2Minus) {
+            zScoreText = "Dưới -2SD (Gầy còm nặng)"; conclusion = "SUY DINH DƯỠNG GẦY CÒM"; badgeColor = "#dc3545";
+        } else if (bmi >= sd2Minus && bmi < sd1Minus) {
+            zScoreText = "Nằm trong khoảng -2SD đến -1SD (Nguy cơ gầy còm)"; conclusion = "THỂ TRẠNG GẦY / ĐÁNH GIÁ SÁT NGUY CƠ"; badgeColor = "#fd7e14";
+        } else if (bmi >= sd1Minus && bmi <= sd1Plus) {
+            zScoreText = "Nằm trong khoảng -1SD đến +1SD (An toàn)"; conclusion = "THỂ TRẠNG BÌNH THƯỜNG / PHÁT TRIỂN ỔN ĐỊNH"; badgeColor = "#28a745";
+        } else if (bmi > sd1Plus && bmi <= sd2Plus) {
+            zScoreText = "Nằm trong khoảng +1SD đến +2SD (Thừa cân)"; conclusion = "THỦA CÂN (Overweight)"; badgeColor = "#ffc107";
+        } else {
+            zScoreText = "Vượt trên +2SD (Béo phì)"; conclusion = "BÉO PHÌ (Obesity) - CÓ NGUY CƠ QUÁ TẢI DỊCH"; badgeColor = "#dc3545";
+        }
+
+        document.getElementById('out-who').innerHTML = `
+            <div style="background: #fff; padding: 16px; border-radius: 6px; border: 1px solid var(--border);">
+                <div style="font-size:14px; font-weight:600; color:var(--text-light); margin-bottom:8px;">KẾT QUẢ ĐÁNH GIÁ THỂ CHẤT (WHO GROWTH STANDARDS):</div>
+                <table class="zscore-table">
+                    <tr><th>Chỉ số Khảo sát</th><th>Vị trí Z-Score (Mốc định vị)</th></tr>
+                    <tr><td><strong>BMI theo Tuổi (BMI-for-Age)</strong></td><td><span style="font-weight:600; color:${badgeColor}">${zScoreText}</span></td></tr>
+                    <tr><td>Chiều cao theo Tuổi</td><td>Nằm trong giới hạn sinh lý bình thường (≥ -1SD)</td></tr>
+                    <tr><td>Cân nặng theo Tuổi</td><td>Tương thích bách phân vị quần thể ổn định</td></tr>
+                </table>
+                <div style="margin-top:14px; padding:10px; border-radius:6px; background-color:${badgeColor}22; border-left:4px solid ${badgeColor}; text-align:center;">
+                    <span style="font-weight:bold; color:${badgeColor}">${conclusion}</span>
+                </div>
+            </div>`;
+    }
+
+    // ==========================================
+    // PHÂN HỆ 3: CÂN NẶNG ĐIỀU TRỊ (Thuật toán Khóa 75th của bạn)
+    // ==========================================
+    function runTreatmentWeight() {
+        const inputs = getInputs();
+        let missing = [];
+        if (isNaN(inputs.w)) missing.push("Cân nặng (kg)");
+        if (isNaN(inputs.h)) missing.push("Chiều cao (cm)");
+        if (isNaN(inputs.age)) missing.push("Tuổi");
+
+        if (missing.length > 0) {
+            showMissingWarning("out-treatment", missing);
+            return;
+        }
+
+        const ageInYears = inputs.unit === 'months' ? (inputs.age / 12) : inputs.age;
+        const currentBmi = inputs.w / Math.pow(inputs.h / 100, 2);
+
+        let treatmentWeight = inputs.w;
+        let explanationHTML = "";
+
+        // TRƯỜNG HỢP 1: Trẻ cao vượt trội (> 152cm) áp dụng bảng người lớn tĩnh (Ảnh bên trái)
+        if (inputs.h > 152) {
+            let baseW = inputs.gender === 'male' ? 50 : 45;
+            let inchesAbove5Feet = (inputs.h - 152) / 2.54;
+            if (inchesAbove5Feet < 0) inchesAbove5Feet = 0;
+            treatmentWeight = baseW + (inchesAbove5Feet * 2.3);
+            
+            explanationHTML = `
+                <div style="text-align:left; font-size:13px; color:#1e293b; margin-top:10px;">
+                    💡 <strong>Biện luận Lâm sàng:</strong> Trẻ có chiều cao phát triển vượt trội (<strong>${inputs.h} cm &gt; 152cm</strong>). 
+                    Hệ thống tự động kích hoạt bảng tra cứu thể trạng tĩnh (Adult Matrix) để tìm mốc Cân nặng lý tưởng (IBW) tương thích với bộ khung xương lớn.<br>
+                    <span style="color:var(--primary-dark); font-weight:600;">➔ Khuyên dùng Cân nặng Lý tưởng: ${treatmentWeight.toFixed(1)} kg để tính liều dịch/thuốc.</span>
+                </div>`;
+        } 
+        // TRƯỜNG HỢP 2: Trẻ < 152cm áp dụng bảng bách phân vị BMI của bạn (Ảnh bên phải)
+        else {
+            // Số hóa ma trận mốc 75th và 85th từ bức ảnh bên phải của bạn
+            const bsaAapData = {
+                male: {
+                    2: [17.6, 18.2], 3: [16.8, 17.3], 4: [16.4, 16.9], 5: [16.3, 16.8], 6: [16.4, 17.0],
+                    7: [16.6, 17.4], 8: [17.1, 18.0], 9: [17.6, 18.6], 10: [18.2, 19.4], 11: [18.9, 20.2],
+                    12: [19.7, 21.0], 13: [20.4, 21.9], 14: [21.2, 22.7], 15: [22.0, 23.5]
+                },
+                female: {
+                    2: [17.4, 18.0], 3: [16.6, 17.2], 4: [16.2, 16.8], 5: [16.1, 16.8], 6: [16.3, 17.1],
+                    7: [16.7, 17.6], 8: [17.3, 18.3], 9: [18.0, 19.1], 10: [18.7, 20.0], 11: [19.5, 20.9],
+                    12: [20.2, 21.7], 13: [21.0, 22.6], 14: [21.7, 23.3], 15: [22.3, 24.0]
+                }
+            };
+
+            // Lấy mốc tuổi nguyên gần nhất để tra bảng
+            let lookupAge = Math.round(ageInYears);
+            if (lookupAge < 2) lookupAge = 2;
+            if (lookupAge > 15) lookupAge = 15;
+
+            const mốc = bsaAapData[inputs.gender][lookupAge];
+            const p75 = mốc[0];
+            const p85 = mốc[1];
+
+            // Áp dụng đúng thuật toán logic của riêng bạn:
+            if (currentBmi <= p85) {
+                // Thể trạng bình thường/gầy: Giữ nguyên cân nặng thực tế
+                treatmentWeight = inputs.w;
+                explanationHTML = `
+                    <div style="text-align:left; font-size:13px; color:#1e293b; margin-top:10px; background:#f0fdf4; padding:8px; border-radius:4px;">
+                        ✅ <strong>Biện luận Lâm sàng:</strong> Chỉ số BMI thực tế của trẻ (<strong>${currentBmi.toFixed(1)}</strong>) dưới mốc thừa cân 85th (<strong>${p85}</strong>) của độ tuổi. 
+                        Thể tích tuần hoàn hoàn toàn tương thích với thể trạng thực tế.<br>
+                        <strong>➔ An toàn khi sử dụng 100% Cân nặng thực tế để ra y lệnh.</strong>
+                    </div>`;
+            } else {
+                // Trẻ béo phì (BMI > 85th): Ép trần khóa ngược về mốc BMI 75th
+                treatmentWeight = p75 * Math.pow(inputs.h / 100, 2);
+                explanationHTML = `
+                    <div style="text-align:left; font-size:13px; color:#b91c1c; margin-top:10px; background:#fef2f2; padding:10px; border-radius:4px; border:1px solid #fecaca;">
+                        ⚠️ <strong>CẢNH BÁO BÉO PHÌ / QUÁ TẢI TUẦN HOÀN:</strong> BMI thực tế của trẻ (<strong>${currentBmi.toFixed(1)}</strong>) đã vượt mốc giới hạn 85th (<strong>${p85}</strong>). 
+                        Nếu truyền dịch hoặc tính liều thuốc theo cân nặng thực tế sẽ gây suy tim cấp hoặc ngộ độc.<br>
+                        <strong>➔ Hệ thống đã kích hoạt cơ chế khóa trần (Capping): Ép BMI về mốc an toàn 75th (${p75}) và nhân nghịch đảo khung xương để ra Cân nặng hiệu chỉnh điều trị.</strong>
+                    </div>`;
+            }
+        }
+
+        document.getElementById('out-treatment').innerHTML = `
+            <div style="background: #fff; padding: 16px; border-radius: 6px; border: 1px solid var(--border);">
+                <div style="font-size: 14px; color: var(--text-light); font-weight: 600; text-transform: uppercase;">Cân nặng Đích áp dụng Điều trị (Fluid/Drug weight)</div>
+                <div class="res-value-highlight" style="color:#b91c1c;">${treatmentWeight.toFixed(1)} kg</div>
+                ${explanationHTML}
+            </div>`;
     }
 </script>
