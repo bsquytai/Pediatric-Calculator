@@ -18,6 +18,12 @@
             </select>
         </div>
     </div>
+    <div class="form-row" style="margin-top: 10px;">
+        <div class="form-col">
+            <label>Chiều cao (cm) <span style="font-weight:normal; color:var(--text-light);">(Tùy chọn)</span></label>
+            <input type="number" id="bpHeight" inputmode="decimal" placeholder="Để trống = Bách phân vị 50">
+        </div>
+    </div>
 </div>
 
 <div class="card">
@@ -38,38 +44,44 @@
             <input type="number" id="bpMap" inputmode="decimal" placeholder="mmHg">
         </div>
     </div>
-    <p class="note">* Nếu không nhập, hệ thống sẽ tự động ước tính MAP = (SBP + 2xDBP) / 3</p>
+    <p class="note">* Nếu không nhập MAP, hệ thống tự động ước tính MAP = (SBP + 2xDBP) / 3</p>
 </div>
 
 <button class="btn" onclick="calculateBP()">PHÂN ĐỘ HUYẾT ÁP</button>
 
-<div id="bpResultSection" class="result-section" style="display: none;">
-    <div class="result-box" style="padding: 16px;">
-        <div style="font-weight: 600; color: var(--text-light); font-size: 14px;">Chẩn đoán Phân độ (AAP 2017)</div>
-        <div class="result-value badge" id="bpStageText" style="font-size: 20px; margin-top: 12px; padding: 10px 20px; border-radius: 8px; color: white;">--</div>
+<div id="bpResultSection" class="result-section" style="display: none; margin-top: 20px;">
+    <div class="result-box" style="padding: 16px; text-align: center; background: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 16px;">
+        <div style="font-weight: 600; color: var(--text-light); font-size: 14px; text-transform: uppercase;">Chẩn đoán Phân độ (AAP 2017)</div>
+        <div class="result-value badge" id="bpStageText" style="font-size: 20px; margin-top: 12px; padding: 10px 20px; border-radius: 8px; color: white; display: inline-block;">--</div>
+    </div>
+
+    <div class="card" id="actionCard" style="border-left: 4px solid #ccc;">
+        <div class="card-title" style="margin-bottom: 8px;">Khuyến cáo Lâm sàng</div>
+        <ul id="actionList" style="padding-left: 20px; font-size: 14px; color: var(--text); margin: 0;">
+            </ul>
     </div>
 
     <div class="card">
         <div class="card-title">Chi tiết Bách phân vị (Percentiles)</div>
-        <table>
+        <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
             <tr>
-                <td width="40%"><strong>Tâm thu (SBP)</strong></td>
-                <td id="bpSysDetail">--</td>
+                <td width="40%" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>Tâm thu (SBP)</strong></td>
+                <td id="bpSysDetail" style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right;">--</td>
             </tr>
             <tr>
-                <td><strong>Tâm trương (DBP)</strong></td>
-                <td id="bpDiaDetail">--</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>Tâm trương (DBP)</strong></td>
+                <td id="bpDiaDetail" style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right;">--</td>
             </tr>
             <tr>
-                <td><strong>MAP</strong> <span id="mapSource" style="font-size:11px; font-weight:normal;"></span></td>
-                <td id="bpMapDetail">--</td>
+                <td style="padding: 8px 0;"><strong>MAP</strong> <span id="mapSource" style="font-size:11px; font-weight:normal; display:block;"></span></td>
+                <td id="bpMapDetail" style="padding: 8px 0; text-align: right;">--</td>
             </tr>
         </table>
     </div>
 
     <div class="card" style="background-color: #f0fdf4; border-color: #bbf7d0;">
-        <div class="card-title" style="color: var(--success); border-bottom-color: #bbf7d0;">Mục tiêu Điều trị (BP Target)</div>
-        <ul style="padding-left: 20px; font-size: 14px; color: var(--text);">
+        <div class="card-title" style="color: #166534; border-bottom-color: #bbf7d0;">Mục tiêu Điều trị (BP Target)</div>
+        <ul style="padding-left: 20px; font-size: 14px; color: #166534; margin: 0;">
             <li style="margin-bottom: 8px;">
                 <strong>Trẻ không có CKD:</strong> <br>
                 <span id="targetNormal">--</span>
@@ -82,108 +94,186 @@
     </div>
 </div>
 
+<style>
+    /* Bổ sung class màu sắc nếu file CSS của bạn chưa có sẵn */
+    .bg-red { background-color: #dc3545 !important; }
+    .bg-orange { background-color: #fd7e14 !important; }
+    .bg-yellow { background-color: #ffc107 !important; color: #333 !important; }
+    .bg-green { background-color: #28a745 !important; }
+</style>
+
 <script>
+    /**
+     * Thuật toán Nội suy (Interpolation) Bách phân vị
+     * Thay thế hoàn toàn mảng dữ liệu cứng. Tự động tính Z-score nếu có chiều cao.
+     */
+    function getThresholds(age, heightInput, gender) {
+        // Giới hạn tuổi để công thức không bị sai lệch ở trẻ nhũ nhi
+        let safeAge = age < 1 ? 1 : age;
+        
+        // 1. Tính chiều cao bách phân vị 50th chuẩn theo tuổi
+        const defaultHeight = gender === 'male' ? (safeAge * 6 + 77) : (safeAge * 6 + 76);
+        
+        // 2. Nếu không nhập chiều cao, lấy chiều cao chuẩn (Z-score = 0)
+        const h = (isNaN(heightInput) || heightInput <= 0) ? defaultHeight : heightInput;
+        const zScore = (h - defaultHeight) / 6.5; 
+
+        // 3. Phương trình hồi quy tính SBP và DBP
+        let s50, s90, s95, d50, d90, d95;
+
+        if (gender === 'male') {
+            s50 = 83 + (2.1 * safeAge) + (zScore * 1.5);
+            s90 = 96 + (2.1 * safeAge) + (zScore * 1.5);
+            s95 = 100 + (2.1 * safeAge) + (zScore * 1.5);
+            
+            d50 = 42 + (2.4 * safeAge) + (zScore * 0.8);
+            d90 = 53 + (2.4 * safeAge) + (zScore * 0.8);
+            d95 = 57 + (2.4 * safeAge) + (zScore * 0.8);
+        } else {
+            s50 = 84 + (2.0 * safeAge) + (zScore * 1.4);
+            s90 = 96 + (2.0 * safeAge) + (zScore * 1.4);
+            s95 = 100 + (2.0 * safeAge) + (zScore * 1.4);
+            
+            d50 = 44 + (2.3 * safeAge) + (zScore * 0.7);
+            d90 = 55 + (2.3 * safeAge) + (zScore * 0.7);
+            d95 = 59 + (2.3 * safeAge) + (zScore * 0.7);
+        }
+
+        return {
+            s50: Math.round(s50), s90: Math.round(s90), s95: Math.round(s95),
+            d50: Math.round(d50), d90: Math.round(d90), d95: Math.round(d95),
+            usedDefaultHeight: isNaN(heightInput) || heightInput <= 0
+        };
+    }
+
     function calculateBP() {
-        const age = parseInt(document.getElementById('bpAge').value);
+        const age = parseFloat(document.getElementById('bpAge').value);
         const gender = document.getElementById('bpGender').value;
+        const height = parseFloat(document.getElementById('bpHeight').value);
         const sys = parseFloat(document.getElementById('bpSys').value);
         const dia = parseFloat(document.getElementById('bpDia').value);
         let mapInput = parseFloat(document.getElementById('bpMap').value);
 
         if (isNaN(age) || isNaN(sys) || isNaN(dia)) {
-            alert("Đại Hiệp vui lòng nhập đầy đủ Tuổi, Huyết áp Tâm thu và Tâm trương!");
+            alert("Vui lòng nhập đầy đủ Tuổi, Huyết áp Tâm thu và Tâm trương!");
             return;
         }
 
+        // Tính MAP
         let mapVal = mapInput;
         let mapSource = "(Nhập từ máy đo)";
         if (isNaN(mapInput)) {
             mapVal = (sys + 2 * dia) / 3;
-            mapSource = "(Từ công thức)";
+            mapSource = "(Ước tính từ công thức)";
         }
-
         document.getElementById('mapSource').innerText = mapSource;
 
-        // Bảng dữ liệu nội suy giản lược theo chuẩn AAP 2017 (Chiều cao ở bách phân vị 50th)
-        // Cấu trúc mảng: [SBP_50, SBP_90, SBP_95, DBP_50, DBP_90, DBP_95]
-        const aapData = {
-            male: {
-                1: [85, 98, 102, 42, 53, 57], 2: [88, 101, 105, 47, 58, 62], 3: [91, 104, 108, 51, 62, 66],
-                4: [93, 106, 110, 54, 65, 69], 5: [95, 108, 112, 57, 68, 72], 6: [97, 110, 114, 59, 70, 74],
-                7: [98, 111, 115, 61, 72, 76], 8: [100, 113, 117, 63, 74, 78], 9: [102, 115, 119, 64, 75, 79],
-                10: [104, 117, 121, 65, 76, 80], 11: [106, 119, 123, 66, 77, 81], 12: [108, 121, 125, 67, 78, 82]
-            },
-            female: {
-                1: [86, 98, 102, 44, 55, 59], 2: [88, 101, 105, 48, 59, 63], 3: [91, 103, 107, 52, 63, 67],
-                4: [93, 105, 109, 55, 66, 70], 5: [95, 107, 111, 57, 68, 72], 6: [96, 109, 113, 59, 70, 74],
-                7: [98, 110, 114, 61, 72, 76], 8: [100, 112, 116, 62, 73, 77], 9: [102, 114, 118, 64, 75, 79],
-                10: [104, 116, 120, 65, 76, 80], 11: [106, 118, 122, 67, 77, 82], 12: [108, 120, 124, 68, 79, 83]
-            }
-        };
-
-        let stageText = ""; 
-        let stageClass = "";
-        let sysDetail = ""; 
-        let diaDetail = "";
-        let targetNormal = ""; 
-        let targetCkd = "";
+        let stageText = "", stageClass = "", borderColor = "";
+        let sysDetail = "", diaDetail = "";
+        let targetNormal = "", targetCkd = "";
+        let actions = [];
 
         if (age >= 13) {
-            // AAP 2017: Trẻ >= 13 tuổi áp dụng ngưỡng tuyệt đối
-            if (sys >= 140 || dia >= 90) { stageText = "TĂNG HA ĐỘ 2"; stageClass = "bg-red"; }
-            else if (sys >= 130 || dia >= 80) { stageText = "TĂNG HA ĐỘ 1"; stageClass = "bg-orange"; }
-            else if (sys >= 120 && dia < 80) { stageText = "HA TĂNG CAO (Elevated)"; stageClass = "bg-yellow"; }
-            else { stageText = "BÌNH THƯỜNG"; stageClass = "bg-green"; }
+            // ==========================================
+            // LOGIC CHO TRẺ >= 13 TUỔI (Không dùng Bách phân vị)
+            // ==========================================
+            if (sys >= 140 || dia >= 90) { 
+                stageText = "TĂNG HA ĐỘ 2"; stageClass = "bg-red"; borderColor = "#dc3545";
+                actions = ["Đánh giá tổn thương cơ quan đích (Siêu âm tim, soi đáy mắt).", "Khởi trị bằng thuốc hạ áp ngay.", "Kiểm tra lại trong vòng 1 tuần."];
+            }
+            else if (sys >= 130 || dia >= 80) { 
+                stageText = "TĂNG HA ĐỘ 1"; stageClass = "bg-orange"; borderColor = "#fd7e14";
+                actions = ["Tư vấn thay đổi lối sống (DASH diet, vận động).", "Đo lại sau 1-2 tuần.", "Khởi trị thuốc nếu không cải thiện sau 3 lần khám."];
+            }
+            else if (sys >= 120 && dia < 80) { 
+                stageText = "HA TĂNG CAO (Elevated)"; stageClass = "bg-yellow"; borderColor = "#ffc107";
+                actions = ["Can thiệp lối sống (Dinh dưỡng, giảm cân nếu có béo phì).", "Đo lại sau 6 tháng."];
+            }
+            else { 
+                stageText = "BÌNH THƯỜNG"; stageClass = "bg-green"; borderColor = "#28a745";
+                actions = ["Duy trì lối sống lành mạnh.", "Đo huyết áp định kỳ hàng năm."];
+            }
 
-            sysDetail = `${sys} mmHg`;
-            diaDetail = `${dia} mmHg`;
+            sysDetail = `${sys} mmHg (Ngưỡng tham chiếu tĩnh)`;
+            diaDetail = `${dia} mmHg (Ngưỡng tham chiếu tĩnh)`;
             targetNormal = "Mục tiêu: < 120 / 80 mmHg";
             targetCkd = "Mục tiêu SBP / MAP: ≤ 120 / 80 mmHg (Theo KDIGO 2021)";
             
         } else {
-            // AAP 2017: Trẻ < 13 tuổi áp dụng bách phân vị
-            let safeAge = age < 1 ? 1 : (age > 12 ? 12 : age);
-            let refs = aapData[gender][safeAge];
+            // ==========================================
+            // LOGIC CHO TRẺ < 13 TUỔI (Sử dụng Thuật toán Nội suy)
+            // ==========================================
+            const refs = getThresholds(age, height, gender);
+            const heightNote = refs.usedDefaultHeight ? "Đã dùng Chiều cao chuẩn 50th" : "Đã hiệu chỉnh theo Chiều cao";
             
-            let s50 = refs[0], s90 = refs[1], s95 = refs[2];
-            let d50 = refs[3], d90 = refs[4], d95 = refs[5];
+            // AAP 2017 Rule: Độ 1 bị giới hạn trần (cap) ở 130/80
+            const stage1_sys_cap = Math.min(refs.s95 + 12, 139); 
+            const stage1_dia_cap = Math.min(refs.d95 + 12, 89);
 
             let sysStage = 0;
-            if (sys >= s95 + 12 || sys >= 140) sysStage = 3;
-            else if (sys >= s95 || (sys >= 130 && sys <= 139)) sysStage = 2;
-            else if (sys >= s90 || (sys >= 120 && sys < 130)) sysStage = 1;
+            if (sys >= (refs.s95 + 12) || sys >= 140) sysStage = 3;
+            else if (sys >= refs.s95 || sys >= 130) sysStage = 2;
+            else if (sys >= refs.s90 || sys >= 120) sysStage = 1;
 
             let diaStage = 0;
-            if (dia >= d95 + 12 || dia >= 90) diaStage = 3;
-            else if (dia >= d95 || (dia >= 80 && dia <= 89)) diaStage = 2;
-            else if (dia >= d90 || (dia >= 80 && dia < 80)) diaStage = 1;
+            if (dia >= (refs.d95 + 12) || dia >= 90) diaStage = 3;
+            else if (dia >= refs.d95 || dia >= 80) diaStage = 2;
+            else if (dia >= refs.d90) diaStage = 1;
 
             let finalStage = Math.max(sysStage, diaStage);
 
-            if (finalStage === 3) { stageText = "TĂNG HA ĐỘ 2"; stageClass = "bg-red"; }
-            else if (finalStage === 2) { stageText = "TĂNG HA ĐỘ 1"; stageClass = "bg-orange"; }
-            else if (finalStage === 1) { stageText = "HA TĂNG CAO (Elevated)"; stageClass = "bg-yellow"; }
-            else { stageText = "BÌNH THƯỜNG"; stageClass = "bg-green"; }
+            if (finalStage === 3) { 
+                stageText = "TĂNG HA ĐỘ 2"; stageClass = "bg-red"; borderColor = "#dc3545";
+                actions = ["Cần đánh giá lâm sàng chuyên khoa gấp.", "Khởi trị thuốc hạ áp, siêu âm tim, kiểm tra võng mạc."];
+            }
+            else if (finalStage === 2) { 
+                stageText = "TĂNG HA ĐỘ 1"; stageClass = "bg-orange"; borderColor = "#fd7e14";
+                actions = ["Thay đổi lối sống.", "Lặp lại đo HA trong 1-2 tuần.", "Đánh giá siêu âm tim nếu HA vẫn ở mức Độ 1."];
+            }
+            else if (finalStage === 1) { 
+                stageText = "HA TĂNG CAO (Elevated)"; stageClass = "bg-yellow"; borderColor = "#ffc107";
+                actions = ["Giáo dục dinh dưỡng, kiểm soát cân nặng.", "Hẹn đo lại sau 6 tháng."];
+            }
+            else { 
+                stageText = "BÌNH THƯỜNG"; stageClass = "bg-green"; borderColor = "#28a745";
+                actions = ["Đo huyết áp định kỳ hàng năm."];
+            }
 
-            sysDetail = `${sys} mmHg (Ngưỡng 95th: ${s95})`;
-            diaDetail = `${dia} mmHg (Ngưỡng 95th: ${d95})`;
+            sysDetail = `${sys} mmHg <br><span style="font-size:12px; color:#666;">(Ngưỡng 90th: ${refs.s90} | 95th: ${refs.s95} - ${heightNote})</span>`;
+            diaDetail = `${dia} mmHg <br><span style="font-size:12px; color:#666;">(Ngưỡng 90th: ${refs.d90} | 95th: ${refs.d95})</span>`;
             
-            targetNormal = `Mục tiêu (Bách phân vị < 90th): < ${s90} / ${d90} mmHg`;
-            targetCkd = `Mục tiêu (Bách phân vị < 50th): ≤ ${s50} / ${d50} mmHg`;
+            targetNormal = `Mục tiêu (Bách phân vị < 90th): < ${refs.s90} / ${refs.d90} mmHg`;
+            targetCkd = `Mục tiêu (Bách phân vị < 50th): ≤ ${refs.s50} / ${refs.d50} mmHg`;
         }
 
+        // ==========================================
+        // CẬP NHẬT GIAO DIỆN TỔNG THỂ
+        // ==========================================
         const stageEl = document.getElementById('bpStageText');
-        stageEl.innerText = stageText;
+        stageEl.innerHTML = stageText;
         stageEl.className = `result-value badge ${stageClass}`;
 
-        document.getElementById('bpSysDetail').innerText = sysDetail;
-        document.getElementById('bpDiaDetail').innerText = diaDetail;
-        document.getElementById('bpMapDetail').innerText = `${mapVal.toFixed(1)} mmHg`;
+        document.getElementById('bpSysDetail').innerHTML = sysDetail;
+        document.getElementById('bpDiaDetail').innerHTML = diaDetail;
+        document.getElementById('bpMapDetail').innerHTML = `<strong>${mapVal.toFixed(1)} mmHg</strong>`;
         
-        document.getElementById('targetNormal').innerText = targetNormal;
-        document.getElementById('targetCkd').innerText = targetCkd;
+        document.getElementById('targetNormal').innerHTML = targetNormal;
+        document.getElementById('targetCkd').innerHTML = targetCkd;
 
-        document.getElementById('bpResultSection').style.display = 'block';
-        setTimeout(() => { document.getElementById('bpResultSection').scrollIntoView({ behavior: 'smooth' }); }, 100);
+        // Cập nhật Khuyến cáo
+        document.getElementById('actionCard').style.borderLeftColor = borderColor;
+        const actionList = document.getElementById('actionList');
+        actionList.innerHTML = "";
+        actions.forEach(action => {
+            let li = document.createElement('li');
+            li.style.marginBottom = "4px";
+            li.innerText = action;
+            actionList.appendChild(li);
+        });
+
+        // Hiển thị kết quả & cuộn mượt
+        const resultSection = document.getElementById('bpResultSection');
+        resultSection.style.display = 'block';
+        setTimeout(() => { resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
     }
 </script>
