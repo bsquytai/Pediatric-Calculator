@@ -1,15 +1,22 @@
 <style>
-    /* KHUÔN MẪU ACCORDION (Quy chuẩn III.1) */
+    /* KHUÔN MẪU ACCORDION CHUẨN (Quy chuẩn III.1) */
     .accordion-btn { width: 100%; text-align: left; background-color: var(--surface); color: var(--text); padding: 16px 20px; border: 1px solid var(--border); border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
     .accordion-btn.active { background-color: var(--primary); color: #ffffff; border-color: var(--primary); border-bottom-left-radius: 0; border-bottom-right-radius: 0; margin-bottom: 0; }
     .accordion-content { display: none; padding: 20px; border: 1px solid var(--primary); border-top: none; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; margin-top: 0; margin-bottom: 16px; background-color: #f9fafb; animation: fadeIn 0.3s ease-in-out; box-sizing: border-box; width: 100%; }
     .accordion-content.show { display: block; }
+    
+    /* Tuỳ biến Accordion Cờ đỏ */
+    .accordion-btn.danger-btn { border-color: #fca5a5; }
+    .accordion-btn.danger-btn span { color: var(--danger); }
+    .accordion-btn.danger-btn.active { background-color: var(--danger); border-color: var(--danger); }
+    .accordion-btn.danger-btn.active span { color: #ffffff; }
+    .accordion-content.danger-content { border-color: var(--danger); background-color: #fef2f2; }
+
     @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* KHUÔN MẪU HỘP THÔNG TIN PHÂN MÀU (Quy chuẩn III.2) */
-    .info-box { padding: 16px; border-radius: 10px; margin-bottom: 16px; background-color: #f9fafb; border-left: 4px solid var(--border); }
-    .info-box-title { font-size: 14px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-    .info-box-content { font-size: 15px; color: var(--text); line-height: 1.6; white-space: pre-line; }
+    /* KHUÔN MẪU HỘP THÔNG TIN (Quy chuẩn III.2) */
+    .info-box { padding: 16px; border-radius: 10px; margin-bottom: 16px; background-color: #f9fafb; border-left: 4px solid var(--border); white-space: pre-line; line-height: 1.6; }
+    .info-box-title { font-size: 12px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
     
     .box-primary { background-color: #eff6ff; border-left-color: var(--primary); } 
     .box-primary .info-box-title { color: var(--primary-dark); }
@@ -20,11 +27,17 @@
     .box-warning { background-color: #fffbeb; border-left-color: var(--warning); } 
     .box-warning .info-box-title { color: #b45309; }
 
-    /* Bổ sung hộp màu xanh cho trạng thái Bình thường */
     .box-success { background-color: #f0fdf4; border-left-color: var(--success); }
     .box-success .info-box-title { color: #15803d; }
 
-    /* UI Cho Bảng kiểm (Checklist) */
+    /* QUY CHUẨN THAM CHIẾU Y KHOA (Quy chuẩn III.3) */
+    .ref-card { margin-top: 24px; background-color: #f8fafc; border: 1px solid #cbd5e1; padding: 16px; border-radius: 8px; }
+    .ref-title { font-size: 15px; font-weight: 700; color: #334155; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .ref-list { padding-left: 20px; font-size: 13px; color: #475569; line-height: 1.6; }
+    .ref-list li { margin-bottom: 8px; }
+    .ref-source { font-size: 11px; color: #94a3b8; margin-top: 16px; border-top: 1px dashed #cbd5e1; padding-top: 8px; }
+
+    /* UI UI Checklist Lâm sàng */
     .check-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px dashed var(--border); cursor: pointer; transition: background 0.2s; }
     .check-item:last-child { border-bottom: none; }
     .check-item:hover { background-color: rgba(37, 99, 235, 0.05); }
@@ -34,11 +47,13 @@
     .check-label { font-size: 15px; color: var(--text); line-height: 1.5; flex: 1; cursor: pointer; }
 </style>
 
+<!-- KHỐI TIÊU ĐỀ -->
 <div class="header">
     <h1>Bảng Kiểm Phát Triển AAP</h1>
-    <p>Chấm điểm & đánh giá lâm sàng theo mốc tuổi</p>
+    <p>Chấm điểm & đánh giá vận động, ngôn ngữ, nhận thức</p>
 </div>
 
+<!-- KHỐI CHỌN MỐC TUỔI -->
 <div class="card">
     <div class="card-title">1. Chọn mốc tuổi đánh giá</div>
     <div class="form-row">
@@ -62,40 +77,56 @@
     </div>
 </div>
 
+<!-- VÙNG HIỂN THỊ DỮ LIỆU ĐỘNG -->
 <div id="milestone-display"></div>
 
-<div class="card bg-gray" style="margin-top: 24px;">
-    <h4 style="color: var(--text); border-bottom: 1px solid #d1d5db; padding-bottom: 8px; font-size: 15px; font-weight: 600;">📚 Cơ Sở Lâm Sàng (AAP/CDC 2022)</h4>
-    <div class="info-box-content" style="font-size: 14px; margin-top: 12px;">
-        - Tiêu chuẩn 75%: Các mốc kỳ vọng hiện tại được thiết lập dựa trên mức 75% trẻ em làm được (thay vì 50% như trước 2022). Do đó, trẻ thiếu <b>BẤT KỲ</b> mốc nào ở độ tuổi tương ứng cũng yêu cầu hành động, loại bỏ phương pháp "chờ đợi".
-        - Sàng lọc ASD (Tự kỷ): Bắt buộc thực hiện thang điểm M-CHAT-R/F ở mốc 18 và 24 tháng.
-        - Hiệu chỉnh sinh non: Bắt buộc áp dụng tuổi hiệu chỉnh đối với trẻ sinh < 37 tuần cho đến khi trẻ tròn 24 tháng tuổi.
-        - Thoái triển (Regression): Mất đi kỹ năng đã có là dấu hiệu báo động đỏ ở mọi lứa tuổi.
+<!-- KHỐI THAM CHIẾU Y KHOA TUYỆT ĐỐI (Quy chuẩn III.3) -->
+<div class="ref-card">
+    <div class="ref-title">
+        📚 CƠ SỞ LÂM SÀNG (AAP/CDC 2022)
+    </div>
+    <ul class="ref-list">
+        <li><strong>Tiêu chuẩn 75%:</strong> Các mốc kỳ vọng hiện tại được thiết lập dựa trên mức 75% trẻ em làm được (thay vì 50% như trước 2022). Do đó, trẻ thiếu <b>BẤT KỲ</b> mốc nào ở độ tuổi tương ứng cũng yêu cầu hành động (chuyển gửi chuyên khoa hoặc dùng thang đo sâu hơn), chấm dứt hoàn toàn phương pháp "chờ đợi" (wait-and-see).</li>
+        <li><strong>Sàng lọc Tự kỷ (ASD):</strong> Bắt buộc thực hiện đánh giá bằng thang điểm M-CHAT-R/F tại mốc 18 tháng và 24 tháng.</li>
+        <li><strong>Hiệu chỉnh sinh non:</strong> Bắt buộc áp dụng tuổi hiệu chỉnh đối với trẻ sinh non &lt; 37 tuần cho đến khi trẻ tròn 24 tháng tuổi.</li>
+        <li><strong>Thoái triển (Regression):</strong> Việc mất đi các kỹ năng ngôn ngữ, giao tiếp hoặc vận động đã từng có là dấu hiệu báo động đỏ ở BẤT KỲ lứa tuổi nào.</li>
+    </ul>
+    <div class="ref-source">
+        Nguồn: Bảng kiểm tra phát triển "Learn the Signs. Act Early." - Hợp tác giữa Trung tâm Kiểm soát & Phòng ngừa Dịch bệnh (CDC) và Viện Hàn lâm Nhi khoa Hoa Kỳ (AAP), Bản cập nhật 2022.
     </div>
 </div>
 
 <script>
-    // Logic điều khiển Accordion chuẩn
+    // Logic Accordion: Exclusive Open (Chỉ mở 1 tab, tự động đóng tab khác)
     function toggleAccordion(contentId, btnElement) {
-        btnElement.classList.toggle("active");
-        const span = btnElement.querySelector('span');
-        if (btnElement.classList.contains('active')) {
-            span.innerHTML = span.innerHTML.replace('[+]', '[-]');
-        } else {
-            span.innerHTML = span.innerHTML.replace('[-]', '[+]');
+        const isCurrentlyActive = btnElement.classList.contains("active");
+
+        // 1. Đóng tất cả các nút và nội dung
+        document.querySelectorAll('.accordion-btn').forEach(btn => {
+            btn.classList.remove("active");
+            const span = btn.querySelector('span');
+            if (span) span.innerHTML = span.innerHTML.replace('[-]', '[+]');
+        });
+        document.querySelectorAll('.accordion-content').forEach(content => {
+            content.classList.remove("show");
+        });
+
+        // 2. Nếu nút vừa bấm chưa được mở, thì mở nó lên
+        if (!isCurrentlyActive) {
+            btnElement.classList.add("active");
+            const span = btnElement.querySelector('span');
+            if (span) span.innerHTML = span.innerHTML.replace('[+]', '[-]');
+            document.getElementById(contentId).classList.add("show");
         }
-        const content = document.getElementById(contentId);
-        content.classList.toggle("show");
     }
 
-    // Hàm phụ: Tạo danh sách checklist HTML
+    // Hàm sinh danh sách Checkbox
     function buildChecklist(items, isRedFlag = false) {
         if (!items || items.length === 0) return '';
         const itemClass = isRedFlag ? "danger-item" : "";
         const checkboxClass = isRedFlag ? "redflag-check" : "milestone-check";
         
-        return items.map((item, index) => {
-            // Tạo ID ngẫu nhiên cho thẻ label liên kết với checkbox
+        return items.map(item => {
             const uniqueId = Math.random().toString(36).substr(2, 9);
             return `
                 <label class="check-item ${itemClass}" for="${uniqueId}">
@@ -106,15 +137,15 @@
         }).join('');
     }
 
-    // Tải bảng kiểm
+    // Render động bảng kiểm theo tuổi
     function renderMilestoneChecklist(ageKey) {
         const displayDiv = document.getElementById('milestone-display');
         
         if (typeof milestoneData === 'undefined' || !milestoneData[ageKey]) {
             displayDiv.innerHTML = `
                 <div class="info-box box-warning">
-                    <div class="info-box-title">⚠️ Đang cập nhật</div>
-                    <div class="info-box-content">Chưa tải được dữ liệu file data_milestones.js.</div>
+                    <div class="info-box-title">⚠️ LỖI TRUY XUẤT DỮ LIỆU</div>
+                    <div class="info-box-content">Không tìm thấy dữ liệu trong biến milestoneData. Vui lòng kiểm tra lại file data_milestones.js.</div>
                 </div>`;
             return;
         }
@@ -123,45 +154,46 @@
         
         let html = `<div class="card" style="margin-bottom: 12px;"><div class="card-title">2. Bảng kiểm lâm sàng (Tích vào các mốc trẻ ĐÃ ĐẠT ĐƯỢC)</div>`;
 
+        // Tất cả Accordion đều Rút Gọn mặc định (Không có class 'active' và 'show')
         html += `
-            <button class="accordion-btn active" onclick="toggleAccordion('acc-social', this)"><span>[-] Xã hội / Cảm xúc</span></button>
-            <div id="acc-social" class="accordion-content show">${buildChecklist(data.social)}</div>
+            <button class="accordion-btn" onclick="toggleAccordion('acc-social', this)"><span>[+] Xã hội / Cảm xúc</span></button>
+            <div id="acc-social" class="accordion-content">${buildChecklist(data.social)}</div>
             
-            <button class="accordion-btn active" onclick="toggleAccordion('acc-lang', this)"><span>[-] Ngôn ngữ / Giao tiếp</span></button>
-            <div id="acc-lang" class="accordion-content show">${buildChecklist(data.language)}</div>
+            <button class="accordion-btn" onclick="toggleAccordion('acc-lang', this)"><span>[+] Ngôn ngữ / Giao tiếp</span></button>
+            <div id="acc-lang" class="accordion-content">${buildChecklist(data.language)}</div>
             
-            <button class="accordion-btn active" onclick="toggleAccordion('acc-cog', this)"><span>[-] Nhận thức / Học hỏi</span></button>
-            <div id="acc-cog" class="accordion-content show">${buildChecklist(data.cognitive)}</div>
+            <button class="accordion-btn" onclick="toggleAccordion('acc-cog', this)"><span>[+] Nhận thức / Học hỏi</span></button>
+            <div id="acc-cog" class="accordion-content">${buildChecklist(data.cognitive)}</div>
             
-            <button class="accordion-btn active" onclick="toggleAccordion('acc-motor', this)"><span>[-] Vận động (Thô & Tinh)</span></button>
-            <div id="acc-motor" class="accordion-content show">${buildChecklist(data.motor)}</div>
+            <button class="accordion-btn" onclick="toggleAccordion('acc-motor', this)"><span>[+] Vận động (Thô & Tinh)</span></button>
+            <div id="acc-motor" class="accordion-content">${buildChecklist(data.motor)}</div>
         `;
 
-        html += `</div>`; // Đóng card bảng kiểm
+        html += `</div>`; // Đóng card bảng kiểm chính
 
-        // Cờ Đỏ
-        html += `<div class="card" style="border: 1px solid #fecaca; background-color: #fef2f2;">
-            <div class="card-title" style="color: #dc2626; border-bottom-color: #fecaca;">🚨 Dấu hiệu Cờ Đỏ (Tích nếu trẻ CÓ biểu hiện này)</div>
-            ${buildChecklist(data.red_flags, true)}
-        </div>`;
+        // Accordion Cờ Đỏ (Giao diện tách biệt)
+        html += `
+            <button class="accordion-btn danger-btn" onclick="toggleAccordion('acc-redflag', this)"><span>[+] 🚨 Dấu hiệu Cờ Đỏ (Tích nếu CÓ biểu hiện này)</span></button>
+            <div id="acc-redflag" class="accordion-content danger-content">${buildChecklist(data.red_flags, true)}</div>
+        `;
 
         // Nút đánh giá
-        html += `<button class="btn" onclick="evaluateMilestone()">Tính điểm & Đánh giá Kết quả</button>`;
+        html += `<button class="btn" style="margin-top: 16px;" onclick="evaluateMilestone()">Tính điểm & Phân tích Kết quả</button>`;
         
         // Vùng chứa kết quả
-        html += `<div id="evaluation-result" style="margin-top: 20px;"></div>`;
+        html += `<div id="evaluation-result" style="margin-top: 24px;"></div>`;
 
-        // Lời khuyên
+        // Lời khuyên tư vấn (Mở sẵn ở dạng info-box tĩnh)
         html += `
-            <div class="info-box box-primary" style="margin-top: 16px;">
-                <div class="info-box-title">💡 Bác sĩ tư vấn cho gia đình</div>
+            <div class="info-box box-primary" style="margin-top: 24px;">
+                <div class="info-box-title">💡 BÁC SĨ TƯ VẤN CHO GIA ĐÌNH</div>
                 <div class="info-box-content">${data.advice.map(i => `• ${i}`).join('\n')}</div>
             </div>`;
 
         displayDiv.innerHTML = html;
     }
 
-    // Logic Đánh giá dựa theo tiêu chuẩn AAP 2022
+    // Thuật toán Chấm điểm & Đánh giá AAP 2022
     function evaluateMilestone() {
         const resultDiv = document.getElementById('evaluation-result');
         
@@ -169,53 +201,53 @@
         const checkedMilestones = document.querySelectorAll('.milestone-check:checked').length;
         const checkedRedFlags = document.querySelectorAll('.redflag-check:checked').length;
 
-        // Bỏ qua nếu chưa tích cái nào để tránh lỗi
         if (checkedMilestones === 0 && checkedRedFlags === 0) {
             resultDiv.innerHTML = `
                 <div class="info-box box-warning">
-                    <div class="info-box-title">⚠️ Nhắc nhở</div>
-                    <div class="info-box-content">Vui lòng đánh dấu vào các biểu hiện của trẻ để hệ thống có thể kết luận.</div>
+                    <div class="info-box-title">⚠️ NHẮC NHỞ</div>
+                    <div class="info-box-content">Vui lòng kiểm tra và đánh dấu vào các biểu hiện của trẻ để hệ thống có cơ sở phân loại kết quả.</div>
                 </div>`;
             return;
         }
 
         let html = '';
 
-        // Tình huống 1: Có Cờ Đỏ (Mức độ nghiêm trọng nhất)
+        // Tình huống 1: Phát hiện Cờ Đỏ
         if (checkedRedFlags > 0) {
             html = `
                 <div class="info-box box-danger">
                     <div class="info-box-title">🚨 BÁO ĐỘNG ĐỎ: YÊU CẦU CAN THIỆP CHUYÊN KHOA</div>
-                    <div class="info-box-content">Phát hiện <b>${checkedRedFlags} dấu hiệu Cờ Đỏ</b>. Trẻ cần được chuyển gửi ngay lập tức đến bác sĩ chuyên khoa Thần kinh Nhi, Tâm lý học, hoặc trung tâm can thiệp sớm để đánh giá toàn diện. Không áp dụng chiến lược theo dõi.</div>
+                    <div class="info-box-content">Hệ thống ghi nhận <b>${checkedRedFlags} dấu hiệu Cờ Đỏ</b>. 
+                    
+                    Kết luận lâm sàng: Trẻ cần được chuyển gửi ngay lập tức đến bác sĩ chuyên khoa Thần kinh Nhi, Chuyên gia Tâm lý học, hoặc trung tâm can thiệp sớm để đánh giá toàn diện. 
+                    Không áp dụng chiến lược theo dõi chờ đợi.</div>
                 </div>`;
         } 
-        // Tình huống 2: Thiếu mốc phát triển (Cảnh báo vàng)
+        // Tình huống 2: Thiếu mốc (Dù chỉ 1 mốc)
         else if (checkedMilestones < totalMilestones) {
             const missedCount = totalMilestones - checkedMilestones;
             html = `
                 <div class="info-box box-warning">
-                    <div class="info-box-title">⚠️ THEO DÕI SÁT: THIẾU MỐC PHÁT TRIỂN</div>
-                    <div class="info-box-content">Trẻ ĐẠT: ${checkedMilestones}/${totalMilestones} mốc. 
-                    Bị thiếu <b>${missedCount} mốc</b> so với kỳ vọng (chuẩn 75% của AAP).
+                    <div class="info-box-title">⚠️ THEO DÕI SÁT: THIẾU MỐC PHÁT TRIỂN KỲ VỌNG</div>
+                    <div class="info-box-content">Kết quả: Đạt ${checkedMilestones}/${totalMilestones} mốc. 
+                    Trẻ bị thiếu <b>${missedCount} mốc</b> so với kỳ vọng chuẩn 75% của AAP.
                     
-                    Khuyến cáo: Cần thực hiện các bảng hỏi sàng lọc chuẩn hóa sâu hơn (ví dụ: ASQ-3). Trao đổi kỹ với phụ huynh và hẹn lịch tái khám đánh giá lại sớm. Không chủ quan bỏ qua.</div>
+                    Khuyến cáo: Cần đánh giá sâu hơn bằng các bộ công cụ chuẩn hóa đặc hiệu (ví dụ: ASQ-3). Bác sĩ cần trao đổi kỹ với phụ huynh về lĩnh vực phát triển bị chậm và thiết lập lịch tái khám đánh giá lại sớm.</div>
                 </div>`;
         } 
-        // Tình huống 3: Bình thường
+        // Tình huống 3: Pass 100%
         else {
             html = `
                 <div class="info-box box-success">
                     <div class="info-box-title">✅ PHÁT TRIỂN BÌNH THƯỜNG / PHÙ HỢP LỨA TUỔI</div>
-                    <div class="info-box-content">Trẻ ĐẠT: ${checkedMilestones}/${totalMilestones} mốc (100%).
-                    Không ghi nhận dấu hiệu cờ đỏ nào.
+                    <div class="info-box-content">Kết quả: Đạt ${checkedMilestones}/${totalMilestones} mốc (100%).
+                    Không ghi nhận bất kỳ dấu hiệu cờ đỏ nào.
                     
-                    Khuyến cáo: Trẻ đang phát triển hoàn toàn phù hợp với độ tuổi. Tiếp tục duy trì các biện pháp giáo dục, dinh dưỡng và tư vấn phòng ngừa sinh hoạt cho gia đình.</div>
+                    Kết luận lâm sàng: Trẻ đang phát triển kỹ năng hoàn toàn phù hợp với độ tuổi. Đề nghị tiếp tục duy trì các biện pháp giáo dục, chăm sóc dinh dưỡng và tư vấn phòng ngừa sinh hoạt cho gia đình.</div>
                 </div>`;
         }
 
         resultDiv.innerHTML = html;
-        
-        // Cuộn màn hình tới kết quả
         resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 </script>
