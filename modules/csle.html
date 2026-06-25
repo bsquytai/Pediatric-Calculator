@@ -98,6 +98,21 @@
         box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2); transition: background-color 0.2s;
     }
     .btn-calc:hover { background-color: #1e3a8a; }
+
+    /* Custom Styles cho Phần tóm tắt hệ cơ quan chuyên sâu */
+    .organ-summary-title {
+        text-align: left; font-size: 15px; font-weight: 700; color: #1e293b; 
+        margin-top: 20px; margin-bottom: 10px; padding-top: 10px; border-top: 1px solid #e2e8f0;
+    }
+    .organ-block {
+        text-align: left; background: #fff; border: 1px solid #e2e8f0; 
+        border-radius: 6px; padding: 12px; margin-bottom: 8px; border-left-width: 4px;
+    }
+    .organ-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .organ-name { font-weight: 700; font-size: 14px; color: #334155; }
+    .organ-badge { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; color: #fff; }
+    .organ-items { font-size: 13px; color: #475569; margin-bottom: 6px; padding-left: 16px; }
+    .organ-clinical-note { font-size: 12px; font-style: italic; color: #1e3a8a; background: #f0fdf4; padding: 6px 10px; border-radius: 4px; border-left: 2px solid #22c55e; }
 </style>
 
 <div class="header">
@@ -231,55 +246,62 @@
     <div class="cb-group">
         <h4>Mức độ Rất nặng (8 Điểm)</h4>
         <div class="cb-grid">
-            <label class="cb-label"><input type="checkbox" class="sledai-item" value="8"> Co giật</label>
-            <label class="cb-label"><input type="checkbox" class="sledai-item" value="8"> Rối loạn tâm thần</label>
-            <label class="cb-label"><input type="checkbox" class="sledai-item" value="8"> Hội chứng Não thực thể</label>
-            <label class="cb-label"><input type="checkbox" class="sledai-item" value="8"> Rối loạn thị giác</label>
-            <label class="cb-label"><input type="checkbox" class="sledai-item" value="8"> Rối loạn thần kinh sọ</label>
-            <label class="cb-label"><input type="checkbox" class="sledai-item" value="8"> Đau đầu Lupus</label>
-            <label class="cb-label"><input type="checkbox" class="sledai-item" value="8"> Tai biến mạch máu não</label>
-            <label class="cb-label"><input type="checkbox" class="sledai-item" value="8"> Viêm mạch máu</label>
+            <label class="cb-label"><input type="checkbox" class="sledai-item" data-organ="cns" data-name="Co giật" value="8"> Co giật</label>
+            <label class="cb-label"><input type="checkbox" class="sledai-item" data-organ="cns" data-name="Rối loạn tâm thần" value="8"> Rối loạn tâm thần</label>
+            <label class="cb-label"><input type="checkbox" class="sledai-item" data-organ="cns" data-name="Hội chứng Não thực thể" value="8"> Hội chứng Não thực thể</label>
+            <label class="cb-label"><input type="checkbox" class="sledai-item" data-organ="cns" data-name="Rối loạn thị giác" value="8"> Rối loạn thị giác</label>
+            <label class="cb-label"><input type="checkbox" class="sledai-item" data-organ="cns" data-name="Rối loạn thần kinh sọ" value="8"> Rối loạn thần kinh sọ</label>
+            <label class="cb-label"><input type="checkbox" class="sledai-item" data-organ="cns" data-name="Đau đầu Lupus" value="8"> Đau đầu Lupus</label>
+            <label class="cb-label"><input type="checkbox" class="sledai-item" data-organ="cns" data-name="Tai biến mạch máu não" value="8"> Tai biến mạch máu não</label>
+            <label class="cb-label"><input type="checkbox" class="sledai-item" data-organ="vascular" data-name="Viêm mạch máu" value="8"> Viêm mạch máu</label>
         </div>
     </div>
 
     <div class="cb-group">
         <h4>Mức độ Nặng (4 Điểm)</h4>
         <div class="cb-grid">
-            <label class="cb-label"><input type="checkbox" class="sledai-item" value="4"> Viêm khớp</label>
-            <label class="cb-label"><input type="checkbox" class="sledai-item" value="4"> Viêm cơ</label>
-            <label class="cb-label"><input type="checkbox" class="sledai-item" value="4"> Trụ niệu (Hạt/HC)</label>
-            <label class="cb-label"><input type="checkbox" class="sledai-item" value="4"> Tiểu máu (>5 HC)</label>
-            <label class="cb-label"><input type="checkbox" class="sledai-item" value="4"> Protein niệu (>0.5g/24h)</label>
-            <label class="cb-label"><input type="checkbox" class="sledai-item" value="4"> Tiểu mủ (>5 BC)</label>
+            <label class="cb-label"><input type="checkbox" class="sledai-item" data-organ="msk" data-name="Viêm khớp" value="4"> Viêm khớp</label>
+            <label class="cb-label"><input type="checkbox" class="sledai-item" data-organ="msk" data-name="Viêm cơ" value="4"> Viêm cơ</label>
+            <label class="cb-label"><input type="checkbox" class="sledai-item" data-organ="renal" data-name="Trụ niệu" value="4"> Trụ niệu (Hạt/HC)</label>
+            <label class="cb-label"><input type="checkbox" class="sledai-item" data-organ="renal" data-name="Tiểu máu" value="4"> Tiểu máu (>5 HC)</label>
+            <label class="cb-label"><input type="checkbox" class="sledai-item" data-organ="renal" data-name="Protein niệu" value="4"> Protein niệu (>0.5g/24h)</label>
+            <label class="cb-label"><input type="checkbox" class="sledai-item" data-organ="renal" data-name="Tiểu mủ" value="4"> Tiểu mủ (>5 BC)</label>
         </div>
     </div>
 
     <div class="cb-group">
         <h4>Mức độ Trung bình (2 Điểm)</h4>
         <div class="cb-grid">
-            <label class="cb-label"><input type="checkbox" class="sledai-item" value="2"> Ban da mới</label>
-            <label class="cb-label"><input type="checkbox" class="sledai-item" value="2"> Rụng tóc</label>
-            <label class="cb-label"><input type="checkbox" class="sledai-item" value="2"> Loét niêm mạc</label>
-            <label class="cb-label"><input type="checkbox" class="sledai-item" value="2"> Viêm màng phổi</label>
-            <label class="cb-label"><input type="checkbox" class="sledai-item" value="2"> Viêm ngoài tim</label>
-            <label class="cb-label"><input type="checkbox" class="sledai-item" value="2"> Giảm bổ thể</label>
-            <label class="cb-label"><input type="checkbox" class="sledai-item" value="2"> Tăng gắn kết DNA</label>
+            <label class="cb-label"><input type="checkbox" class="sledai-item" data-organ="skin" data-name="Ban da mới" value="2"> Ban da mới</label>
+            <label class="cb-label"><input type="checkbox" class="sledai-item" data-organ="skin" data-name="Rụng tóc" value="2"> Rụng tóc</label>
+            <label class="cb-label"><input type="checkbox" class="sledai-item" data-organ="skin" data-name="Loét niêm mạc" value="2"> Loét niêm mạc</label>
+            <label class="cb-label"><input type="checkbox" class="sledai-item" data-organ="serosal" data-name="Viêm màng phổi" value="2"> Viêm màng phổi</label>
+            <label class="cb-label"><input type="checkbox" class="sledai-item" data-organ="serosal" data-name="Viêm ngoài tim" value="2"> Viêm ngoài tim</label>
+            <label class="cb-label"><input type="checkbox" class="sledai-item" data-organ="imm" data-name="Giảm bổ thể" value="2"> Giảm bổ thể</label>
+            <label class="cb-label"><input type="checkbox" class="sledai-item" data-organ="imm" data-name="Tăng gắn kết DNA" value="2"> Tăng gắn kết DNA</label>
         </div>
     </div>
 
     <div class="cb-group">
         <h4>Mức độ Nhẹ (1 Điểm)</h4>
         <div class="cb-grid">
-            <label class="cb-label"><input type="checkbox" class="sledai-item" value="1"> Sốt (>38°C)</label>
-            <label class="cb-label"><input type="checkbox" class="sledai-item" value="1"> Giảm tiểu cầu (<100K)</label>
-            <label class="cb-label"><input type="checkbox" class="sledai-item" value="1"> Giảm bạch cầu (<3K)</label>
+            <label class="cb-label"><input type="checkbox" class="sledai-item" data-organ="constitutional" data-name="Sốt" value="1"> Sốt (>38°C)</label>
+            <label class="cb-label"><input type="checkbox" class="sledai-item" data-organ="hem" data-name="Giảm tiểu cầu" value="1"> Giảm tiểu cầu (<100K)</label>
+            <label class="cb-label"><input type="checkbox" class="sledai-item" data-organ="hem" data-name="Giảm bạch cầu" value="1"> Giảm bạch cầu (<3K)</label>
         </div>
     </div>
     
     <button class="btn-calc" onclick="calcSLEDAI()">TÍNH ĐIỂM SLEDAI-2K</button>
-    <div class="score-box" id="sledai-result-box" style="display:none; text-align: center; margin-top: 15px; padding: 20px; background: #ffffff; border-radius: 8px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-        <div id="sledai-score" class="score-val" style="font-size: 28px; font-weight: bold; color: var(--text);">0 Điểm</div>
-        <div id="sledai-result-text" class="badge" style="font-size: 16px; margin-top: 12px; padding: 8px 16px; color: white;">--</div>
+    
+    <div class="score-box" id="sledai-result-box" style="display:none; margin-top: 15px; padding: 20px; background: #ffffff; border-radius: 8px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+        <div style="text-align: center;">
+            <div id="sledai-score" class="score-val" style="font-size: 32px; font-weight: bold; color: var(--text);">0 Điểm</div>
+            <div id="sledai-result-text" class="badge" style="font-size: 15px; margin-top: 8px; padding: 8px 16px; color: white; display: inline-block;">--</div>
+        </div>
+
+        <div class="organ-summary-title">📊 Bức tranh Lâm sàng & Định hướng Phác đồ Đích:</div>
+        <div id="sledai-organ-summary">
+            </div>
     </div>
 </div>
 
@@ -309,7 +331,6 @@
 
 <script>
     function toggleAccordion(contentId, btn) {
-        // Đóng các thẻ đang mở (tùy chọn: giúp giao diện gọn hơn)
         document.querySelectorAll('.accordion-content').forEach(content => {
             if (content.id !== contentId && content.classList.contains('show')) {
                 content.classList.remove('show');
@@ -401,25 +422,49 @@
 
     function calcSLEDAI() {
         let total = 0;
+        
+        // Bản đồ định khu ma trận hệ cơ quan chuyên sâu (Organ Domain Mapping)
+        let organMatrix = {
+            cns: { name: "Thần kinh Trung ương (Neuropsychiatric)", badge: "🔴 NGUY KỊCH / ĐE DỌA TÍNH MẠNG", color: "#dc3545", items: [], note: "Có tổn thương thần kinh trung ương cấp. Cần chỉ định khẩn Corticosteroid truyền tĩnh mạch liều cao (Methylprednisolone Pulse therapy) kết hợp thuốc ức chế miễn dịch mạnh (Cyclophosphamide hoặc Rituximab)." },
+            vascular: { name: "Hệ Mạch máu (Vasculitis)", badge: "🔴 NGUY KỊCH", color: "#dc3545", items: [], note: "Viêm mạch hệ thống đang hoạt động dữ dội. Theo dõi sát nguy cơ hoại tử đầu chi hoặc thiếu máu cục bộ tạng. Tối ưu hóa liều Corticosteroid tấn công." },
+            renal: { name: "Thận (Renal / Thận Lupus)", badge: "🟠 NẶNG / TỔN THƯƠNG CƠ QUAN ĐÍCH", color: "#fd7e14", items: [], note: "Viêm thận Lupus (LN) đang bùng phát mạnh. Cần đánh giá sát UPCR và eGFR. Khuyến cáo làm sinh thiết thận sớm để định khu Class (ISN/RPS) nhằm áp dụng phác đồ đích (Mycophenolate Mofetil hoặc Cyclophosphamide)." },
+            msk: { name: "Cơ - Xương - Khớp", badge: "🟡 TRUNG BÌNH", color: "#ffc107", items: [], note: "Viêm khớp/viêm cơ hoạt động hệ thống. Đánh giá mức độ tàn tật lâm sàng. Thường đáp ứng tốt với Corticosteroid liều trung bình kết hợp Hydroxychloroquine làm nền tảng." },
+            skin: { name: "Da và Niêm mạc (Mucocutaneous)", badge: "⚪ CƠ BẢN", color: "#6c757d", items: [], note: "Tổn thương da niêm hoạt động. Nhắc nhở bệnh nhân chống nắng tuyệt đối (UV avoidance). Duy trì Hydroxychloroquine nền." },
+            serosal: { name: "Thanh mạc (Serosal)", badge: "⚪ CƠ BẢN", color: "#6c757d", items: [], note: "Viêm màng phổi/màng ngoài tim. Cần chỉ định siêu âm tim để loại trừ tràn dịch màng tim lượng nhiều gây ép tim cấp." },
+            imm: { name: "Miễn dịch học (Immunologic)", badge: "⚪ CƠ BẢN", color: "#6c757d", items: [], note: "Biến động huyết thanh phản ánh mức độ hoạt động của tế bào B. Sử dụng động học C3, C4 và anti-dsDNA để theo dõi sát đáp ứng lui bệnh." },
+            constitutional: { name: "Toàn thân (Constitutional)", badge: "⚪ CƠ BẢN", color: "#6c757d", items: [], note: "Sốt do Lupus hoạt động hệ thống. Bắt buộc loại trừ triệt để tình trạng nhiễm trùng cơ hội trước khi quyết định tăng liều ức chế miễn dịch." },
+            hem: { name: "Huyết học (Hematologic)", badge: "⚪ CƠ BẢN", color: "#6c757d", items: [], note: "Giảm tế bào máu ngoại vi do tự miễn. Theo dõi sát công thức máu để dự phòng xuất huyết nặng hoặc nhiễm trùng thứ phát." }
+        };
+
+        // Đếm điểm và gom nhóm triệu chứng vào cơ quan tương ứng
         document.querySelectorAll('.sledai-item:checked').forEach(cb => { 
-            total += parseInt(cb.value); 
+            let val = parseInt(cb.value);
+            total += val; 
+            
+            let organKey = cb.getAttribute('data-organ');
+            let name = cb.getAttribute('data-name');
+            if (organMatrix[organKey]) {
+                organMatrix[organKey].items.push(`${name} (${val}đ)`);
+            }
         });
 
         const resBox = document.getElementById('sledai-result-box');
         const scoreEl = document.getElementById('sledai-score');
         const badgeEl = document.getElementById('sledai-result-text');
+        const summaryContainer = document.getElementById('sledai-organ-summary');
 
         resBox.style.display = 'block';
         scoreEl.innerText = `${total} Điểm`;
         badgeEl.className = "badge";
 
+        // 1. Phân độ độ hoạt động bệnh tổng quát
         if (total === 0) { 
             badgeEl.innerText = "Lui bệnh (Remission)"; 
             badgeEl.classList.add("bg-green"); 
         } else if (total >= 1 && total <= 5) { 
             badgeEl.innerText = "Hoạt động Nhẹ (Mild activity)"; 
             badgeEl.classList.add("bg-yellow"); 
-            badgeEl.style.color = "#000"; // Tương phản cho nền vàng
+            badgeEl.style.color = "#000";
         } else if (total >= 6 && total <= 10) { 
             badgeEl.innerText = "Hoạt động Trung bình (Moderate activity)"; 
             badgeEl.classList.add("bg-orange"); 
@@ -431,5 +476,40 @@
             badgeEl.innerText = "Hoạt động RẤT NẶNG (Very High activity)"; 
             badgeEl.classList.add("bg-red"); 
         }
+
+        // 2. Render động danh sách tóm tắt hệ cơ quan bị tổn thương sâu
+        summaryContainer.innerHTML = "";
+        let hasAnyOrganDamage = false;
+
+        // Định nghĩa thứ tự ưu tiên hiển thị cơ quan quan trọng lên trước (CNS -> Thận -> Mạch máu...)
+        const displayOrder = ['cns', 'vascular', 'renal', 'msk', 'skin', 'serosal', 'imm', 'constitutional', 'hem'];
+
+        displayOrder.forEach(key => {
+            let organ = organMatrix[key];
+            if (organ && organ.items.length > 0) {
+                hasAnyOrganDamage = true;
+                
+                let block = document.createElement('div');
+                block.className = "organ-block";
+                block.style.borderLeftColor = organ.color;
+
+                block.innerHTML = `
+                    <div class="organ-header">
+                        <span class="organ-name">${organ.name}</span>
+                        <span class="organ-badge" style="background-color: ${organ.color}">${organ.badge}</span>
+                    </div>
+                    <div class="organ-items"><strong>Triệu chứng:</strong> ${organ.items.join(', ')}</div>
+                    <div class="organ-clinical-note"><strong>Khuyến cáo điều trị:</strong> ${organ.note}</div>
+                `;
+                summaryContainer.appendChild(block);
+            }
+        });
+
+        if (!hasAnyOrganDamage) {
+            summaryContainer.innerHTML = `<div style="font-size: 13px; color: #64748b; font-style: italic; text-align: left;">Không ghi nhận tổn thương cơ quan nào trong 30 ngày qua. Bệnh nhân ổn định.</div>`;
+        }
+
+        // Cuộn mượt xuống vùng kết quả
+        setTimeout(() => { resBox.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
     }
 </script>
