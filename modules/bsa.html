@@ -65,7 +65,7 @@
     }
     .btn-sub-calc:hover { background-color: #1e3a8a; }
 
-    /* Khung thông báo và bảng Z-score */
+    /* Khung cảnh báo thiếu chỉ số */
     .insufficient-box {
         background-color: #fff3cd; border: 1px solid #ffeeba; color: #856404;
         padding: 12px; border-radius: 8px; font-size: 14px; font-weight: 500; text-align: left;
@@ -73,6 +73,7 @@
 
     .res-value-highlight { font-size: 24px; font-weight: bold; color: var(--primary-dark); margin: 10px 0; }
     
+    /* Thiết kế bảng Z-score chuyên nghiệp */
     .zscore-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; background: #fff; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
     .zscore-table th, .zscore-table td { padding: 12px; border-bottom: 1px solid #e2e8f0; text-align: left; vertical-align: top; line-height: 1.5; }
     .zscore-table th { background-color: #f1f5f9; font-weight: 600; color: var(--primary-dark); }
@@ -99,18 +100,18 @@
     <div class="form-row">
         <div class="form-col">
             <label>Cân nặng (kg)</label>
-            <input type="number" id="masterWeight" inputmode="decimal" step="0.01" placeholder="VD: 6.5">
+            <input type="text" id="masterWeight" inputmode="decimal" placeholder="VD: 6,5 hoặc 6.5">
         </div>
         <div class="form-col">
             <label>Chiều cao (cm)</label>
-            <input type="number" id="masterHeight" inputmode="decimal" step="0.1" placeholder="VD: 65">
+            <input type="text" id="masterHeight" inputmode="decimal" placeholder="VD: 65">
         </div>
     </div>
 
     <div class="form-row">
         <div class="form-col">
             <label>Tuổi</label>
-            <input type="number" id="masterAge" inputmode="decimal" step="0.1" placeholder="VD: 8">
+            <input type="text" id="masterAge" inputmode="decimal" placeholder="VD: 8">
         </div>
         <div class="form-col">
             <label>Đơn vị tuổi</label>
@@ -146,7 +147,7 @@
     <span>[+] Phân hệ 2: Đánh giá Thể chất & Dinh dưỡng (WHO Growth Standards)</span>
 </button>
 <div id="panel-who" class="accordion-content">
-    <button class="btn-sub-calc" onclick="runWHO()">ĐÁNH GIÁ LÂM SÀNG CHÉO</button>
+    <button class="btn-sub-calc" onclick="runWHO()">ĐÁNH GIÁ THỂ CHẤT VÀ DINH DƯỠNG</button>
     <div id="out-who">
         <div class="note" style="text-align: center;">Hệ thống sẽ thực hiện biện luận tương quan chéo giữa các trục Z-Score.</div>
     </div>
@@ -178,9 +179,9 @@
             { m: 0,   w: {sd3N: 2.1, sd2N: 2.5, sd1N: 2.9, med: 3.3, sd1P: 3.9}, h: {sd3N: 44.2, sd2N: 46.1, sd1N: 48.0, med: 49.9, sd1P: 51.8}, bmi: {sd3N: 10.1, sd2N: 11.1, sd1N: 12.2, med: 13.4, sd1P: 14.8, sd2P: 16.3, sd3P: 18.1} },
             { m: 6,   w: {sd3N: 5.9, sd2N: 6.4, sd1N: 7.1, med: 7.9, sd1P: 8.8}, h: {sd3N: 61.0, sd2N: 63.3, sd1N: 65.5, med: 67.6, sd1P: 69.8}, bmi: {sd3N: 13.0, sd2N: 14.3, sd1N: 15.6, med: 17.0, sd1P: 18.5, sd2P: 20.1, sd3P: 22.0} },
             { m: 12,  w: {sd3N: 7.1, sd2N: 7.7, sd1N: 8.6, med: 9.6, sd1P: 10.8}, h: {sd3N: 68.6, sd2N: 71.0, sd1N: 73.4, med: 75.7, sd1P: 78.1}, bmi: {sd3N: 12.5, sd2N: 13.8, sd1N: 14.9, med: 16.1, sd1P: 17.4, sd2P: 18.8, sd3P: 20.5} },
-            { m: 24,  w: {sd3N: 8.6, sd2N: 9.7, sd1N: 10.8, med: 12.2, sd1P: 13.8}, h: {sd3N: 78.0, sd2N: 81.0, sd1N: 84.1, med: 87.1, sd1P: 90.2}, bmi: {sd3N: 12.0, sd2N: 13.3, sd1N: 14.4, med: 15.5, sd1P: 16.7, sd2P: 18.0, sd3P: 19.5} },
+            { m: 24,  w: {sd3N: 8.6, sd2N: 9.7, sd1N: 10.8, med: 12.2, sd1P: 13.8}, h: {sd3N: 78.0, sd2N: 81.0, sd1N: 84.1, med: 87.1, sd1P: 90.2}, bmi: {sd3N: 12.0, sd2N: 13.3, sd1N: 14.4, med: 15.5, sd1P: 16.7, sd2P: 18.0, sd3P: 19.4} },
             { m: 60,  w: {sd3N: 12.4, sd2N: 14.1, sd1N: 16.0, med: 18.3, sd1P: 21.0}, h: {sd3N: 96.1, sd2N: 100.7, sd1N: 105.3, med: 110.0, sd1P: 114.6}, bmi: {sd3N: 12.0, sd2N: 13.0, sd1N: 14.1, med: 15.3, sd1P: 16.8, sd2P: 18.3, sd3P: 20.0} },
-            { m: 120, w: {sd3N: 20.2, sd2N: 23.6, sd1N: 27.8, med: 31.2, sd1P: 38.0}, h: {sd3N: 121.5, sd2N: 127.4, sd1N: 132.3, med: 137.8, sd1P: 144.0}, bmi: {sd3N: 12.2, sd2N: 13.5, sd1N: 14.8, med: 16.4, sd1P: 18.5, sd2P: 21.0, sd3P: 24.0} },
+            { m: 120, w: {sd3N: 20.2, sd2N: 23.6, sd1N: 27.8, med: 31.2, sd1P: 40.0}, h: {sd3N: 121.5, sd2N: 127.4, sd1N: 132.3, med: 137.8, sd1P: 144.0}, bmi: {sd3N: 12.2, sd2N: 13.5, sd1N: 14.8, med: 16.4, sd1P: 18.5, sd2P: 21.0, sd3P: 24.0} },
             { m: 180, w: {sd3N: 33.0, sd2N: 39.0, sd1N: 46.0, med: 56.7, sd1P: 66.0}, h: {sd3N: 147.0, sd2N: 154.0, sd1N: 163.0, med: 170.0, sd1P: 177.0}, bmi: {sd3N: 14.2, sd2N: 15.8, sd1N: 17.5, med: 19.6, sd1P: 22.2, sd2P: 25.5, sd3P: 29.5} }
         ],
         female: [
@@ -190,7 +191,7 @@
             { m: 24,  w: {sd3N: 8.1, sd2N: 9.0, sd1N: 10.2, med: 11.5, sd1P: 13.0}, h: {sd3N: 76.0, sd2N: 79.3, sd1N: 82.5, med: 85.7, sd1P: 88.9}, bmi: {sd3N: 11.8, sd2N: 13.0, sd1N: 14.1, med: 15.3, sd1P: 16.6, sd2P: 18.1, sd3P: 19.8} },
             { m: 60,  w: {sd3N: 11.8, sd2N: 13.7, sd1N: 15.8, med: 18.2, sd1P: 21.2}, h: {sd3N: 95.2, sd2N: 100.0, sd1N: 104.7, med: 109.4, sd1P: 114.1}, bmi: {sd3N: 11.5, sd2N: 12.7, sd1N: 13.9, med: 15.3, sd1P: 16.9, sd2P: 18.9, sd3P: 21.0} },
             { m: 120, w: {sd3N: 19.6, sd2N: 23.1, sd1N: 27.7, med: 31.9, sd1P: 40.0}, h: {sd3N: 121.2, sd2N: 127.3, sd1N: 133.0, med: 138.6, sd1P: 145.0}, bmi: {sd3N: 12.0, sd2N: 13.5, sd1N: 14.9, med: 16.6, sd1P: 18.8, sd2P: 21.7, sd3P: 25.0} },
-            { m: 180, w: {sd3N: 33.6, sd2N: 39.3, sd1N: 46.4, med: 52.1, sd1P: 62.0}, h: {sd3N: 147.2, sd2N: 153.2, sd1N: 157.0, med: 161.8, sd1P: 167.0}, bmi: {sd3N: 14.0, sd2N: 16.1, sd1N: 17.8, med: 19.8, sd1P: 22.4, sd2P: 25.4, sd3P: 29.0} }
+            { m: 180, w: {sd3N: 33.6, sd2N: 39.3, sd1N: 46.4, med: 52.1, sd1P: 62.0}, h: {sd3N: 147.2, sd2N: 153.2, sd1N: 160.6, med: 166.5, sd1P: 172.4}, bmi: {sd3N: 14.0, sd2N: 16.1, sd1N: 17.8, med: 19.8, sd1P: 22.4, sd2P: 25.4, sd3P: 29.0} }
         ]
     };
 
@@ -229,11 +230,15 @@
         btn.innerHTML = btn.innerHTML.replace(isOpen ? '[-]' : '[+]', isOpen ? '[+]' : '[-]');
     }
 
+    // Bộ đọc dữ liệu cải tiến: Tự động chuyển đổi dấu phẩy (,) thành dấu chấm (.) để tính toán chính xác
     function getInputs() {
+        const rawW = document.getElementById('masterWeight').value.trim().replace(',', '.');
+        const rawH = document.getElementById('masterHeight').value.trim().replace(',', '.');
+        const rawAge = document.getElementById('masterAge').value.trim().replace(',', '.');
         return {
-            w: parseFloat(document.getElementById('masterWeight').value),
-            h: parseFloat(document.getElementById('masterHeight').value),
-            age: parseFloat(document.getElementById('masterAge').value),
+            w: parseFloat(rawW),
+            h: parseFloat(rawH),
+            age: parseFloat(rawAge),
             unit: document.getElementById('masterAgeUnit').value,
             gender: document.getElementById('masterGender').value
         };
@@ -257,13 +262,11 @@
             <div style="background: #fff; padding: 20px; border-radius: 8px; border: 1px solid var(--border); text-align: center;">
                 <div style="font-size: 14px; color: var(--text-light); font-weight: 600; text-transform: uppercase;">Diện tích bề mặt cơ thể (Mosteller)</div>
                 <div class="res-value-highlight">${bsa.toFixed(2)} m²</div>
-                <div style="font-size: 13px; color: var(--text-light); margin-top: 8px;">Dùng chuẩn hóa liều truyền dịch, lọc máu và hóa trị liệu.</div>
             </div>`;
     }
 
     // ==========================================
     // PHÂN HỆ 2: ĐÁNH GIÁ DINH DƯỠNG & BIỆN LUẬN CHÉO
-    // KHẮC PHỤC TRIỆT ĐỂ RANH GIỚI 5 TUỔI VÀ 10 TUỔI
     // ==========================================
     function runWHO() {
         const inputs = getInputs(); let missing = [];
@@ -276,137 +279,122 @@
         const curve = interpolateWho(totalMonths, inputs.gender);
         const actualBmi = inputs.w / Math.pow(inputs.h / 100, 2);
 
-        // Biến logic trạng thái (Boolean Flags) cho bộ não phân tích chéo
         let hasWfaClipped = false, hasHfaClipped = false, hasWfhClipped = false, hasBmiClipped = false;
         let isWfaSevere = false, isHfaSevere = false, isWfhSevere = false, isBmiSevere = false;
         let isWfaMild = false, isHfaMild = false, isWfhMild = false, isBmiMild = false;
         let isOverweight = false, isObese = false;
 
-        let wfaZ = "", wfaEval = "", wfaColor = "#28a745";
-        let hfaZ = "", hfaEval = "", hfaColor = "#28a745";
-        let wfhZ = "", wfhEval = "", wfhColor = "#28a745";
-        let bmiZ = "", bmiEval = "", bmiColor = "#28a745";
+        let wfaZ = "", wfaEval = "", wfaColor = "#16a34a";
+        let hfaZ = "", hfaEval = "", hfaColor = "#16a34a";
+        let wfhZ = "", wfhEval = "", wfhColor = "#16a34a";
+        let bmiZ = "", bmiEval = "", bmiColor = "#16a34a";
 
-        // HTML cấu trúc hàng của bảng
         let wfaRowHTML = "", hfaRowHTML = "", wfhRowHTML = "", bmiRowHTML = "";
 
-        // 1. TRỤC CÂN NẶNG THEO TUỔI (WFA) - Giới hạn tối đa đến 10 tuổi (120 tháng)
+        // 1. CÂN NẶNG THEO TUỔI (WFA) - Giới hạn tối đa đến 10 tuổi (120 tháng)
         if (totalMonths <= 120) {
             if (inputs.w < curve.w.sd3N) { wfaZ = "< -3 SD"; wfaEval = "Nhẹ cân mức độ NẶNG (Severe underweight)"; wfaColor = "#dc3545"; hasWfaClipped = true; isWfaSevere = true; }
             else if (inputs.w < curve.w.sd2N) { wfaZ = "< -2 SD đến -3 SD"; wfaEval = "Nhẹ cân mức độ VỪA (Moderate underweight)"; wfaColor = "#dc3545"; hasWfaClipped = true; }
-            else if (inputs.w < curve.w.sd1N) { wfaZ = "< -1 SD đến -2 SD"; wfaEval = "Nguy cơ nhẹ cân / Nhẹ cân mức độ NHẸ (Mild underweight) - Cần theo dõi sát"; wfaColor = "#fd7e14"; isWfaMild = true; }
+            else if (inputs.w < curve.w.sd1N) { wfaZ = "< -1 SD đến -2 SD"; wfaEval = "Nguy cơ nhẹ cân / Nhẹ cân mức độ NHẸ (Mild underweight)"; wfaColor = "#fd7e14"; isWfaMild = true; }
             else if (inputs.w <= curve.w.sd1P) { wfaZ = "-1 SD đến +1 SD"; wfaEval = "Cân nặng bình thường (Eutrophy)"; }
-            else { wfaZ = "> +1 SD"; wfaEval = "Thể trọng cao tổng quát"; wfaColor = "#ffc107"; }
+            else { wfaZ = "> +1 SD"; wfaEval = "Cân nặng cao hơn chuẩn"; wfaColor = "#eab308"; }
 
             wfaRowHTML = `<tr style="color:${wfaColor}"><td><strong>1. Cân nặng / Tuổi (WFA)</strong></td><td><strong>${wfaZ}</strong></td><td>${wfaEval}</td></tr>`;
-        } else {
-            wfaRowHTML = `<tr><td><strong>1. Cân nặng / Tuổi (WFA)</strong></td><td><span style="color:var(--text-light)">N/A</span></td><td class="note">* Bắt buộc loại bỏ WFA cho trẻ &gt; 10 tuổi do biến thiên dậy thì làm mất tính chính xác.</td></tr>`;
         }
 
-        // 2. TRỤC CHIỀU CAO THEO TUỔI (LFA/HFA) - Áp dụng cho mọi lứa tuổi
+        // 2. CHIỀU CAO THEO TUỔI (HFA) - Áp dụng cho mọi lứa tuổi
         if (inputs.h < curve.h.sd3N) { hfaZ = "< -3 SD"; hfaEval = "Thấp còi mức độ NẶNG (Severe stunting)"; hfaColor = "#dc3545"; hasHfaClipped = true; isHfaSevere = true; }
         else if (inputs.h < curve.h.sd2N) { hfaZ = "< -2 SD đến -3 SD"; hfaEval = "Thấp còi mức độ VỪA (Moderate stunting)"; hfaColor = "#dc3545"; hasHfaClipped = true; }
         else if (inputs.h < curve.h.sd1N) { hfaZ = "< -1 SD đến -2 SD"; hfaEval = "Nguy cơ thấp còi / Thấp còi mức độ NHẸ (Mild stunting)"; hfaColor = "#fd7e14"; isHfaMild = true; }
         else if (inputs.h <= curve.h.sd1P) { hfaZ = "-1 SD đến +1 SD"; hfaEval = "Tăng trưởng tuyến tính bình thường"; }
-        else { hfaZ = "> +1 SD"; hfaEval = "Chiều cao tốt vượt trội"; }
+        else { hfaZ = "> +1 SD"; hfaEval = "Phát triển chiều cao tốt"; }
 
         hfaRowHTML = `<tr style="color:${hfaColor}"><td><strong>2. Chiều cao / Tuổi (HFA)</strong></td><td><strong>${hfaZ}</strong></td><td>${hfaEval}</td></tr>`;
 
-        // 3 & 4. PHÂN TÁCH LUẬT CHẶT CHẼ THEO LỨA TUỔI: DƯỚI 5 TUỔI VS TRÊN 5 TUỔI
-        if (totalMonths <= 60) {
-            // ==============================================
-            // TRẺ BIỂU ĐỒ WHO 2006 (DƯỚI HOẶC BẰNG 5 TUỔI)
-            // ==============================================
-            // Thiết lập mốc động đồng tỷ lệ cho WFH độc lập với tuổi dựa trên hằng số mẫu
+        // 3 & 4. PHÂN TÁCH GIAO DIỆN ĐỘNG THEO TUỔI (ẨN HOÀN TOÀN DÒNG THỪA)
+        const isChildSmall = totalMonths <= 60;
+        
+        if (isChildSmall) {
+            // Trẻ <= 5 tuổi (Tra cứu WFH độc tôn)
             const wMed = curve.bmi.med * Math.pow(inputs.h / 100, 2);
             const s3N = wMed * 0.71; const s2N = wMed * 0.81; const s1N = wMed * 0.90;
             const s1P = wMed * 1.12; const s2P = wMed * 1.25; const s3P = wMed * 1.38;
 
-            if (inputs.w > s3P) { wfhZ = "> +3 SD"; wfhEval = "Béo phì mức độ NẶNG (Obesity)"; wfhColor = "#dc2626"; isObese = true; }
-            else if (inputs.w > s2P) { wfhZ = "> +2 SD đến +3 SD"; wfhEval = "Thừa cân mức độ VỪA (Overweight)"; wfhColor = "#dc2626"; isOverweight = true; }
-            else if (inputs.w > s1P) { wfhZ = "> +1 SD đến +2 SD"; wfhEval = "Nguy cơ thừa cân mức độ NHẸ (Risk of overweight)"; wfhColor = "#f97316"; }
+            if (inputs.w > s3P) { wfhZ = "> +3 SD"; wfhEval = "Béo phì mức độ NẶNG (Obesity)"; wfhColor = "#dc3545"; isObese = true; }
+            else if (inputs.w > s2P) { wfhZ = "> +2 SD đến +3 SD"; wfhEval = "Thừa cân mức độ VỪA (Overweight)"; wfhColor = "#dc3545"; isOverweight = true; }
+            else if (inputs.w > s1P) { wfhZ = "> +1 SD đến +2 SD"; wfhEval = "Nguy cơ thừa cân mức độ NHẸ (Risk of overweight)"; wfhColor = "#fd7e14"; }
             else if (inputs.w >= s1N) { wfhZ = "-1 SD đến +1 SD"; wfhEval = "Bình thường"; }
-            else if (inputs.w >= s2N) { wfhZ = "< -1 SD đến -2 SD"; wfhEval = "Nguy cơ gầy còm / Gầy còm mức độ NHẸ (Mild wasting)"; wfhColor = "#f97316"; isWfhMild = true; }
-            else if (inputs.w >= s3N) { wfhZ = "< -2 SD đến -3 SD"; wfhEval = "Suy dinh dưỡng cấp tính mức độ VỪA (MAM)"; wfhColor = "#dc2626"; hasWfhClipped = true; isWfhSevere = false; }
-            else { wfhZ = "< -3 SD"; wfhEval = "Suy dinh dưỡng cấp tính mức độ NẶNG (SAM) - Thể teo đét"; wfhColor = "#dc2626"; hasWfhClipped = true; isWfhSevere = true; }
+            else if (inputs.w >= s2N) { wfhZ = "< -1 SD đến -2 SD"; wfhEval = "Nguy cơ gầy còm / Gầy còm mức độ NHẸ (Mild wasting)"; wfhColor = "#fd7e14"; isWfhMild = true; }
+            else if (inputs.w >= s3N) { wfhZ = "< -2 SD đến -3 SD"; wfhEval = "Suy dinh dưỡng cấp tính mức độ VỪA (MAM)"; wfhColor = "#dc3545"; hasWfhClipped = true; }
+            else { wfhZ = "< -3 SD"; wfhEval = "Suy dinh dưỡng cấp tính mức độ NẶNG (SAM) - Thể teo đét"; wfhColor = "#dc3545"; hasWfhClipped = true; isWfhSevere = true; }
 
-            wfhRowHTML = `<tr style="color:${wfhColor}"><td><strong>3. Cân nặng / Chiều cao (WFH)</strong></td><td><strong>${wfhZ}</strong></td><td><span style="background-color:#eff6ff; padding:2px 6px; border-radius:4px; font-weight:bold; font-size:11px; color:#1e40af; margin-right:4px;">TIÊU CHUẨN VÀNG ≤ 5T</span>${wfhEval}</td></tr>`;
-            bmiRowHTML = `<tr><td><strong>4. BMI / Tuổi (BMI-for-Age)</strong></td><td><span style="color:var(--text-light)">ẨN</span></td><td class="note">* Đã ẩn. Chuẩn WHO yêu cầu độc tôn sử dụng chỉ số hình thể WFH cho nhóm tuổi 0-60 tháng.</td></tr>`;
-
+            wfhRowHTML = `<tr style="color:${wfhColor}"><td><strong>3. Cân nặng / Chiều cao (WFH)</strong></td><td><strong>${wfhZ}</strong></td><td>${wfhEval}</td></tr>`;
         } else {
-            // ==============================================
-            // TRẺ BIỂU ĐỒ WHO REFERENCE 2007 (TRÊN 5 TUỔI)
-            // ==============================================
-            wfhRowHTML = `<tr><td><strong>3. Cân nặng / Chiều cao (WFH)</strong></td><td><span style="color:var(--text-light)">N/A</span></td><td class="note">* Loại bỏ hoàn toàn WFH cho trẻ &gt; 5 tuổi do sự bứt tốc chiều cao dậy thì làm mất tính chính xác.</td></tr>`;
-
-            // BMI-for-Age trở thành Tiêu chuẩn vàng độc tôn của trẻ lớn
-            if (actualBmi > curve.bmi.sd2P) { bmiZ = "> +2 SD"; bmiEval = "Béo phì mức độ NẶNG (Obesity)"; bmiColor = "#dc2626"; isObese = true; }
-            else if (actualBmi > curve.bmi.sd1P) { bmiZ = "> +1 SD đến +2 SD"; bmiEval = "Thừa cân mức độ VỪA (Overweight)"; bmiColor = "#f97316"; isOverweight = true; }
+            // Trẻ > 5 tuổi (Tra cứu BMI-for-Age độc tôn)
+            if (actualBmi > curve.bmi.sd2P) { bmiZ = "> +2 SD"; bmiEval = "Béo phì mức độ NẶNG (Obesity)"; bmiColor = "#dc3545"; isObese = true; }
+            else if (actualBmi > curve.bmi.sd1P) { bmiZ = "> +1 SD đến +2 SD"; bmiEval = "Thừa cân mức độ VỪA (Overweight)"; bmiColor = "#fd7e14"; isOverweight = true; }
             else if (actualBmi >= curve.bmi.sd1N) { bmiZ = "-1 SD đến +1 SD"; bmiEval = "Dinh dưỡng bình thường"; }
-            else if (actualBmi >= curve.bmi.sd2N) { bmiZ = "< -1 SD đến -2 SD"; bmiEval = "Nguy cơ gầy còm mức độ NHẸ (Mild thinness)"; bmiColor = "#f97316"; isBmiMild = true; }
-            else if (actualBmi >= curve.bmi.sd3N) { bmiZ = "< -2 SD đến -3 SD"; bmiEval = "Gầy còm mức độ VỪA (Thinness)"; bmiColor = "#dc2626"; hasBmiClipped = true; }
-            else { bmiZ = "< -3 SD"; bmiEval = "Gầy còm mức độ NẶNG (Severe thinness)"; bmiColor = "#dc2626"; hasBmiClipped = true; isBmiSevere = true; }
+            else if (actualBmi >= curve.bmi.sd2N) { bmiZ = "< -1 SD đến -2 SD"; bmiEval = "Nguy cơ gầy còm mức độ NHẸ (Mild thinness)"; bmiColor = "#fd7e14"; isBmiMild = true; }
+            else if (actualBmi >= curve.bmi.sd3N) { bmiZ = "< -2 SD đến -3 SD"; bmiEval = "Gầy còm mức độ VỪA (Thinness)"; bmiColor = "#dc3545"; hasBmiClipped = true; }
+            else { bmiZ = "< -3 SD"; bmiEval = "Gầy còm mức độ NẶNG (Severe thinness)"; bmiColor = "#dc3545"; hasBmiClipped = true; isBmiSevere = true; }
 
-            bmiRowHTML = `<tr style="color:${bmiColor}"><td><strong>4. BMI / Tuổi (BMI-for-Age)</strong></td><td><strong>${bmiZ}</strong></td><td><span style="background-color:#f0fdf4; padding:2px 6px; border-radius:4px; font-weight:bold; font-size:11px; color:#166534; margin-right:4px;">TIÊU CHUẨN VÀNG &gt; 5T</span>${bmiEval}</td></tr>`;
+            bmiRowHTML = `<tr style="color:${bmiColor}"><td><strong>3. BMI / Tuổi (BMI-for-Age)</strong></td><td><strong>${bmiZ}</strong></td><td>${bmiEval}</td></tr>`;
         }
 
-        // BỘ NÃO PHÂN TÍCH TƯƠNG QUAN CHÉO TOÀN DIỆN (9 KỊCH BẢN CHỐNG BẪY)
+        // BỘ NÃO PHÂN TÍCH CHÉO 9 KỊCH BẢN CHỐNG SAI LẦM BẪY LÂM SÀNG
         let finalReport = ""; let boxStyle = "";
-        const isChildSmall = totalMonths <= 60;
-        
-        // Trích xuất trạng thái hoạt động thực tế của trục cấp tính tùy theo lứa tuổi
         const isAcuteActive = isChildSmall ? hasWfhClipped : hasBmiClipped;
         const isAcuteSevere = isChildSmall ? isWfhSevere : isBmiSevere;
         const isAcuteMild = isChildSmall ? isWfhMild : isBmiMild;
         const acuteLabel = isChildSmall ? "WFH" : "BMI-for-Age";
 
-        // KỊCH BẢN 1: BẪY MÙ - Suy dinh dưỡng mạn tính sụt giảm đồng đều (Proportionate Growth Failure)
+        // KỊCH BẢN 1: BẪY MÙ - Suy dinh dưỡng mạn tính sụt giảm đồng đều
         if (totalMonths <= 120 && hasWfaClipped && hasHfaClipped && !isAcuteActive && !isOverweight) {
             boxStyle = "background-color: #fef2f2; color: #b91c1c; border-left-color: #dc2626;";
             let level = (isWfaSevere || isHfaSevere) ? "NẶNG" : "VỪA";
-            finalReport = `🚨 <strong>BẪY MÙ LÂM SÀNG NGUY HIỂM (Suy dinh dưỡng sụt giảm đồng đều):</strong> Bệnh nhi bị <strong>Suy dinh dưỡng mạn tính thể Thấp còi - Nhẹ cân mức độ ${level}</strong>. Do cả bộ khung chiều cao và cân nặng tổng quát cùng sụt giảm tương xứng một cách mạn tính, phép chia tương quan hình thể (${acuteLabel}) bị bình thường hóa giả tạo về mốc an toàn. <strong>TUYỆT ĐỐI KHÔNG KHÁM SƠ SÀI</strong> rồi kết luận thể chất trẻ bình thường!`;
+            finalReport = `🚨 <strong>BẪY MÙ LÂM SÀNG NGUY HIỂM (Suy dinh dưỡng sụt giảm đồng đều):</strong> Bệnh nhi bị <strong>Suy dinh dưỡng mạn tính thể Thấp còi - Nhẹ cân ĐỒNG ĐỀU mức độ ${level}</strong>. Do cả chiều cao và cân nặng cùng sụt giảm đồng tiến trong thời gian dài, phép chia tương quan hình thể (${acuteLabel}) bị triệt tiêu sai lệch và quay về mốc bình thường. <strong>SAI LẦM THƯỜNG GẶP:</strong> Bác sĩ nhìn vào chỉ số ${acuteLabel} báo bình thường rồi bỏ sót bệnh cảnh tổn thương mạn tính rất sâu của trẻ!`;
         }
-        // KỊCH BẢN 2: BẪY NHIỄU TOÁN HỌC - Thấp còi nặng báo béo phì giả tạo (Stunting-Wasting Paradox)
+        // KỊCH BẢN 2: BẪY NHIỄU TOÁN HỌC - Thấp còi nặng báo béo phì giả tạo
         else if (hasHfaClipped && isOverweight) {
             boxStyle = "background-color: #fff7ed; color: #c2410c; border-left-color: #f97316;";
             let hLevel = isHfaSevere ? "NẶNG" : "VỪA";
-            finalReport = `🚨 <strong>BẪY NHIỄU TOÁN HỌC (Nghịch lý Thấp còi - Béo phì):</strong> Bệnh nhi bị <strong>Suy dinh dưỡng thể Thấp còi mạn tính mức độ ${hLevel}</strong>, nhưng trục tương quan hình thể cấp tính lại báo <strong>[Thừa cân / Béo phì]</strong>. Đây là hiện tượng nhiễu mẫu số do chiều cao quá ngắn kéo tụt bình phương mẫu số toán học, hoàn toàn không phải béo phì thực thể do dư thừa mỡ. <strong>TUYỆT ĐỐI KHÔNG KHUYẾN CÁO ĂN KIÊNG GIẢM CÂN</strong> vì sẽ làm trẻ suy kiệt năng lượng và vĩnh viễn không phát triển được chiều cao xương!`;
+            finalReport = `🚨 <strong>BẪY NHIỄU TOÁN HỌC (Nghịch lý Thấp còi - Béo phì):</strong> Bệnh nhi bị <strong>Suy dinh dưỡng thể Thấp còi mạn tính mức độ ${hLevel}</strong>, nhưng trục tương quan cấp tính lại báo <strong>Thừa cân / Béo phì</strong>. <strong>SAI LẦM THƯỜNG GẶP:</strong> Hiện tượng nhiễu mẫu số do chiều cao quá ngắn làm mẫu số bình phương chiều cao tụt sâu, khiến kết quả tăng giả tạo. <strong>TUYỆT ĐỐI KHÔNG</strong> cho trẻ ăn kiêng cắt giảm năng lượng vì sẽ làm trẻ vĩnh viễn mất cơ hội tăng trưởng xương!`;
         }
-        // KỊCH BẢN 3: BỆNH CẢNH CHỒNG LẤN - Cấp tính đè lên nền mạn tính (Wasting on Stunting)
+        // KỊCH BẢN 3: BỆNH CẢNH CHỒNG LẤN - Cấp tính đè lên nền mạn tính
         else if (hasHfaClipped && isAcuteActive) {
             boxStyle = "background-color: #fef2f2; color: #b91c1c; border-left-color: #dc2626;";
             let hLevel = isHfaSevere ? "NẶNG" : "VỪA";
-            let aLabel = isAcuteSevere ? "NẶNG (SAM/Gầy còm nặng)" : "VỪA (MAM/Gầy còm)";
-            finalReport = `🚨 <strong>BỆNH CẢNH LÂM SÀNG NGUY KỊCH: Suy dinh dưỡng CẤP TÍNH mức độ ${aLabel} chồng lấn trên nền thể THẤP CÒI mạn tính mức độ ${hLevel}</strong>. Trẻ vừa bị tổn thương thể chất kéo dài trong quá khứ, vừa đang có đợt tiêu hủy khối cơ/mỡ cấp diễn hiện tại (do đợt nhiễm trùng, tiêu chảy cấp). Nguy cơ rất cao rối loạn huyết động và Hội chứng nuôi ăn lại (Refeeding Syndrome). Thận trọng tối đa khi tính dịch truyền duy trì, cấm truyền dịch ồ ạt!`;
+            let aLabel = isAcuteSevere ? "NẶNG" : "VỪA";
+            finalReport = `🚨 <strong>BỆNH CẢNH LÂM SÀNG NGUY KỊCH: Suy dinh dưỡng CẤP TÍNH mức độ ${aLabel} chồng lấn trên nền thể THẤP CÒI mạn tính mức độ ${hLevel}</strong>. Trẻ vừa bị tổn thương thể chất mạn tính, vừa đang có đợt tiêu hủy khối cơ/mỡ cấp diễn dữ dội (do đợt nhiễm trùng, tiêu chảy cấp). Nguy cơ rất cao rối loạn huyết động và Hội chứng nuôi ăn lại (Refeeding Syndrome). Thận trọng tối đa khi tính dịch truyền duy trì, cấm truyền dịch ồ ạt!`;
         }
         // KỊCH BẢN 4: Nhẹ cân đơn thuần (Isolated Underweight)
         else if (totalMonths <= 120 && hasWfaClipped && !hasHfaClipped && !isAcuteActive) {
             boxStyle = "background-color: #fff7ed; color: #c2410c; border-left-color: #f97316;";
             let wLevel = isWfaSevere ? "NẶNG" : "VỪA";
-            finalReport = `⚠️ <strong>CHẨN ĐOÁN LÂM SÀNG: Nhẹ cân đơn thuần mức độ ${wLevel}</strong>. Khối lượng cơ thể tổng quát sụt giảm nhưng trục tăng trưởng xương tuyến tính (Chiều cao/Tuổi) và tương quan hình thể hiện tại chưa bộc lộ rõ rệt đợt cấp. Cần can thiệp chế độ sữa và dinh dưỡng vi chất bổ sung.`;
+            finalReport = `⚠️ <strong>CHẨN ĐOÁN LÂM SÀNG: Nhẹ cân đơn thuần mức độ ${wLevel}</strong>. Khối lượng cơ thể tổng quát sụt giảm nhưng trục xương tuyến tính và tương quan form người hiện tại chưa bộc lộ đợt cấp. Tăng cường can thiệp sữa cao năng lượng và vi chất bổ sung.`;
         }
         // KỊCH BẢN 5: Thấp còi mạn tính đơn thuần (Isolated Stunting)
         else if (hasHfaClipped && (totalMonths > 120 || !hasWfaClipped) && !isAcuteActive && !isOverweight) {
             boxStyle = "background-color: #fef2f2; color: #b91c1c; border-left-color: #dc2626;";
             let hLevel = isHfaSevere ? "NẶNG" : "VỪA";
-            finalReport = `⚠️ <strong>CHẨN ĐOÁN LÂM SÀNG: Suy dinh dưỡng thể Thấp còi mạn tính đơn thuần mức độ ${hLevel}</strong>. Bệnh nhi ngắn người nhưng thể trạng phom dáng cân đối. Phản ánh tổn thương tăng trưởng xương kéo dài. Khuyến cáo thực hiện tầm soát kỹ các nguyên nhân nội khoa hệ thống ngầm như: bệnh lý ống thận (RTA), tim bẩm sinh hoặc hội chứng kém hấp thu.`;
+            finalReport = `⚠️ <strong>CHẨN ĐOÁN LÂM SÀNG: Suy dinh dưỡng thể Thấp còi mạn tính đơn thuần mức độ ${hLevel}</strong>. Trẻ ngắn người nhưng thể trạng phom dáng cân đối. Khuyên dùng: Thực hiện tầm soát kỹ các bệnh lý mạn hệ thống như bệnh lý ống thận (RTA), tim bẩm sinh hoặc hội chứng kém hấp thu.`;
         }
-        // KỊCH BẢN 6: Suy dinh dưỡng cấp tính đơn thuần / Gầy còm cấp tính đơn thuần (Isolated Wasting / Thinness)
+        // KỊCH BẢN 6: Suy dinh dưỡng cấp tính đơn thuần / Gầy còm cấp tính đơn thuần
         else if (!hasHfaClipped && isAcuteActive) {
             boxStyle = "background-color: #fef2f2; color: #b91c1c; border-left-color: #dc2626;";
             let diagnosticTerm = isChildSmall ? (isAcuteSevere ? "CẤP TÍNH NẶNG (SAM - Thể teo đét)" : "CẤP TÍNH VỪA (MAM)") : (isAcuteSevere ? "GẦY CÒM MỨC ĐỘ NẶNG (Severe thinness)" : "GẦY CÒM MỨC ĐỘ VỪA (Thinness)");
-            finalReport = `⚠️ <strong>CHẨN ĐOÁN LÂM SÀNG: Suy dinh dưỡng thể ${diagnosticTerm} đơn thuần</strong>. Trục chiều cao tăng trưởng xương tuyến tính hoàn toàn tốt và đạt chuẩn, nhưng có hiện tượng sụt giảm tiêu hủy mô cơ/mỡ cấp diễn trong thời gian ngắn. Tập trung tìm kiếm và giải quyết các bệnh lý nhiễm trùng, tiêu chảy cấp hoạt động hoặc sai lầm nuôi dưỡng cấp tính.`;
+            finalReport = `⚠️ <strong>CHẨN ĐOÁN LÂM SÀNG: Thể ${diagnosticTerm} đơn thuần</strong>. Trục chiều cao tăng trưởng xương tuyến tính hoàn toàn đạt chuẩn, nhưng có hiện tượng sụt giảm tiêu hủy mô cơ/mỡ cấp diễn trong thời gian ngắn. Khẩn trương tìm kiếm đợt nhiễm trùng cấp hoặc sai lầm nuôi dưỡng gần đây.`;
         }
-        // KỊCH BẢN 7: Thừa dinh dưỡng thực thể (True Overweight/Obesity)
+        // KỊCH BẢN 7: Thừa dinh dưỡng thực thể
         else if (!hasHfaClipped && isOverweight) {
             boxStyle = "background-color: #fffbfa; color: #c2410c; border-left-color: #c2410c;";
             let oLevel = isObese ? "NẶNG (Béo phì thực thể)" : "VỪA (Thừa cân)";
-            finalReport = `🔶 <strong>CHẨN ĐOÁN LÂM SÀNG: ${oLevel} thực thể</strong>. Chiều cao trục xương bình thường hoặc tốt, nhưng khối lượng cơ/mỡ vượt quá nhu cầu sinh lý của bộ khung. Nguy cơ quá tải huyết động và tim mạch khi bù dịch. <strong>BẮT BUỘC</strong> mở <strong>Phân hệ 3</strong> bên dưới để lấy Cân nặng hồi sức đích hiệu chỉnh, nghiêm cấm dùng cân nặng thực tế gõ y lệnh dịch truyền!`;
+            finalReport = `🔶 <strong>CHẨN ĐOÁN LÂM SÀNG: ${oLevel} thực thể</strong>. Chiều cao trục xương bình thường, nhưng khối lượng cơ/mỡ vượt quá nhu cầu sinh lý của bộ khung. Nguy cơ quá tải huyết động tim mạch khi bù dịch. <strong>BẮT BUỘC</strong> mở Phân hệ 3 để lấy Cân nặng điều trị hiệu chỉnh.`;
         }
         // KỊCH BẢN 8: Trạng thái chớm nguy cơ vùng xám (Borderline Warning)
         else if (isWfaMild || isHfaMild || isAcuteMild) {
             boxStyle = "background-color: #fffbfa; color: #c2410c; border-left-color: #f97316;";
-            finalReport = "⚠️ <strong>CẢNH BÁO XU HƯỚNG THỂ CHẤT (Vùng xám nguy cơ):</strong> Bệnh nhi nằm trong mốc chớm nguy cơ mức độ NHẸ ở một hoặc nhiều trục đo lường (Z-Score tiệm cận vùng nguy hiểm -2SD hoặc +1SD). Chưa đủ tiêu chuẩn thiết lập chẩn đoán bệnh lý bộc phát, nhưng bắt buộc tư vấn can thiệp dự phòng sớm cho gia đình.";
+            finalReport = "⚠️ <strong>CẢNH BÁO XU HƯỚNG THỂ CHẤT (Vùng xám nguy cơ):</strong> Bệnh nhi nằm trong mốc chớm nguy cơ mức độ NHẸ ở một hoặc nhiều trục đo lường (Z-Score tiệm cận vùng nguy hiểm -2SD hoặc +1SD). Chưa đủ tiêu chuẩn thiết lập chẩn đoán bệnh lý bộc phát, nhưng bắt buộc tư vấn can thiệp dinh dưỡng dự phòng sớm cho gia đình.";
         }
         // KỊCH BẢN 9: Thể chất lý tưởng (Eutrophy)
         else {
@@ -414,14 +402,13 @@
             finalReport = "✅ <strong>ĐÁNH GIÁ TỔNG QUÁT: Thể trạng dinh dưỡng BÌNH THƯỜNG (Eutrophy)</strong>. Các trục tương quan thể chất phát triển đồng đều, cân đối và đạt chuẩn sinh lý sinh học theo quần thể tham chiếu chuẩn của WHO.";
         }
 
-        // Đổ toàn bộ dữ liệu cấu trúc động ra UI
         document.getElementById('out-who').innerHTML = `
             <div style="background: #fff; padding: 14px; border-radius: 8px; border: 1px solid var(--border);">
                 <table class="zscore-table">
                     <tr>
-                        <th width="32%">Chỉ số khảo sát</th>
-                        <th width="24%">Mốc Định vị Z-Score</th>
-                        <th>Chẩn đoán Phân độ Độc lập</th>
+                        <th width="35%">Chỉ số khảo sát</th>
+                        <th width="25%">Mốc Định vị Z-Score</th>
+                        <th>Chẩn đoán Phân độ Lâm sàng Độc lập</th>
                     </tr>
                     ${wfaRowHTML}
                     ${hfaRowHTML}
@@ -435,7 +422,7 @@
     }
 
     // ==========================================
-    // PHÂN HỆ 3: CÂN NẶNG ĐIỀU TRỊ CHÍNH XÁC (Cơ chế làm tròn 0.5)
+    // PHÂN HỆ 3: CÂN NẶNG ĐIỀU TRỊ CHÍNH XÁC
     // ==========================================
     function runTreatmentWeight() {
         const inputs = getInputs(); let missing = [];
