@@ -3054,5 +3054,263 @@ const drugDatabase = [
         "targetLevel": "",
         "administration": "PO gói cốm Nexium 10mg: Hòa tan vào 15ml nước lọc (KHÔNG dùng nước có ga/sữa), khuấy đều, để 3 phút cho đặc lại rồi uống ngay trong vòng 30 phút. Tráng cốc uống lại.",
         "monitoring": "Lâm sàng: Đánh giá tái phát triệu chứng khi giảm liều. Cận lâm sàng: Chức năng gan, nồng độ Magie máu nếu dùng phác đồ dài hạn."
+    },
+    {
+        "id": "midazolam",
+        "activeIngredient": "Midazolam",
+        "drugClass": "An thần - Chống co giật (Benzodiazepine ngắn)",
+        "brandNames": [
+            { "name": "Dormicum", "strength": "15mg/3ml", "form": "Ống tiêm IV/IM" },
+            { "name": "Midazolam", "strength": "5mg/1ml", "form": "Ống tiêm IV/IM" }
+        ],
+        "mechanism": "Gắn vào thụ thể GABA-A trung ương, làm tăng tần suất mở kênh Clo, dẫn đến phân cực màng tế bào. Tác dụng an thần mạnh, gây quên thuận chiều và chống co giật với thời gian khởi phát rất nhanh (1-3 phút) và bán thải ngắn.",
+        "routes": [
+            {
+                "routeType": "Tiêm tĩnh mạch (IV) / Truyền TM",
+                "dosingList": [
+                    { "indication": "Cắt cơn co giật cấp tính", "dose": "0.15 - 0.2 mg/kg", "interval": "IV chậm qua 2-3 phút", "maxDose": "Tối đa 5 mg/liều" },
+                    { "indication": "An thần ICU (Truyền liên tục)", "dose": "0.5 - 2 mcg/kg/phút", "interval": "Truyền duy trì qua Bơm tiêm điện", "maxDose": "Tùy thuộc thang điểm an thần (RASS)" }
+                ]
+            },
+            {
+                "routeType": "Xịt mũi (Nasal) / Nhỏ niêm mạc má (Buccal)",
+                "dosingList": [
+                    { "indication": "Cắt cơn co giật ngoài viện", "dose": "0.2 - 0.3 mg/kg", "interval": "Xịt/Nhỏ 1 lần (dùng ống tiêm không kim)", "maxDose": "Tối đa 5 mg (Nasal) / 10 mg (Buccal)" }
+                ]
+            }
+        ],
+        "organWarnings": {
+            "renal": {
+                "isWarning": true,
+                "method": "D (Giảm liều khi dùng kéo dài)",
+                "eGFRTable": [
+                    { "moc": "Mọi mức eGFR (Dùng 1 liều cắt cơn)", "lieu": "100% liều tiêu chuẩn." },
+                    { "moc": "< 30 mL/min/1.73m² (Truyền liên tục)", "lieu": "Giảm 50% liều duy trì. Tích lũy chất chuyển hóa có hoạt tính (1-OH-midazolam) gây an thần kéo dài và chậm tỉnh." }
+                ]
+            },
+            "hepatic": { 
+                "isWarning": true, 
+                "instruction": "Giảm 50% liều ở bệnh nhi suy gan nặng do tăng thời gian bán thải và nguy cơ bệnh lý não gan." 
+            }
+        },
+        "contraindications": "Suy hô hấp cấp chưa được kiểm soát đường thở. Sốc, tụt huyết áp nặng. Nhược cơ (Myasthenia gravis).",
+        "sideEffects": "Suy hô hấp, ngưng thở (đặc biệt khi tiêm IV nhanh hoặc kết hợp Fentanyl/Opioid). Tụt huyết áp. Tích lũy thuốc gây hôn mê kéo dài ở trẻ béo phì hoặc suy thận.",
+        "targetLevel": "",
+        "administration": "IV: Tiêm tĩnh mạch CHẬM qua 2-3 phút để tránh ngưng thở đột ngột. Có thể pha loãng với NaCl 0.9% hoặc D5W. Luôn chuẩn bị sẵn bóng mask, oxy và Flumazenil (thuốc giải độc).",
+        "monitoring": "Lâm sàng: SpO2, Nhịp thở, Huyết áp liên tục. Đánh giá mức độ an thần bằng thang điểm (ví dụ COMFORT, RASS)."
+    },
+    {
+        "id": "diazepam",
+        "activeIngredient": "Diazepam",
+        "drugClass": "An thần - Chống co giật (Benzodiazepine kéo dài)",
+        "brandNames": [
+            { "name": "Seduxen", "strength": "5mg", "form": "Viên nén" },
+            { "name": "Seduxen", "strength": "10mg/2ml", "form": "Ống tiêm IV" },
+            { "name": "Stesolid", "strength": "5mg, 10mg", "form": "Ống thụt trực tràng" }
+        ],
+        "mechanism": "Gắn vào thụ thể GABA-A, tương tự Midazolam nhưng có thời gian tác dụng kéo dài hơn rất nhiều do các chất chuyển hóa qua gan (như desmethyldiazepam) vẫn có hoạt tính chống co giật mạnh.",
+        "routes": [
+            {
+                "routeType": "Tiêm tĩnh mạch (IV)",
+                "dosingList": [
+                    { "indication": "Trạng thái động kinh (Status Epilepticus)", "dose": "0.1 - 0.3 mg/kg/liều", "interval": "IV RẤT CHẬM (tốc độ < 2mg/phút)", "maxDose": "Trẻ < 5 tuổi: max 5mg. Trẻ > 5 tuổi: max 10mg." }
+                ]
+            },
+            {
+                "routeType": "Bơm trực tràng (PR)",
+                "dosingList": [
+                    { "indication": "Cắt cơn co giật tại nhà/tuyến dưới", "dose": "0.5 mg/kg", "interval": "Bơm hậu môn 1 lần", "maxDose": "Có thể lặp lại sau 10-15 phút nếu chưa cắt cơn" }
+                ]
+            }
+        ],
+        "organWarnings": {
+            "renal": {
+                "isWarning": true,
+                "method": "Theo dõi lâm sàng",
+                "eGFRTable": [
+                    { "moc": "Mọi mức eGFR", "lieu": "Không yêu cầu chỉnh liều khi dùng 1-2 liều cấp cứu. Tuy nhiên, ở CKD giai đoạn 4-5, phân đoạn tự do (unbound) tăng, nguy cơ ức chế thần kinh sâu." }
+                ]
+            },
+            "hepatic": { 
+                "isWarning": true, 
+                "instruction": "Chống chỉ định tuyệt đối ở suy gan nặng. Tăng nguy cơ hôn mê gan." 
+            }
+        },
+        "contraindications": "Suy hô hấp nặng. Glaucoma góc hẹp. Suy gan nặng. Trẻ sơ sinh thiếu tháng (do chế phẩm tiêm thường chứa cồn benzyl gây hội chứng Gasping).",
+        "sideEffects": "Suy hô hấp, ngưng thở. Tụt huyết áp. Đau và viêm tĩnh mạch tại chỗ tiêm (do dung môi propylen glycol). Tránh tiêm bắp (IM) vì hấp thu thất thường và rất đau.",
+        "targetLevel": "",
+        "administration": "IV: Tuyệt đối KHÔNG tiêm tĩnh mạch nhanh. Tốc độ tiêm < 2 mg/phút (hoặc 1 mg/phút ở trẻ nhỏ). PR: Đặt bệnh nhi nằm nghiêng, bơm toàn bộ ống Stesolid vào trực tràng, khép hai mông bé lại trong vài phút để thuốc không trào ra.",
+        "monitoring": "Lâm sàng: Theo dõi sát nhịp thở, SpO2 (ít nhất 2 giờ sau liều cuối cùng) vì thuốc có thể tái phân bố gây ngủ sâu trở lại."
+    },
+    {
+        "id": "fentanyl",
+        "activeIngredient": "Fentanyl",
+        "drugClass": "Giảm đau trung ương (Opioid tổng hợp)",
+        "brandNames": [
+            { "name": "Fentanyl", "strength": "100mcg/2ml", "form": "Ống tiêm tĩnh mạch" },
+            { "name": "Fentanyl", "strength": "500mcg/10ml", "form": "Ống tiêm tĩnh mạch" }
+        ],
+        "mechanism": "Đồng vận mạnh mẽ và chọn lọc tại thụ thể Mu-opioid ở hệ thần kinh trung ương. Có tác dụng giảm đau gấp 100 lần Morphine, khởi phát cực nhanh (1-2 phút) và ít ức chế huyết động (không gây giải phóng Histamine).",
+        "routes": [
+            {
+                "routeType": "Tiêm tĩnh mạch (IV)",
+                "dosingList": [
+                    { "indication": "Giảm đau cấp (Bolus)", "dose": "1 - 2 mcg/kg/liều", "interval": "IV chậm qua 3 - 5 phút", "maxDose": "Lặp lại mỗi 30-60 phút nếu cần" },
+                    { "indication": "Tiền mê / Đặt nội khí quản", "dose": "2 - 5 mcg/kg/liều", "interval": "IV chậm", "maxDose": "Tùy lâm sàng" },
+                    { "indication": "Giảm đau duy trì ICU", "dose": "1 - 3 mcg/kg/giờ", "interval": "Truyền TM liên tục", "maxDose": "Chỉnh liều theo đáp ứng" }
+                ]
+            }
+        ],
+        "organWarnings": {
+            "renal": {
+                "isWarning": false,
+                "method": "Thuốc Lựa Chọn Ưu Tiên (Drug of Choice)",
+                "eGFRTable": [
+                    { "moc": "Mọi mức eGFR", "lieu": "100% liều bình thường. LÀ LỰA CHỌN ƯU TIÊN để giảm đau ở trẻ suy thận/CKD vì KHÔNG có chất chuyển hóa độc hoặc có hoạt tính (khác với Morphine)." }
+                ]
+            },
+            "hepatic": { 
+                "isWarning": true, 
+                "instruction": "Chuyển hóa mạnh qua gan (CYP3A4). Ở bệnh nhi suy gan nặng, cần khởi đầu bằng liều thấp nhất và kéo giãn thời gian tiêm lặp lại." 
+            }
+        },
+        "contraindications": "Chấn thương sọ não/tăng áp lực nội sọ (tương đối). Trẻ đang dùng thuốc ức chế MAO trong 14 ngày qua.",
+        "sideEffects": "HỘI CHỨNG CỨNG LỒNG NGỰC (Chest wall rigidity) nếu tiêm IV quá nhanh, dẫn đến không thể thông khí. Suy hô hấp, nhịp tim chậm. Ít gây hạ huyết áp hơn Morphine.",
+        "targetLevel": "",
+        "administration": "IV: PHẢI tiêm tĩnh mạch chậm trong ít nhất 3-5 phút (ngừa cứng lồng ngực). Luôn có sẵn Naloxone, Atropin và dụng cụ bóp bóng/đặt NKQ trước khi tiêm liều cao.",
+        "monitoring": "Lâm sàng: Theo dõi sát nhịp thở, độ giãn nở lồng ngực, SpO2, nhịp tim. Có thể cần tiêm Atropin dự phòng nếu nhịp tim chậm."
+    },
+    {
+        "id": "valproic_acid",
+        "activeIngredient": "Valproic Acid (Sodium Valproate)",
+        "drugClass": "Chống động kinh - Phổ rộng",
+        "brandNames": [
+            { "name": "Depakine", "strength": "200mg/ml", "form": "Siro uống" },
+            { "name": "Depakine Chrono", "strength": "500mg", "form": "Viên nén giải phóng kéo dài" },
+            { "name": "Depakine", "strength": "400mg", "form": "Bột pha tiêm IV" }
+        ],
+        "mechanism": "Tăng cường nồng độ chất ức chế dẫn truyền thần kinh GABA tại não bộ; đồng thời phong bế kênh Natri (Na+) phụ thuộc điện thế, giúp ngăn chặn sự phóng điện lan tỏa của các neuron.",
+        "routes": [
+            {
+                "routeType": "Đường Uống (PO)",
+                "dosingList": [
+                    { "indication": "Trẻ em > 1 tháng tuổi", "dose": "10 - 15 mg/kg/ngày", "interval": "Chia 2 - 3 lần/ngày", "maxDose": "Tăng dần mỗi tuần đến 20 - 40 mg/kg/ngày" },
+                    { "indication": "Cơn động kinh phức tạp/kháng trị", "dose": "Tối đa 60 mg/kg/ngày", "interval": "Chia 2 - 3 lần/ngày", "maxDose": "60 mg/kg/ngày (Cần theo dõi TDM)" }
+                ]
+            },
+            {
+                "routeType": "Tiêm tĩnh mạch (IV)",
+                "dosingList": [
+                    { "indication": "Cắt cơn Trạng thái động kinh (Status Epilepticus)", "dose": "Liều tải (Loading): 20 - 40 mg/kg", "interval": "Truyền TM trong 5-10 phút", "maxDose": "Tối đa 3000 mg/liều" },
+                    { "indication": "Duy trì sau liều tải IV", "dose": "1 - 2 mg/kg/giờ", "interval": "Truyền TM liên tục", "maxDose": "Theo đáp ứng lâm sàng" }
+                ]
+            }
+        ],
+        "organWarnings": {
+            "renal": {
+                "isWarning": true,
+                "method": "Không cần hiệu chỉnh liều lượng",
+                "eGFRTable": [
+                    { "moc": "Mọi mức eGFR", "lieu": "Giữ nguyên liều. Tuy nhiên, ở trẻ có hội chứng Ure máu cao, dạng Valproate tự do (có hoạt tính) sẽ tăng lên do giảm gắn kết protein huyết thanh, cần theo dõi lâm sàng chặt chẽ." }
+                ]
+            },
+            "hepatic": { 
+                "isWarning": true, 
+                "instruction": "CẢNH BÁO ĐEN (BLACK BOX WARNING): Nguy cơ hoại tử gan cấp gây tử vong, đặc biệt cao ở TRẺ < 2 TUỔI, đang đa trị liệu động kinh, hoặc có bệnh lý chuyển hóa ty thể bẩm sinh (Alpers-Huttenlocher). CHỐNG CHỈ ĐỊNH ở bệnh nhi suy gan, viêm gan cấp/mạn." 
+            }
+        },
+        "contraindications": "Rối loạn chuyển hóa chu trình Ure. Rối loạn chuyển hóa ty thể (đột biến gen POLG). Rối loạn đông máu nặng.",
+        "sideEffects": "Viêm tụy cấp (có thể xuất huyết). Rối loạn tiêu hóa, tăng cân béo phì. Rụng tóc. Giảm tiểu cầu, tăng NH3 máu (Hyperammonemia) gây bệnh lý não.",
+        "targetLevel": "50 - 100 mcg/mL (Độc tính trên thần kinh và gan tăng vọt khi > 150 mcg/mL)",
+        "administration": "PO: Siro Depakine có kèm bơm tiêm xilanh chia vạch theo mg. Trẻ uống trong bữa ăn để giảm kích ứng dạ dày. IV: Pha loãng với NaCl 0.9% hoặc Dextrose 5%.",
+        "monitoring": "Lâm sàng: Ý thức (nguy cơ tăng NH3), Dấu hiệu xuất huyết. Cận lâm sàng: AST/ALT, Bilirubin, Amoniac (NH3) máu, Amylase/Lipase (nếu đau bụng), CTM (số lượng tiểu cầu) trước và trong quá trình điều trị."
+    },
+    {
+        "id": "levetiracetam",
+        "activeIngredient": "Levetiracetam",
+        "drugClass": "Chống động kinh - Thế hệ mới (SV2A ligand)",
+        "brandNames": [
+            { "name": "Keppra", "strength": "100mg/ml", "form": "Dung dịch uống" },
+            { "name": "Keppra", "strength": "250mg, 500mg", "form": "Viên nén bao phim" },
+            { "name": "Keppra IV", "strength": "500mg/5ml", "form": "Ống tiêm IV đậm đặc" }
+        ],
+        "mechanism": "Gắn đặc hiệu vào protein SV2A (Synaptic Vesicle Glycoprotein 2A) ở túi synap tiền nơron, điều hòa hoạt động giải phóng chất dẫn truyền thần kinh, ức chế sự bùng phát tín hiệu động kinh mà không làm ảnh hưởng đến dẫn truyền thần kinh sinh lý bình thường.",
+        "routes": [
+            {
+                "routeType": "Đường Uống (PO) / Tiêm tĩnh mạch (IV)",
+                "dosingList": [
+                    { "indication": "Trẻ < 6 tháng tuổi", "dose": "7 mg/kg/liều", "interval": "Mỗi 12 giờ (BID)", "maxDose": "21 mg/kg/liều (BID)" },
+                    { "indication": "Trẻ 6 tháng - < 4 tuổi", "dose": "10 mg/kg/liều", "interval": "Mỗi 12 giờ (BID)", "maxDose": "25 mg/kg/liều (BID)" },
+                    { "indication": "Trẻ ≥ 4 tuổi", "dose": "10 mg/kg/liều", "interval": "Mỗi 12 giờ (BID)", "maxDose": "30 mg/kg/liều (BID) hoặc max 3000 mg/ngày" },
+                    { "indication": "Liều tải cắt cơn (Status Epilepticus)", "dose": "40 - 60 mg/kg", "interval": "Truyền IV trong 15 phút (1 lần duy nhất)", "maxDose": "4500 mg/liều tải" }
+                ]
+            }
+        ],
+        "organWarnings": {
+            "renal": {
+                "isWarning": true,
+                "method": "D (Giảm liều theo eGFR)",
+                "eGFRTable": [
+                    { "moc": "> 80 mL/min/1.73m²", "lieu": "100% liều tiêu chuẩn, mỗi 12 giờ" },
+                    { "moc": "50 - 79 mL/min/1.73m²", "lieu": "70% liều tiêu chuẩn, mỗi 12 giờ (Hoặc 10-20 mg/kg/liều x 2 lần/ngày)" },
+                    { "moc": "30 - 49 mL/min/1.73m²", "lieu": "50% liều tiêu chuẩn, mỗi 12 giờ (Hoặc 5-15 mg/kg/liều x 2 lần/ngày)" },
+                    { "moc": "< 30 mL/min/1.73m²", "lieu": "25% liều tiêu chuẩn, mỗi 12 giờ (Hoặc 5-10 mg/kg/liều x 2 lần/ngày)" },
+                    { "moc": "Bệnh nhi đang chạy thận (HD)", "lieu": "Khởi đầu 10-20 mg/kg/ngày chia 1 lần. Bổ sung thêm 1 liều 10-15 mg/kg ngay sau mỗi chu kỳ lọc máu." }
+                ]
+            },
+            "hepatic": { 
+                "isWarning": true, 
+                "instruction": "Không chuyển hóa qua gan nên rất an toàn. Tuy nhiên, ở bệnh nhi suy gan NẶNG có kèm theo suy giảm chức năng thận, cần giảm 50% liều duy trì hàng ngày." 
+            }
+        },
+        "contraindications": "Quá mẫn với Levetiracetam hoặc dẫn xuất pyrrolidone.",
+        "sideEffects": "Ảnh hưởng đến hành vi/tâm thần (cực kỳ phổ biến ở trẻ em): Cáu gắt, hung hăng, kích động, rối loạn tâm thần. Buồn ngủ, suy nhược cơ thể.",
+        "targetLevel": "12 - 46 mcg/mL (Thường chỉ định đo TDM ở trẻ có CKD nặng, đang lọc máu, hoặc nghi ngờ kém tuân thủ).",
+        "administration": "PO: Có thể uống cùng hoặc không cùng thức ăn. IV: PHẢI PHA LOÃNG trong ít nhất 100mL (hoặc theo tỷ lệ thích hợp cho trẻ nhỏ với D5W/NS) và truyền TM tĩnh mạch trong 15 phút.",
+        "monitoring": "Lâm sàng: Theo dõi sát các thay đổi về tính khí, dấu hiệu trầm cảm, ý tưởng tự sát. Chức năng thận định kỳ."
+    },
+    {
+        "id": "phenobarbital",
+        "activeIngredient": "Phenobarbital",
+        "drugClass": "Chống động kinh - Nhóm Barbiturate",
+        "brandNames": [
+            { "name": "Gardenal", "strength": "10mg, 100mg", "form": "Viên nén" },
+            { "name": "Danotan", "strength": "200mg/ml", "form": "Ống tiêm IV/IM" }
+        ],
+        "mechanism": "Gắn kết vào thụ thể GABA-A, kéo dài thời gian mở kênh Cl-, làm tăng cường tác dụng ức chế của GABA, giảm tính kích thích của màng màng tế bào, đặc biệt hiệu quả trong động kinh sơ sinh.",
+        "routes": [
+            {
+                "routeType": "Tiêm tĩnh mạch (IV)",
+                "dosingList": [
+                    { "indication": "Cắt cơn co giật Sơ sinh (First-line)", "dose": "Liều tải: 15 - 20 mg/kg", "interval": "Truyền IV chậm (tốc độ < 1 mg/kg/phút)", "maxDose": "Tối đa 40 mg/kg (Tổng liều tải chia nhiều lần nếu không cắt cơn)" }
+                ]
+            },
+            {
+                "routeType": "Đường Uống (PO) / IV",
+                "dosingList": [
+                    { "indication": "Duy trì - Trẻ sơ sinh", "dose": "3 - 4 mg/kg/ngày", "interval": "Chia 1 - 2 lần/ngày (Bắt đầu 12-24h sau liều tải)", "maxDose": "5 mg/kg/ngày" },
+                    { "indication": "Duy trì - Trẻ lớn", "dose": "3 - 5 mg/kg/ngày", "interval": "Chia 1 - 2 lần/ngày", "maxDose": "8 mg/kg/ngày" }
+                ]
+            }
+        ],
+        "organWarnings": {
+            "renal": {
+                "isWarning": true,
+                "method": "I (Tăng khoảng cách)",
+                "eGFRTable": [
+                    { "moc": "> 10 mL/min/1.73m²", "lieu": "Sử dụng liều tiêu chuẩn, mỗi 12 - 24 giờ" },
+                    { "moc": "< 10 mL/min/1.73m²", "lieu": "Giãn khoảng cách đưa thuốc: Mỗi 12 - 16 giờ (nếu đang dùng liều chia 8h) hoặc dùng liều thấp nhất có hiệu quả." }
+                ]
+            },
+            "hepatic": { 
+                "isWarning": true, 
+                "instruction": "Thuốc chuyển hóa mạnh qua gan và là chất cảm ứng enzyme gan (CYP450) cực mạnh. Thận trọng khi dùng ở trẻ suy gan, cân nhắc giảm liều." 
+            }
+        },
+        "contraindications": "Suy hô hấp nghiêm trọng. Rối loạn chuyển hóa Porphyria. Suy gan nặng.",
+        "sideEffects": "Suy hô hấp, tụt huyết áp (khi tiêm IV nhanh). Gây an thần mạnh, lơ mơ. Ở trẻ em có thể gây phản ứng ngược: Tăng động, kích thích, bồn chồn (Paradoxical excitement). Ảnh hưởng nhận thức nếu dùng kéo dài.",
+        "targetLevel": "15 - 40 mcg/mL (Độc tính nặng, hôn mê khi nồng độ > 50 mcg/mL)",
+        "administration": "IV: Tuyệt đối không tiêm mạch nhanh, tốc độ truyền tối đa ở trẻ em là 1 mg/kg/phút (max 30 mg/phút) để tránh ngưng thở. PO: Không nhai hay nghiền nát viên thuốc nếu không có chỉ định.",
+        "monitoring": "Lâm sàng: SpO2, Nhịp thở, Huyết áp liên tục trong và sau khi tiêm IV. Đánh giá mức độ an thần."
     }
 ];
