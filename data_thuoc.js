@@ -2883,5 +2883,176 @@ const drugDatabase = [
         "targetLevel": "",
         "administration": "Chỉ pha bằng dung dịch Dextrose 5% (Tuyệt đối không pha dung dịch muối). Luôn phải sử dụng bộ lọc (filter) chuẩn khi truyền.",
         "monitoring": "Kiểm tra Creatinin máu, Kali, Magie hàng ngày. Theo dõi nhiệt độ khi truyền."
+    },
+    {
+        "id": "paracetamol",
+        "activeIngredient": "Paracetamol (Acetaminophen)",
+        "drugClass": "Thuốc giảm đau - Hạ sốt",
+        "brandNames": [
+            { "name": "Hapacol", "strength": "80mg, 150mg, 250mg", "form": "Gói bột sủi bọt" },
+            { "name": "Efferalgan", "strength": "80mg, 150mg, 300mg", "form": "Viên đặt trực tràng, Gói sủi" },
+            { "name": "Perfalgan", "strength": "1g/100ml", "form": "Chai dịch truyền IV" }
+        ],
+        "mechanism": "Ức chế enzyme Cyclooxygenase (COX) chủ yếu ở hệ thần kinh trung ương, làm giảm tổng hợp prostaglandin. Tác động trực tiếp lên trung tâm điều nhiệt ở vùng dưới đồi gây dãn mạch ngoại biên và hạ sốt.",
+        "routes": [
+            {
+                "routeType": "Đường Uống / Trực tràng (PO/PR)",
+                "dosingList": [
+                    { "indication": "Hạ sốt, giảm đau nhẹ-vừa", "dose": "10 - 15 mg/kg/liều", "interval": "Mỗi 4 - 6 giờ (khi cần)", "maxDose": "75 mg/kg/ngày hoặc tối đa 4 g/ngày" }
+                ]
+            },
+            {
+                "routeType": "Truyền tĩnh mạch (IV)",
+                "dosingList": [
+                    { "indication": "Giảm đau/Hạ sốt cấp cứu", "dose": "15 mg/kg/liều", "interval": "Mỗi 6 giờ (truyền trong 15 phút)", "maxDose": "60 mg/kg/ngày" }
+                ]
+            }
+        ],
+        "organWarnings": {
+            "renal": {
+                "isWarning": true,
+                "method": "I (Tăng khoảng cách)",
+                "eGFRTable": [
+                    { "moc": "≥ 50 mL/min/1.73m²", "lieu": "Mỗi 4 - 6 giờ (Giữ nguyên liều)" },
+                    { "moc": "10 - 50 mL/min/1.73m²", "lieu": "Giãn khoảng cách: Mỗi 6 - 8 giờ" },
+                    { "moc": "< 10 mL/min/1.73m²", "lieu": "Giãn khoảng cách: Mỗi 8 giờ" }
+                ]
+            },
+            "hepatic": { 
+                "isWarning": true, 
+                "instruction": "Nguy cơ cao hoại tử tế bào gan không hồi phục nếu dùng quá liều hoặc khoảng cách giữa các liều < 4 giờ. Chống chỉ định ở bệnh nhân suy gan nặng." 
+            }
+        },
+        "contraindications": "Mẫn cảm với thành phần thuốc. Bệnh lý gan nặng. Thận trọng (cân nhắc tương đối) ở trẻ thiếu hụt men G6PD.",
+        "sideEffects": "Ít gặp ở liều điều trị. Có thể gây phản ứng da nghiêm trọng như Hội chứng Stevens-Johnson (SJS), hoại tử thượng bì nhiễm độc (TEN).",
+        "targetLevel": "10 - 20 mcg/mL (Định lượng TDM chỉ áp dụng khi nghi ngờ ngộ độc Paracetamol)",
+        "administration": "PO: Trẻ em uống cách nhau tối thiểu 4-6 giờ, KHÔNG quá 5 liều/24h. PR: Không bẻ đôi đạn trực tràng, nếu đạn mềm cần để vào ngăn mát tủ lạnh trước khi bóc vỏ.",
+        "monitoring": "Lâm sàng: Thân nhiệt, mức độ đau. Cận lâm sàng: Chức năng gan (AST, ALT, Bilirubin) nếu bệnh nhi phải dùng liều cao > 3 ngày liên tục."
+    },
+    {
+        "id": "ibuprofen",
+        "activeIngredient": "Ibuprofen",
+        "drugClass": "Kháng viêm không Steroid (NSAIDs)",
+        "brandNames": [
+            { "name": "Brufen", "strength": "100mg/5ml", "form": "Siro hỗn dịch" },
+            { "name": "Sotstop", "strength": "100mg/5ml", "form": "Hỗn dịch uống" },
+            { "name": "Gofen", "strength": "200mg, 400mg", "form": "Viên nang mềm" }
+        ],
+        "mechanism": "Ức chế không chọn lọc enzyme Cyclooxygenase (COX-1 và COX-2) ở ngoại vi, làm giảm sự tạo thành prostaglandin, giúp hạ sốt, giảm đau và kháng viêm.",
+        "routes": [
+            {
+                "routeType": "Đường Uống (PO)",
+                "dosingList": [
+                    { "indication": "Hạ sốt (Sốt > 39°C)", "dose": "5 - 10 mg/kg/liều", "interval": "Mỗi 6 - 8 giờ", "maxDose": "40 mg/kg/ngày hoặc 2.4 g/ngày" },
+                    { "indication": "Viêm khớp tự phát thiếu niên (JIA)", "dose": "30 - 40 mg/kg/ngày", "interval": "Chia 3 - 4 lần", "maxDose": "2.4 g/ngày" }
+                ]
+            }
+        ],
+        "organWarnings": {
+            "renal": {
+                "isWarning": true,
+                "method": "Tránh sử dụng ở CKD nặng",
+                "eGFRTable": [
+                    { "moc": "≥ 30 mL/min/1.73m²", "lieu": "100% liều, sử dụng thận trọng nếu có mất nước" },
+                    { "moc": "< 30 mL/min/1.73m²", "lieu": "KHÔNG KHUYẾN CÁO (Nguy cơ Tổn thương thận cấp - AKI)" }
+                ]
+            },
+            "hepatic": { 
+                "isWarning": true, 
+                "instruction": "Thận trọng ở trẻ suy gan nhẹ - vừa. Ngừng thuốc ngay lập tức nếu có dấu hiệu viêm gan lâm sàng (vàng da, men gan tăng vọt)." 
+            }
+        },
+        "contraindications": "Trẻ < 3 tháng tuổi hoặc < 5kg. Đang mắc Sốt xuất huyết Dengue. Bệnh lý loét dạ dày - tá tràng tiến triển. Rối loạn đông máu. Tiền sử hen phế quản do NSAIDs.",
+        "sideEffects": "Kích ứng, loét và xuất huyết tiêu hóa. Giảm tưới máu thận gây tổn thương thận cấp (đặc biệt khi trẻ đang bị mất nước do tiêu chảy/nôn ói).",
+        "targetLevel": "",
+        "administration": "PO: Bắt buộc uống TRONG hoặc SAU bữa ăn no để giảm kích ứng dạ dày. Lắc kỹ chai siro/hỗn dịch trước khi đong liều.",
+        "monitoring": "Lâm sàng: Theo dõi sát tính chất phân (phân đen do XHTH), thể tích nước tiểu (thiểu niệu). Cận lâm sàng: Creatinine máu, Urea, CTM (Hb, Hct) nếu dùng kéo dài."
+    },
+    {
+        "id": "omeprazole",
+        "activeIngredient": "Omeprazole",
+        "drugClass": "Kháng tiết acid - Ức chế bơm proton (PPI)",
+        "brandNames": [
+            { "name": "Losec", "strength": "10mg, 20mg", "form": "Viên nang kháng dịch vị / Cốm" },
+            { "name": "Omezel", "strength": "20mg, 40mg", "form": "Bột đông khô pha tiêm IV" }
+        ],
+        "mechanism": "Gắn kết không thuận nghịch vào enzyme H+/K+ ATPase (Bơm proton) ở màng đỉnh của tế bào thành dạ dày, ức chế hoàn toàn bước cuối cùng của quá trình bài tiết acid.",
+        "routes": [
+            {
+                "routeType": "Đường Uống (PO)",
+                "dosingList": [
+                    { "indication": "Trào ngược DD-TQ / Viêm loét", "dose": "1 - 2 mg/kg/ngày", "interval": "1 lần/ngày (sáng) hoặc chia 2 lần", "maxDose": "40 mg/ngày" }
+                ]
+            },
+            {
+                "routeType": "Tiêm tĩnh mạch (IV)",
+                "dosingList": [
+                    { "indication": "Xuất huyết tiêu hóa cấp tính", "dose": "1 - 2 mg/kg/ngày", "interval": "Tiêm chậm tĩnh mạch 1 lần/ngày", "maxDose": "40 mg/ngày" }
+                ]
+            }
+        ],
+        "organWarnings": {
+            "renal": {
+                "isWarning": false,
+                "method": "Không cần hiệu chỉnh",
+                "eGFRTable": [
+                    { "moc": "Mọi mức eGFR", "lieu": "Sử dụng liều bình thường." }
+                ]
+            },
+            "hepatic": { 
+                "isWarning": true, 
+                "instruction": "Chuyển hóa mạnh qua gan (CYP2C19). Ở trẻ mắc bệnh gan nặng, thời gian bán thải kéo dài, không dùng quá liều tối đa 10 - 20 mg/ngày." 
+            }
+        },
+        "contraindications": "Quá mẫn với các dẫn xuất Benzimidazole. Đang sử dụng phác đồ có chứa Nelfinavir (thuốc kháng HIV).",
+        "sideEffects": "Nhức đầu, đau bụng, tiêu chảy/táo bón. Dùng kéo dài (>1 năm) làm tăng nguy cơ loãng xương, gãy xương, viêm thận kẽ và giảm hấp thu Magie/Vitamin B12.",
+        "targetLevel": "",
+        "administration": "PO: Uống thuốc TRƯỚC bữa ăn sáng 30 - 60 phút. KHÔNG ĐƯỢC nhai hay nghiền nát viên nang/hạt vi nang (sẽ làm hỏng màng bao kháng dịch vị).",
+        "monitoring": "Lâm sàng: Đáp ứng giảm đau/trào ngược. Cận lâm sàng: Đo Magie máu định kỳ nếu sử dụng thuốc kéo dài liên tục > 3 tháng."
+    },
+    {
+        "id": "esomeprazole",
+        "activeIngredient": "Esomeprazole",
+        "drugClass": "Kháng tiết acid - Ức chế bơm proton (PPI)",
+        "brandNames": [
+            { "name": "Nexium", "strength": "10mg", "form": "Gói cốm kháng dịch vị cho trẻ em" },
+            { "name": "Nexium mups", "strength": "20mg, 40mg", "form": "Viên nén" },
+            { "name": "Nexium IV", "strength": "40mg", "form": "Bột đông khô pha tiêm IV" }
+        ],
+        "mechanism": "Đồng phân S của Omeprazole (hoạt tính ức chế mạnh hơn, ít bị chuyển hóa qua gan hơn ở vòng đầu). Ức chế đặc hiệu bơm H+/K+ ATPase ở tế bào thành dạ dày.",
+        "routes": [
+            {
+                "routeType": "Đường Uống (PO)",
+                "dosingList": [
+                    { "indication": "Trẻ 1 - 11 tuổi (<20kg)", "dose": "10 mg", "interval": "1 lần/ngày", "maxDose": "10 mg/ngày" },
+                    { "indication": "Trẻ 1 - 11 tuổi (≥20kg)", "dose": "10 - 20 mg", "interval": "1 lần/ngày", "maxDose": "20 mg/ngày" },
+                    { "indication": "Trẻ ≥ 12 tuổi", "dose": "20 - 40 mg", "interval": "1 lần/ngày", "maxDose": "40 mg/ngày" }
+                ]
+            },
+            {
+                "routeType": "Tiêm/Truyền tĩnh mạch (IV)",
+                "dosingList": [
+                    { "indication": "Trẻ 1 - 11 tuổi", "dose": "10 - 20 mg", "interval": "Tiêm/Truyền 1 lần/ngày", "maxDose": "20 mg/ngày" }
+                ]
+            }
+        ],
+        "organWarnings": {
+            "renal": {
+                "isWarning": false,
+                "method": "Không cần hiệu chỉnh",
+                "eGFRTable": [
+                    { "moc": "Mọi mức eGFR", "lieu": "Sử dụng liều tiêu chuẩn bình thường." }
+                ]
+            },
+            "hepatic": { 
+                "isWarning": true, 
+                "instruction": "Trẻ suy gan nặng (Child-Pugh C): Liều tối đa KHÔNG QUÁ 10 mg/ngày (đối với trẻ 1-11 tuổi) hoặc 20 mg/ngày (đối với trẻ ≥ 12 tuổi)." 
+            }
+        },
+        "contraindications": "Quá mẫn với các dẫn xuất Benzimidazole. Đang sử dụng phác đồ có chứa Nelfinavir hoặc Atazanavir (thuốc kháng HIV).",
+        "sideEffects": "Buồn nôn, đầy hơi, tiêu chảy. Nguy cơ nhiễm trùng đường ruột (C. difficile) và viêm phổi cộng đồng tăng nhẹ do mất hàng rào acid bảo vệ.",
+        "targetLevel": "",
+        "administration": "PO gói cốm Nexium 10mg: Hòa tan vào 15ml nước lọc (KHÔNG dùng nước có ga/sữa), khuấy đều, để 3 phút cho đặc lại rồi uống ngay trong vòng 30 phút. Tráng cốc uống lại.",
+        "monitoring": "Lâm sàng: Đánh giá tái phát triệu chứng khi giảm liều. Cận lâm sàng: Chức năng gan, nồng độ Magie máu nếu dùng phác đồ dài hạn."
     }
 ];
