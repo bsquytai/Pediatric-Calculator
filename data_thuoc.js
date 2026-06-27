@@ -773,34 +773,6 @@ const drugDatabase = [
         "monitoring": "Kiểm tra công thức máu định kỳ để theo dõi lượng bạch cầu trung tính."
     },
     {
-        "id": "statins",
-        "activeIngredient": "Nhóm Statins (Lovastatin, Atorvastatin)",
-        "drugClass": "Thuốc hạ mỡ máu nhóm Statin",
-        "brandNames": [
-            { "name": "Lipitor", "strength": "10mg/20mg", "form": "Viên nén" },
-            { "name": "Atorlip", "strength": "10mg/20mg", "form": "Viên nén" }
-        ],
-        "mechanism": "Ức chế enzyme HMG-CoA reductase, làm giảm tổng hợp cholesterol tại gan.",
-        "routes": [
-            {
-                "routeType": "Đường Uống (PO)",
-                "dosingList": [
-                    { "indication": "Lovastatin (Tăng lipid máu ở HCTH)", "dose": "0.4 - 0.8 mg/kg", "interval": "Uống 1 lần vào buổi tối", "maxDose": "40 mg mỗi 12 giờ" },
-                    { "indication": "Atorvastatin (Tăng lipid máu ở HCTH)", "dose": "0.2 mg - 1.6 mg/kg", "interval": "Uống 1 lần vào buổi tối", "maxDose": "80 mg/ngày" }
-                ]
-            }
-        ],
-        "organWarnings": {
-            "renal": { "isWarning": true, "instruction": "Cần theo dõi sát vì tiêu cơ vân do statin có thể gây suy thận cấp." },
-            "hepatic": { "isWarning": true, "instruction": "Gây tăng men gan. Chống chỉ định trong bệnh gan hoạt động." }
-        },
-        "contraindications": "Bệnh gan tiến triển, tăng men gan kéo dài không rõ nguyên nhân.",
-        "sideEffects": "Đau cơ, yếu cơ, viêm cơ, nguy cơ tiêu cơ vân (đặc biệt khi dùng chung với Cyclosporin). Gây tăng men gan.",
-        "targetLevel": "",
-        "administration": "Bác sĩ chỉ định cá thể hóa cho bệnh nhi HCTH kháng steroid có tăng cholesterol kéo dài.",
-        "monitoring": "Làm xét nghiệm men gan (GOT, GPT) và nồng độ Creatine Kinase (CK) hàng tháng trong 3 tháng đầu, sau đó duy trì kiểm tra mỗi 3 tháng."
-    },
-    {
         "id": "indomethacin",
         "activeIngredient": "Indomethacin",
         "drugClass": "Kháng viêm Non-steroid (NSAID)",
@@ -879,61 +851,6 @@ const drugDatabase = [
         "targetLevel": "Sintrom đích INR từ 2.0 - 3.0. Heparin đích aPTT kéo dài 1.5 - 2.5 lần bình thường.",
         "administration": "Acenocoumarol uống cố định 1 giờ trong ngày. Tránh ăn thay đổi đột ngột lượng rau xanh đậm (chứa nhiều Vit K).",
         "monitoring": "Bắt buộc theo dõi chức năng đông máu liên tục (PT, INR với Sintrom; aPTT với Heparin)."
-    },
-    {
-        "id": "antibiotics_generic",
-        "activeIngredient": "Kháng sinh nhóm chung (Augmentin, Zinnat, Rocephin...)",
-        "drugClass": "Kháng sinh (Chỉ định chung)",
-        "brandNames": [
-            { "name": "Augmentin", "strength": "250mg/500mg", "form": "Gói bột uống" },
-            { "name": "Zinnat", "strength": "125mg/250mg", "form": "Gói bột uống" },
-            { "name": "Rocephin", "strength": "1g", "form": "Lọ bột pha tiêm tĩnh mạch" }
-        ],
-        "mechanism": "Tùy thuộc vào từng nhóm kháng sinh (ức chế thành tế bào, tổng hợp protein, v.v.). Nên tra cứu từng hoạt chất cụ thể (VD: Cefuroxime, Ceftriaxone).",
-        "routes": [
-            {
-                "routeType": "Chỉ định lâm sàng chung",
-                "dosingList": [
-                    { "indication": "Bệnh nhi có biểu hiện nhiễm khuẩn", "dose": "Tùy thuộc vào loại kháng sinh và eGFR", "interval": "Tuân thủ y lệnh", "maxDose": "Theo dược thư" }
-                ]
-            }
-        ],
-        "organWarnings": {
-            "renal": { "isWarning": true, "instruction": "Mở Accordion Bảng hiệu chỉnh Kháng sinh Thận Nhi để tra cứu các phương pháp Giảm liều (D), Giãn cách (I) hoặc Kết hợp (DI)." },
-            "hepatic": { "isWarning": false, "instruction": "" }
-        },
-        "contraindications": "Dị ứng với thành phần thuốc.",
-        "sideEffects": "Rối loạn tiêu hóa, dị ứng da, thay đổi hệ vi sinh đường ruột.",
-        "targetLevel": "",
-        "administration": "Tra cứu mục Tương tác của từng loại thuốc.",
-        "monitoring": "Đánh giá đáp ứng lâm sàng đối với tình trạng nhiễm khuẩn (sốt, CRP, bạch cầu)."
-    },
-    {
-        "id": "ppis",
-        "activeIngredient": "Thuốc bảo vệ dạ dày (PPIs - Rabeprazole, Esomeprazole)",
-        "drugClass": "Thuốc ức chế bơm Proton",
-        "brandNames": [
-            { "name": "Pariet", "strength": "10mg/20mg", "form": "Viên bao tan trong ruột" },
-            { "name": "Nexium", "strength": "10mg", "form": "Gói bột uống" }
-        ],
-        "mechanism": "Ức chế enzyme H+/K+-ATPase (bơm proton) ở tế bào viền của dạ dày, ngăn cản quá trình bài tiết acid dạ dày.",
-        "routes": [
-            {
-                "routeType": "Đường Uống (PO)",
-                "dosingList": [
-                    { "indication": "Dùng chung Corticoid/MMF hoặc viêm loét", "dose": "0.5 - 1 mg/kg/ngày", "interval": "Uống 1 lần/ngày (Trực tiếp trước ăn 30p)", "maxDose": "40 mg/ngày" }
-                ]
-            }
-        ],
-        "organWarnings": {
-            "renal": { "isWarning": false, "instruction": "" },
-            "hepatic": { "isWarning": true, "instruction": "Chuyển hóa mạnh ở gan, thận trọng suy gan nặng." }
-        },
-        "contraindications": "Quá mẫn với các thành phần của thuốc.",
-        "sideEffects": "Ít có tác dụng phụ nghiêm trọng được ghi nhận. Dùng kéo dài có thể tăng nguy cơ nhiễm trùng tiêu hóa, giảm hấp thu Canxi/Magie.",
-        "targetLevel": "",
-        "administration": "Uống nguyên viên (không bẻ/nhai viên Pariet) trước bữa ăn sáng từ 30 - 60 phút.",
-        "monitoring": "Theo dõi các triệu chứng đường tiêu hóa lâm sàng."
     },
     {
         "id": "erythropoietin",
