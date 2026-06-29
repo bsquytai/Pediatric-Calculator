@@ -13,7 +13,9 @@ const drugDatabase = [
             { "name": "Capoten", "strength": "25mg", "form": "Viên nén" },
             { "name": "Captagim", "strength": "25mg", "form": "Viên nén" }
         ],
-        "mechanism": "Cơ chế chính: Phong bế enzyme kinase II (ACE) chủ yếu tại nội mô phổi, cắt đứt quá trình chuyển Angiotensin I thành Angiotensin II. Hệ quả: Đảo ngược tình trạng co mạch hệ thống, đặc biệt giãn tiểu động mạch đi (efferent arteriole) tại thận giúp giảm áp lực lọc nội cầu thận. Giảm tiết Aldosterone, kích thích thải Na+ và nước. Cơ chế phụ (Bradykinin): ACE là men giáng hóa Bradykinin. Ức chế ACE làm tích lũy Bradykinin, kích thích nội mạc tăng tổng hợp Nitric Oxide (NO) và Prostacyclin gây giãn mạch, nhưng đồng thời là thủ phạm gây ho khan (dry cough).",
+        "mechanism": `Cơ chế chính: Phong bế enzyme kinase II (ACE) chủ yếu tại nội mô phổi, cắt đứt quá trình chuyển Angiotensin I thành Angiotensin II. 
+        Hệ quả: Đảo ngược tình trạng co mạch hệ thống, đặc biệt giãn tiểu động mạch đi (efferent arteriole) tại thận giúp giảm áp lực lọc nội cầu thận. Giảm tiết Aldosterone, kích thích thải Na+ và nước. 
+        Cơ chế phụ (Bradykinin): ACE là men giáng hóa Bradykinin. Ức chế ACE làm tích lũy Bradykinin, kích thích nội mạc tăng tổng hợp Nitric Oxide (NO) và Prostacyclin gây giãn mạch, nhưng đồng thời là thủ phạm gây ho khan (dry cough).`,
         "routes": [
             {
                 "routeType": "Đường Uống (PO)",
