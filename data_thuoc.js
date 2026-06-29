@@ -13,11 +13,12 @@ const drugDatabase = [
             { "name": "Capoten", "strength": "25mg", "form": "Viên nén" },
             { "name": "Captagim", "strength": "25mg", "form": "Viên nén" }
         ],
-        "mechanism": `Cơ chế chính: Phong bế enzyme kinase II (ACE) chủ yếu tại nội mô phổi, cắt đứt quá trình chuyển Angiotensin I thành Angiotensin II. 
+        "mechanism": `- Cơ chế chính: Phong bế enzyme kinase II (ACE) chủ yếu tại nội mô phổi, cắt đứt quá trình chuyển Angiotensin I thành Angiotensin II. 
+        => Hệ quả: 
+        + Đảo ngược tình trạng co mạch hệ thống, đặc biệt giãn tiểu động mạch đi (efferent arteriole) tại thận giúp giảm áp lực lọc nội cầu thận.
+        + Giảm tiết Aldosterone, kích thích thải Na+ và nước. 
         
-        Hệ quả: Đảo ngược tình trạng co mạch hệ thống, đặc biệt giãn tiểu động mạch đi (efferent arteriole) tại thận giúp giảm áp lực lọc nội cầu thận. Giảm tiết Aldosterone, kích thích thải Na+ và nước. 
-        
-        Cơ chế phụ (Bradykinin): ACE là men giáng hóa Bradykinin. Ức chế ACE làm tích lũy Bradykinin, kích thích nội mạc tăng tổng hợp Nitric Oxide (NO) và Prostacyclin gây giãn mạch, nhưng đồng thời là thủ phạm gây ho khan (dry cough).`,
+        - Cơ chế phụ (Bradykinin): ACE là men giáng hóa Bradykinin. Ức chế ACE làm tích lũy Bradykinin, kích thích nội mạc tăng tổng hợp Nitric Oxide (NO) và Prostacyclin gây giãn mạch, nhưng đồng thời là thủ phạm gây ho khan (dry cough).`,
         "routes": [
             {
                 "routeType": "Đường Uống (PO)",
@@ -128,7 +129,9 @@ const drugDatabase = [
             { "name": "Cozaar", "strength": "50mg", "form": "Viên nén" },
             { "name": "Lifezar", "strength": "50mg", "form": "Viên nén" }
         ],
-        "mechanism": "Đối kháng đặc hiệu tại thụ thể Angiotensin II (AT1), ngăn chặn tác dụng co mạch và tiết Aldosterone.",
+        "mechanism": `Cơ chế: Đối kháng cạnh tranh trực tiếp và chọn lọc cao tại thụ thể AT1 (Angiotensin II type 1 receptor) trên màng tế bào cơ trơn mạch máu và tuyến thượng thận.
+
+        Đặc trưng: Ngăn chặn hoàn toàn tác dụng co mạch, tăng sinh tế bào và giữ muối nước của Ang II. Không ảnh hưởng đến chuyển hóa Bradykinin (không gây ho)`,
         "routes": [
             {
                 "routeType": "Đường Uống (PO)",
@@ -156,7 +159,9 @@ const drugDatabase = [
             { "name": "Amlor", "strength": "5mg", "form": "Viên nang" },
             { "name": "Norvasc", "strength": "5mg", "form": "Viên nén" }
         ],
-        "mechanism": "Chẹn kênh Calci (cơ tim, mạch máu cần Calci để co bóp) => Giảm co bóp cơ tim + Giãn cơ trơn mạch máu và giảm sức cản ngoại vi.",
+        "mechanism": `Đích tác động: Gắn vào tiểu đơn vị alpha-1 của kênh canxi phụ thuộc điện thế type L (L-type voltage-gated calcium channels).
+
+        Dihydropyridines (Amlodipine, Nifedipine): Chọn lọc cao trên cơ trơn động mạch ngoại biên. Ngăn dòng Ca2+ nội bào di chuyển vào trong, ức chế quá trình phosphoryl hóa myosin light chain, gây giãn mạch mạnh, làm giảm sức cản ngoại vi (Systemic Vascular Resistance - SVR)`,
         "routes": [
             {
                 "routeType": "Đường Uống (PO)",
@@ -170,7 +175,7 @@ const drugDatabase = [
             "renal": { "isWarning": false, "instruction": "" },
             "hepatic": { "isWarning": true, "instruction": "Thời gian bán thải kéo dài ở bệnh nhân suy gan, cần bắt đầu với liều thấp nhất." }
         },
-        "contraindications": "Chống chỉ định hoặc thận trọng tối đa sử dụng trong trường hợp suy tim sung huyết.",
+        "contraindications": "Cơ tim, mạch máu cần Calci để co bóp => Chẹn Calci làm giảm co bóp cơ tim + Giãn cơ trơn mạch máu và giảm sức cản ngoại vi. Chống chỉ định hoặc thận trọng tối đa sử dụng trong trường hợp suy tim sung huyết.",
         "sideEffects": "Phù ngoại vi, đỏ bừng mặt, đau đầu, đánh trống ngực.",
         "targetLevel": "",
         "administration": "",
@@ -239,11 +244,17 @@ const drugDatabase = [
     {
         "id": "atenolol",
         "activeIngredient": "Atenolol",
-        "drugClass": "Nhóm chẹn Beta giao cảm",
+        "drugClass": "Nhóm chẹn Beta (Chọn lọc Beta-1 / Cardioselective)",
         "brandNames": [
             { "name": "Tenormin", "strength": "50mg", "form": "Viên nén" }
         ],
-        "mechanism": "Ức chế chọn lọc thụ thể beta-1 ở tim, làm giảm nhịp tim và sức co bóp cơ tim.",
+        "mechanism":`- Đích tác động (Chọn lọc tim):
++ Ức chế chọn lọc thụ thể beta-1 ở tim, làm giảm nhịp tim và sức co bóp cơ tim.
++ Đặc điểm nổi bật: Là thuốc tan trong nước (hydrophilic), rất ít đi qua hàng rào máu não.
+
+- Hệ quả lâm sàng:
++ Ít gây tác dụng phụ lên thần kinh trung ương (không gây ác mộng, trầm cảm) so với các thuốc ưa lipit.
++ Không chuyển hóa qua gan, thải trừ chủ yếu qua thận dưới dạng không đổi (Bắt buộc chỉnh liều khi suy thận).`,
         "routes": [
             {
                 "routeType": "Đường Uống (PO)",
@@ -265,12 +276,19 @@ const drugDatabase = [
     {
         "id": "propranolol",
         "activeIngredient": "Propranolol",
-        "drugClass": "Nhóm chẹn Beta giao cảm",
+        "drugClass": "Nhóm chẹn Beta (Không chọn lọc)",
         "brandNames": [
             { "name": "Dorocardyl", "strength": "40mg", "form": "Viên nén" },
             { "name": "Inderal", "strength": "10mg", "form": "Viên nén" }
         ],
-        "mechanism": "Ức chế không chọn lọc cả thụ thể beta-1 và beta-2, làm giảm nhịp tim và gây co thắt cơ trơn phế quản.",
+        "mechanism": `- Đích tác động (Không chọn lọc):
++ Chẹn ức chế cạnh tranh cả thụ thể Beta-1 (ở tim) và Beta-2 (ở phổi, mạch máu, gan).
++ Thuốc có tính ưa lipit cao (lipophilic), dễ dàng xuyên qua hàng rào máu não.
+
+- Hệ quả lâm sàng:
++ Giảm nhịp tim và sức co bóp cơ tim (Beta-1).
++ Nguy cơ co thắt phế quản do ức chế giãn cơ trơn (Beta-2).
++ Ức chế giải phóng renin ở phức hợp cận tiểu cầu tại thận, giúp hạ huyết áp.`,
         "routes": [
             {
                 "routeType": "Đường Uống (PO)",
@@ -292,12 +310,19 @@ const drugDatabase = [
     {
         "id": "labetalol",
         "activeIngredient": "Labetalol",
-        "drugClass": "Nhóm chẹn Beta giao cảm",
+        "drugClass": "Nhóm chẹn Beta (Hỗn hợp Alpha & Beta)",
         "brandNames": [
             { "name": "Trandate", "strength": "100mg/200mg", "form": "Viên nén" },
             { "name": "Trandate", "strength": "50mg/10ml", "form": "Ống tiêm tĩnh mạch" }
         ],
-        "mechanism": "Ức chế đồng thời thụ thể alpha-1 và beta, gây giãn mạch hạ huyết áp mà không làm tăng nhịp tim phản xạ.",
+        "mechanism": `- Đích tác động (Hỗn hợp):
++ Chẹn thụ thể Alpha-1 (ở ngoại vi) gây giãn mạch.
++ Chẹn thụ thể Beta-1 và Beta-2 không chọn lọc.
++ Tỷ lệ chẹn Alpha : Beta là 1:3 (đường uống) và 1:7 (đường tĩnh mạch).
+
+- Hệ quả lâm sàng:
++ Giảm sức cản ngoại vi làm hạ huyết áp nhanh (nhờ chẹn Alpha).
++ Không gây nhịp tim nhanh phản xạ, vẫn duy trì được cung lượng tim và dòng máu đến thận (nhờ chẹn Beta).`,
         "routes": [
             {
                 "routeType": "Đường Uống (PO)",
@@ -3316,5 +3341,93 @@ const drugDatabase = [
         "targetLevel": "15 - 40 mcg/mL (Độc tính nặng, hôn mê khi nồng độ > 50 mcg/mL)",
         "administration": "IV: Tuyệt đối không tiêm mạch nhanh, tốc độ truyền tối đa ở trẻ em là 1 mg/kg/phút (max 30 mg/phút) để tránh ngưng thở. PO: Không nhai hay nghiền nát viên thuốc nếu không có chỉ định.",
         "monitoring": "Lâm sàng: SpO2, Nhịp thở, Huyết áp liên tục trong và sau khi tiêm IV. Đánh giá mức độ an thần."
+    },
+    {
+        "id": "verapamil",
+        "activeIngredient": "Verapamil",
+        "drugClass": "Nhóm chẹn kênh Calci (Non-Dihydropyridine)",
+        "brandNames": [
+            { "name": "Isoptin", "strength": "40mg", "form": "Viên bọc đường" },
+            { "name": "Isoptin", "strength": "5mg/2ml", "form": "Ống tiêm tĩnh mạch" }
+        ],
+        "mechanism": `- Đích tác động:
++ Gắn vào tiểu đơn vị alpha-1 của kênh canxi phụ thuộc điện thế type L (L-type calcium channels).
+
+- Đặc điểm Dược lý (Nhóm Non-Dihydropyridine):
++ Khác với Amlodipin (chọn lọc trên mạch máu), Verapamil tác động cực kỳ mạnh lên mô dẫn truyền và cơ tim.
++ Làm chậm nhịp tim (negative chronotropic) và ức chế dẫn truyền qua nút nhĩ thất AV (negative dromotropic).
++ Làm giảm sức co bóp cơ tim (negative inotropic).`,
+        "routes": [
+            {
+                "routeType": "Đường Uống (PO)",
+                "dosingList": [
+                    { "indication": "Trẻ em (Duy trì/Tăng HA)", "dose": "4 - 8 mg/kg/ngày", "interval": "Chia 3 - 4 lần/ngày", "maxDose": "480 mg/ngày" }
+                ]
+            },
+            {
+                "routeType": "Tiêm tĩnh mạch chậm (IV)",
+                "dosingList": [
+                    { "indication": "Cắt cơn nhịp nhanh trên thất (SVT)", "dose": "0.1 - 0.2 mg/kg/liều", "interval": "Tiêm IV chậm > 2 phút", "maxDose": "Trẻ 1-15 tuổi: Tối đa 5mg/liều" }
+                ]
+            }
+        ],
+        "organWarnings": {
+            "renal": { "isWarning": false, "instruction": "Chỉ khoảng 3-4% thuốc bài tiết qua thận dưới dạng không đổi. Đa số không cần chỉnh liều, nhưng nên theo dõi ở bệnh nhi suy thận nặng." },
+            "hepatic": { "isWarning": true, "instruction": "Thuốc chuyển hóa qua gan bước 1 (first-pass) rất mạnh. Thời gian bán thải kéo dài, cần giảm liều chỉ còn 20-50% mức bình thường ở bệnh nhi suy chức năng gan." }
+        },
+        "contraindications": `- CHỐNG CHỈ ĐỊNH TUYỆT ĐỐI:
++ Dùng đường tĩnh mạch (IV) cho trẻ sơ sinh và nhũ nhi < 1 tuổi vì nguy cơ ngưng tim, trụy tim mạch không hồi phục.
+
+- Các trường hợp thận trọng/Chống chỉ định khác:
++ Suy tim sung huyết, phân suất tống máu giảm.
++ Block nhĩ thất độ 2 hoặc độ 3, hội chứng suy nút xoang (trừ khi đã đặt máy tạo nhịp).
++ Nhịp nhanh thất, hoặc Hội chứng Wolff-Parkinson-White (WPW) có kèm rung nhĩ/cuồng nhĩ.`,
+        "sideEffects": "Táo bón (tác dụng phụ phổ biến nhất do ức chế cơ trơn ruột), nhịp tim chậm, block nhĩ thất, tụt huyết áp, chóng mặt, đau đầu.",
+        "targetLevel": "",
+        "administration": `- Đường Uống (PO):
++ Uống cùng thức ăn để giảm kích ứng dạ dày.
+
+- Đường Tĩnh mạch (IV):
++ Phải tiêm tĩnh mạch rất chậm (trong ít nhất 2 - 3 phút) để tránh block nhĩ thất.`,
+        "monitoring": "Khi tiêm IV: Bắt buộc theo dõi điện tâm đồ (ECG) liên tục, sát sao nhịp tim, khoảng PR và huyết áp. Khi dùng PO: Theo dõi tình trạng táo bón và nhịp tim."
+    },
+    {
+        "id": "metoprolol",
+        "activeIngredient": "Metoprolol",
+        "drugClass": "Nhóm chẹn Beta (Chọn lọc Beta-1 / Cardioselective)",
+        "brandNames": [
+            { "name": "Betaloc Zok", "strength": "25mg, 50mg", "form": "Viên giải phóng kéo dài" },
+            { "name": "Betaloc", "strength": "5mg/5ml", "form": "Ống tiêm tĩnh mạch" }
+        ],
+        "mechanism": `- Đích tác động (Chọn lọc tim):
++ Chẹn ưu tiên trên thụ thể Beta-1 ở cơ tim.
++ Ở liều điều trị thông thường, ít tác động lên thụ thể Beta-2 ở phế quản và mạch máu ngoại vi.
++ Thuốc có tính ưa lipit vừa phải.
+
+- Hệ quả lâm sàng:
++ Làm giảm nhịp tim, giảm cung lượng tim và giảm giải phóng renin tại thận.
++ An toàn hơn Propranolol trên bệnh nhi có tiền sử đường thở phản ứng nhẹ (Lưu ý: sẽ mất tính chọn lọc nếu dùng liều cao).`,
+        "routes": [
+            {
+                "routeType": "Đường Uống (PO)",
+                "dosingList": [
+                    { "indication": "Trẻ em (Viên tức thì - Tartrate)", "dose": "1 - 2 mg/kg/ngày", "interval": "Chia 2 lần/ngày", "maxDose": "200 mg/ngày" },
+                    { "indication": "Trẻ em (Viên kéo dài - Succinate)", "dose": "1 - 2 mg/kg/ngày", "interval": "Dùng 1 lần/ngày", "maxDose": "200 mg/ngày" }
+                ]
+            }
+        ],
+        "organWarnings": {
+            "renal": { "isWarning": false, "instruction": "Không cần chỉnh liều ở bệnh nhi suy giảm chức năng thận." },
+            "hepatic": { "isWarning": true, "instruction": "Chuyển hóa chủ yếu qua gan, có thể cần giảm liều ở bệnh nhi xơ gan, suy gan nặng." }
+        },
+        "contraindications": `- Chống chỉ định tim mạch:
++ Nhịp chậm xoang, block nhĩ thất độ 2 và 3, suy tim mất bù, sốc tim.
++ Hội chứng suy nút xoang.`,
+        "sideEffects": "Nhịp tim chậm, mệt mỏi, chóng mặt, tụt huyết áp. Có thể gây co thắt phế quản nếu dùng vượt liều điều trị.",
+        "targetLevel": "",
+        "administration": `- Lưu ý các dạng muối:
++ Metoprolol Tartrate (tác dụng nhanh): Uống cùng hoặc ngay sau bữa ăn.
++ Metoprolol Succinate (kéo dài - Zok): Uống 1 lần/ngày, KHÔNG nhai hay nghiền nát viên thuốc.`,
+        "monitoring": "Theo dõi nhịp tim và HA, đặc biệt khi mới bắt đầu dùng hoặc tăng liều."
     }
 ];
