@@ -18,7 +18,7 @@
             </select>
         </div>
     </div>
-    <div class="form-row" style="margin-top: 10px;">
+    <div class="form-row" style="margin-top: 12px;">
         <div class="form-col">
             <label>Chiều cao (cm) <span style="font-weight:normal; color:var(--text-light);">(Tùy chọn)</span></label>
             <input type="number" id="bpHeight" inputmode="decimal" placeholder="Để trống = Bách phân vị 50">
@@ -38,7 +38,7 @@
             <input type="number" id="bpDia" inputmode="decimal" placeholder="mmHg">
         </div>
     </div>
-    <div class="form-row" style="margin-top: 10px;">
+    <div class="form-row" style="margin-top: 12px;">
         <div class="form-col">
             <label>MAP đo từ máy <span style="font-weight:normal; color:var(--text-light);">(Tùy chọn)</span></label>
             <input type="number" id="bpMap" inputmode="decimal" placeholder="mmHg">
@@ -49,39 +49,39 @@
 
 <button class="btn" onclick="calculateBP()">PHÂN ĐỘ HUYẾT ÁP</button>
 
-<div id="bpResultSection" class="result-section" style="display: none; margin-top: 20px;">
-    <div class="result-box" style="padding: 16px; text-align: center; background: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 16px;">
+<div id="bpResultSection" class="result-section" style="display: none; margin-top: 24px;">
+    <div class="result-box" style="padding: 20px; text-align: center; background: var(--surface); border-radius: var(--radius); box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 16px;">
         <div style="font-weight: 600; color: var(--text-light); font-size: 14px; text-transform: uppercase;">Chẩn đoán Phân độ (AAP 2017)</div>
-        <div class="result-value badge" id="bpStageText" style="font-size: 20px; margin-top: 12px; padding: 10px 20px; border-radius: 8px; color: white; display: inline-block;">--</div>
+        <div class="result-value badge" id="bpStageText" style="font-size: 22px; font-weight: bold; margin-top: 12px; padding: 12px 24px; border-radius: 8px; color: white; display: inline-block;">--</div>
     </div>
 
-    <div class="card" id="actionCard" style="border-left: 4px solid #ccc;">
-        <div class="card-title" style="margin-bottom: 8px;">Khuyến cáo Lâm sàng</div>
-        <ul id="actionList" style="padding-left: 20px; font-size: 14px; color: var(--text); margin: 0;">
-            </ul>
+    <div class="card" id="actionCard" style="border-left: 4px solid var(--border);">
+        <div class="card-title" style="margin-bottom: 12px; border-bottom: none; padding-bottom: 0;">Khuyến cáo Lâm sàng</div>
+        <ul id="actionList" style="padding-left: 20px; font-size: 15px; color: var(--text); margin: 0; line-height: 1.6;">
+        </ul>
     </div>
 
     <div class="card">
         <div class="card-title">Chi tiết Bách phân vị (Percentiles)</div>
         <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
             <tr>
-                <td width="40%" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>Tâm thu (SBP)</strong></td>
-                <td id="bpSysDetail" style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right;">--</td>
+                <td width="40%" style="padding: 12px 0; border-bottom: 1px solid var(--border);"><strong>Tâm thu (SBP)</strong></td>
+                <td id="bpSysDetail" style="padding: 12px 0; border-bottom: 1px solid var(--border); text-align: right;">--</td>
             </tr>
             <tr>
-                <td style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>Tâm trương (DBP)</strong></td>
-                <td id="bpDiaDetail" style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right;">--</td>
+                <td style="padding: 12px 0; border-bottom: 1px solid var(--border);"><strong>Tâm trương (DBP)</strong></td>
+                <td id="bpDiaDetail" style="padding: 12px 0; border-bottom: 1px solid var(--border); text-align: right;">--</td>
             </tr>
             <tr>
-                <td style="padding: 8px 0;"><strong>MAP</strong> <span id="mapSource" style="font-size:11px; font-weight:normal; display:block;"></span></td>
-                <td id="bpMapDetail" style="padding: 8px 0; text-align: right;">--</td>
+                <td style="padding: 12px 0;"><strong>MAP</strong> <span id="mapSource" style="font-size:12px; font-weight:normal; color: var(--text-light); display:block;"></span></td>
+                <td id="bpMapDetail" style="padding: 12px 0; text-align: right;">--</td>
             </tr>
         </table>
     </div>
 
-    <div class="card" style="background-color: #f0fdf4; border-color: #bbf7d0;">
-        <div class="card-title" style="color: #166534; border-bottom-color: #bbf7d0;">Mục tiêu Điều trị (BP Target)</div>
-        <ul style="padding-left: 20px; font-size: 14px; color: #166534; margin: 0;">
+    <div class="card" style="background-color: #f0fdf4; border: 1px solid #bbf7d0;">
+        <div class="card-title" style="color: #16a34a; border-bottom-color: #bbf7d0;">Mục tiêu Điều trị (BP Target)</div>
+        <ul style="padding-left: 20px; font-size: 14px; color: #166534; margin: 0; line-height: 1.6;">
             <li style="margin-bottom: 8px;">
                 <strong>Trẻ không có CKD:</strong> <br>
                 <span id="targetNormal">--</span>
@@ -94,12 +94,136 @@
     </div>
 </div>
 
+<div style="margin-top: 24px;">
+    <button class="accordion-btn" onclick="toggleTheory(this)">
+        <span style="display: flex; align-items: center; gap: 8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+            Bảng Lý thuyết Phân độ Huyết áp (Ôn tập)
+        </span>
+        <span class="toggle-icon" style="font-size: 20px; font-weight: normal; transition: transform 0.3s;">+</span>
+    </button>
+    <div class="accordion-content" id="theoryContent">
+        
+        <div class="info-box" style="border-left-color: var(--primary);">
+            <div class="info-box-title" style="color: var(--primary-dark);">1. TIÊU CHUẨN AAP 2017</div>
+            <table style="width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; margin-top: 8px; background: #fff;">
+                <thead>
+                    <tr style="background-color: #f1f5f9; color: var(--text);">
+                        <th style="padding: 10px; border: 1px solid var(--border); width: 25%;">Phân độ</th>
+                        <th style="padding: 10px; border: 1px solid var(--border); width: 37.5%;">Trẻ &lt; 13 tuổi</th>
+                        <th style="padding: 10px; border: 1px solid var(--border); width: 37.5%;">Trẻ &ge; 13 tuổi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid var(--border); font-weight: 600; color: #16a34a;">Bình thường</td>
+                        <td style="padding: 10px; border: 1px solid var(--border);">&lt; 90th percentile</td>
+                        <td style="padding: 10px; border: 1px solid var(--border);">&lt; 120 / &lt; 80 mmHg</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid var(--border); font-weight: 600; color: #eab308;">HA Tăng cao<br><span style="font-size: 11px; font-weight: normal; color: var(--text-light);">(Elevated BP)</span></td>
+                        <td style="padding: 10px; border: 1px solid var(--border);">&ge; 90th đến &lt; 95th percentile<br>HOẶC 120/80 đến &lt; 95th<br><i>(Lấy mốc nào thấp hơn)</i></td>
+                        <td style="padding: 10px; border: 1px solid var(--border);">120 - 129 / &lt; 80 mmHg</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid var(--border); font-weight: 600; color: #f97316;">Tăng HA Độ 1</td>
+                        <td style="padding: 10px; border: 1px solid var(--border);">&ge; 95th đến &lt; 95th + 12 mmHg<br>HOẶC 130/80 đến 139/89<br><i>(Lấy mốc nào thấp hơn)</i></td>
+                        <td style="padding: 10px; border: 1px solid var(--border);">130 - 139 / 80 - 89 mmHg</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid var(--border); font-weight: 600; color: #dc2626;">Tăng HA Độ 2</td>
+                        <td style="padding: 10px; border: 1px solid var(--border);">&ge; 95th + 12 mmHg<br>HOẶC &ge; 140/90 mmHg<br><i>(Lấy mốc nào thấp hơn)</i></td>
+                        <td style="padding: 10px; border: 1px solid var(--border);">&ge; 140 / &ge; 90 mmHg</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="info-box" style="border-left-color: #16a34a; margin-bottom: 0;">
+            <div class="info-box-title" style="color: #16a34a;">2. MỤC TIÊU KIỂM SOÁT (KDIGO 2021)</div>
+            <ul style="margin: 0; padding-left: 16px; font-size: 13px; color: var(--text);">
+                <li style="margin-bottom: 6px;"><strong>Trẻ có CKD (Không phân biệt mức độ Protein niệu):</strong> Huyết áp tâm thu (SBP) hướng tới mục tiêu <strong>&le; 50th percentile</strong> (đối với trẻ &lt; 13 tuổi) hoặc <strong>&le; 120 mmHg</strong> (trẻ &ge; 13 tuổi).</li>
+                <li><strong>Ghi chú:</strong> Áp dụng đo bằng phương pháp MAP chuẩn hóa định kỳ (ABPM) để đánh giá chính xác nhất tải lượng huyết áp trung bình 24h.</li>
+            </ul>
+        </div>
+
+    </div>
+</div>
+
+<div class="ref-card">
+    <div class="ref-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+        Tham chiếu Lâm sàng
+    </div>
+    <ul class="ref-list">
+        <li><strong>AAP 2017:</strong> Clinical Practice Guideline for Screening and Management of High Blood Pressure in Children and Adolescents. <em>Pediatrics (2017) 140 (3): e20171904</em>.</li>
+        <li><strong>KDIGO 2021:</strong> Clinical Practice Guideline for the Management of Blood Pressure in Chronic Kidney Disease.</li>
+        <li><strong>Algorithm Note:</strong> Hệ thống sử dụng nội suy Z-score chiều cao tự động theo phương trình hồi quy 4 bậc nếu người dùng không nhập chiều cao thực tế. MAP ước tính nội suy từ công thức kinh điển (SBP + 2xDBP)/3 nếu không có chỉ số MAP máy.</li>
+    </ul>
+    <div class="ref-source">Cập nhật lần cuối: Tháng 7/2026 | Chuyên trách Huyết áp Thận Nhi</div>
+</div>
+
 <style>
-    /* Bổ sung class màu sắc nếu file CSS của bạn chưa có sẵn */
-    .bg-red { background-color: #dc3545 !important; }
-    .bg-orange { background-color: #fd7e14 !important; }
-    .bg-yellow { background-color: #ffc107 !important; color: #333 !important; }
-    .bg-green { background-color: #28a745 !important; }
+    /* Bố cục Form */
+    .form-row { display: flex; gap: 16px; width: 100%; }
+    .form-col { flex: 1; display: flex; flex-direction: column; }
+    .form-col label { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+    .note { font-size: 13px; color: var(--text-light); margin-top: 12px; font-style: italic; }
+    
+    /* Input & Select Styles (Kế thừa nhưng đảm bảo hiển thị đúng layout) */
+    input[type="number"], select { 
+        width: 100%; padding: 12px; border: 1px solid var(--border); 
+        border-radius: 8px; font-size: 16px; box-sizing: border-box; background: #fff;
+    }
+
+    /* Phân màu Cảnh báo theo quy chuẩn */
+    .bg-red { background-color: #dc2626 !important; }
+    .bg-orange { background-color: #f97316 !important; }
+    .bg-yellow { background-color: #eab308 !important; color: #1f2937 !important; }
+    .bg-green { background-color: #16a34a !important; }
+
+    /* Accordion - Tuân thủ tuyệt đối cấu trúc khuôn mẫu III.1 */
+    .accordion-btn { 
+        width: 100%; text-align: left; background: #ffffff; padding: 16px 20px; 
+        border: 1px solid var(--border); border-radius: 8px; font-weight: bold; 
+        margin-bottom: 12px; display: flex; justify-content: space-between; 
+        align-items: center; color: var(--text); cursor: pointer; transition: all 0.2s;
+    }
+    .accordion-btn.active { 
+        background: var(--primary); color: white; border-bottom-left-radius: 0; 
+        border-bottom-right-radius: 0; margin-bottom: 0; border-color: var(--primary);
+    }
+    .accordion-content { 
+        display: none; padding: 20px; border: 1px solid var(--primary); 
+        border-top: none; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; 
+        background: #f9fafb; animation: fadeIn 0.3s ease;
+    }
+
+    /* Hộp thông tin phân màu - Khuôn mẫu III.2 */
+    .info-box { 
+        padding: 16px; border-radius: 10px; margin-bottom: 16px; 
+        border-left: 4px solid var(--border); background: #f9fafb; 
+        line-height: 1.6; 
+    }
+    .info-box-title { 
+        font-size: 12px; text-transform: uppercase; font-weight: bold; 
+        letter-spacing: 0.5px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; 
+    }
+
+    /* Quy chuẩn tham chiếu y khoa - Khuôn mẫu III.3 */
+    .ref-card { 
+        margin-top: 24px; background-color: #f8fafc; border: 1px solid #cbd5e1; 
+        padding: 16px; border-radius: 8px; 
+    }
+    .ref-title { 
+        font-size: 15px; font-weight: bold; color: #334155; border-bottom: 1px solid #cbd5e1; 
+        padding-bottom: 8px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; 
+    }
+    .ref-list { padding-left: 20px; font-size: 13px; color: #475569; line-height: 1.6; margin: 0; }
+    .ref-list li { margin-bottom: 8px; }
+    .ref-source { font-size: 11px; color: #94a3b8; margin-top: 16px; border-top: 1px dashed #cbd5e1; padding-top: 8px; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 </style>
 
 <script>
@@ -164,7 +288,7 @@
         let mapSource = "(Nhập từ máy đo)";
         if (isNaN(mapInput)) {
             mapVal = (sys + 2 * dia) / 3;
-            mapSource = "(Ước tính từ công thức)";
+            mapSource = "(Ước tính từ công thức: [SBP + 2xDBP] / 3)";
         }
         document.getElementById('mapSource').innerText = mapSource;
 
@@ -178,19 +302,19 @@
             // LOGIC CHO TRẺ >= 13 TUỔI (Không dùng Bách phân vị)
             // ==========================================
             if (sys >= 140 || dia >= 90) { 
-                stageText = "TĂNG HA ĐỘ 2"; stageClass = "bg-red"; borderColor = "#dc3545";
+                stageText = "TĂNG HA ĐỘ 2"; stageClass = "bg-red"; borderColor = "var(--alert-red, #dc2626)";
                 actions = ["Đánh giá tổn thương cơ quan đích (Siêu âm tim, soi đáy mắt).", "Khởi trị bằng thuốc hạ áp ngay.", "Kiểm tra lại trong vòng 1 tuần."];
             }
             else if (sys >= 130 || dia >= 80) { 
-                stageText = "TĂNG HA ĐỘ 1"; stageClass = "bg-orange"; borderColor = "#fd7e14";
+                stageText = "TĂNG HA ĐỘ 1"; stageClass = "bg-orange"; borderColor = "var(--alert-orange, #f97316)";
                 actions = ["Tư vấn thay đổi lối sống (DASH diet, vận động).", "Đo lại sau 1-2 tuần.", "Khởi trị thuốc nếu không cải thiện sau 3 lần khám."];
             }
             else if (sys >= 120 && dia < 80) { 
-                stageText = "HA TĂNG CAO (Elevated)"; stageClass = "bg-yellow"; borderColor = "#ffc107";
+                stageText = "HA TĂNG CAO (Elevated)"; stageClass = "bg-yellow"; borderColor = "var(--alert-yellow, #eab308)";
                 actions = ["Can thiệp lối sống (Dinh dưỡng, giảm cân nếu có béo phì).", "Đo lại sau 6 tháng."];
             }
             else { 
-                stageText = "BÌNH THƯỜNG"; stageClass = "bg-green"; borderColor = "#28a745";
+                stageText = "BÌNH THƯỜNG"; stageClass = "bg-green"; borderColor = "var(--alert-green, #16a34a)";
                 actions = ["Duy trì lối sống lành mạnh.", "Đo huyết áp định kỳ hàng năm."];
             }
 
@@ -204,7 +328,7 @@
             // LOGIC CHO TRẺ < 13 TUỔI (Sử dụng Thuật toán Nội suy)
             // ==========================================
             const refs = getThresholds(age, height, gender);
-            const heightNote = refs.usedDefaultHeight ? "Đã dùng Chiều cao chuẩn 50th" : "Đã hiệu chỉnh theo Chiều cao";
+            const heightNote = refs.usedDefaultHeight ? "Dùng Chiều cao chuẩn 50th" : "Hiệu chỉnh theo Chiều cao";
             
             // AAP 2017 Rule: Độ 1 bị giới hạn trần (cap) ở 130/80
             const stage1_sys_cap = Math.min(refs.s95 + 12, 139); 
@@ -223,24 +347,24 @@
             let finalStage = Math.max(sysStage, diaStage);
 
             if (finalStage === 3) { 
-                stageText = "TĂNG HA ĐỘ 2"; stageClass = "bg-red"; borderColor = "#dc3545";
+                stageText = "TĂNG HA ĐỘ 2"; stageClass = "bg-red"; borderColor = "var(--alert-red, #dc2626)";
                 actions = ["Cần đánh giá lâm sàng chuyên khoa gấp.", "Khởi trị thuốc hạ áp, siêu âm tim, kiểm tra võng mạc."];
             }
             else if (finalStage === 2) { 
-                stageText = "TĂNG HA ĐỘ 1"; stageClass = "bg-orange"; borderColor = "#fd7e14";
+                stageText = "TĂNG HA ĐỘ 1"; stageClass = "bg-orange"; borderColor = "var(--alert-orange, #f97316)";
                 actions = ["Thay đổi lối sống.", "Lặp lại đo HA trong 1-2 tuần.", "Đánh giá siêu âm tim nếu HA vẫn ở mức Độ 1."];
             }
             else if (finalStage === 1) { 
-                stageText = "HA TĂNG CAO (Elevated)"; stageClass = "bg-yellow"; borderColor = "#ffc107";
+                stageText = "HA TĂNG CAO (Elevated)"; stageClass = "bg-yellow"; borderColor = "var(--alert-yellow, #eab308)";
                 actions = ["Giáo dục dinh dưỡng, kiểm soát cân nặng.", "Hẹn đo lại sau 6 tháng."];
             }
             else { 
-                stageText = "BÌNH THƯỜNG"; stageClass = "bg-green"; borderColor = "#28a745";
+                stageText = "BÌNH THƯỜNG"; stageClass = "bg-green"; borderColor = "var(--alert-green, #16a34a)";
                 actions = ["Đo huyết áp định kỳ hàng năm."];
             }
 
-            sysDetail = `${sys} mmHg <br><span style="font-size:12px; color:#666;">(Ngưỡng 90th: ${refs.s90} | 95th: ${refs.s95} - ${heightNote})</span>`;
-            diaDetail = `${dia} mmHg <br><span style="font-size:12px; color:#666;">(Ngưỡng 90th: ${refs.d90} | 95th: ${refs.d95})</span>`;
+            sysDetail = `${sys} mmHg <br><span style="font-size:12px; color:var(--text-light);">(Ngưỡng 90th: ${refs.s90} | 95th: ${refs.s95} - ${heightNote})</span>`;
+            diaDetail = `${dia} mmHg <br><span style="font-size:12px; color:var(--text-light);">(Ngưỡng 90th: ${refs.d90} | 95th: ${refs.d95})</span>`;
             
             targetNormal = `Mục tiêu (Bách phân vị < 90th): < ${refs.s90} / ${refs.d90} mmHg`;
             targetCkd = `Mục tiêu (Bách phân vị < 50th): ≤ ${refs.s50} / ${refs.d50} mmHg`;
@@ -266,7 +390,7 @@
         actionList.innerHTML = "";
         actions.forEach(action => {
             let li = document.createElement('li');
-            li.style.marginBottom = "4px";
+            li.style.marginBottom = "6px";
             li.innerText = action;
             actionList.appendChild(li);
         });
@@ -276,79 +400,10 @@
         resultSection.style.display = 'block';
         setTimeout(() => { resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
     }
-</script>
 
-<div style="margin-top: 24px;">
-    <button class="accordion-btn" onclick="toggleTheory(this)">
-        <span style="display: flex; align-items: center; gap: 8px;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
-            Bảng Lý thuyết Phân độ Huyết áp (Ôn tập)
-        </span>
-        <span class="toggle-icon" style="font-size: 20px; font-weight: normal; transition: transform 0.3s;">+</span>
-    </button>
-    <div class="accordion-content" id="theoryContent">
-        
-        <div class="info-box" style="border-left-color: var(--primary);">
-            <div class="info-box-title" style="color: var(--primary-dark);">1. TIÊU CHUẨN AAP 2017</div>
-            <table style="width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; margin-top: 8px; background: #fff;">
-                <thead>
-                    <tr style="background-color: #f1f5f9; color: var(--text);">
-                        <th style="padding: 10px; border: 1px solid var(--border); width: 25%;">Phân độ</th>
-                        <th style="padding: 10px; border: 1px solid var(--border); width: 37.5%;">Trẻ &lt; 13 tuổi</th>
-                        <th style="padding: 10px; border: 1px solid var(--border); width: 37.5%;">Trẻ &ge; 13 tuổi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td style="padding: 10px; border: 1px solid var(--border); font-weight: 600; color: #16a34a;">Bình thường</td>
-                        <td style="padding: 10px; border: 1px solid var(--border);">&lt; 90th percentile</td>
-                        <td style="padding: 10px; border: 1px solid var(--border);">&lt; 120 / &lt; 80 mmHg</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 10px; border: 1px solid var(--border); font-weight: 600; color: #eab308;">HA Tăng cao<br><span style="font-size: 11px; font-weight: normal; color: var(--text-light);">(Elevated BP)</span></td>
-                        <td style="padding: 10px; border: 1px solid var(--border);">&ge; 90th đến &lt; 95th percentile<br>HOẶC 120/80 đến &lt; 95th<br><i>(Lấy mốc nào thấp hơn)</i></td>
-                        <td style="padding: 10px; border: 1px solid var(--border);">120 - 129 / &lt; 80 mmHg</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 10px; border: 1px solid var(--border); font-weight: 600; color: #f97316;">Tăng HA Độ 1</td>
-                        <td style="padding: 10px; border: 1px solid var(--border);">&ge; 95th đến &lt; 95th + 12 mmHg<br>HOẶC 130/80 đến 139/89<br><i>(Lấy mốc nào thấp hơn)</i></td>
-                        <td style="padding: 10px; border: 1px solid var(--border);">130 - 139 / 80 - 89 mmHg</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 10px; border: 1px solid var(--border); font-weight: 600; color: #dc2626;">Tăng HA Độ 2</td>
-                        <td style="padding: 10px; border: 1px solid var(--border);">&ge; 95th + 12 mmHg<br>HOẶC &ge; 140/90 mmHg<br><i>(Lấy mốc nào thấp hơn)</i></td>
-                        <td style="padding: 10px; border: 1px solid var(--border);">&ge; 140 / &ge; 90 mmHg</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="info-box" style="border-left-color: #16a34a;">
-            <div class="info-box-title" style="color: #16a34a;">2. MỤC TIÊU KIỂM SOÁT (KDIGO 2021)</div>
-            <ul style="margin: 0; padding-left: 16px; font-size: 13px; color: var(--text);">
-                <li style="margin-bottom: 6px;"><strong>Trẻ có CKD (Không phân biệt mức độ Protein niệu):</strong> Huyết áp tâm thu (SBP) hướng tới mục tiêu <strong>&le; 50th percentile</strong> (đối với trẻ &lt; 13 tuổi) hoặc <strong>&le; 120 mmHg</strong> (trẻ &ge; 13 tuổi).</li>
-                <li><strong>Ghi chú:</strong> Áp dụng đo bằng phương pháp MAP chuẩn hóa định kỳ (ABPM) để đánh giá chính xác nhất tải lượng huyết áp trung bình 24h.</li>
-            </ul>
-        </div>
-
-    </div>
-</div>
-
-<div class="ref-card">
-    <div class="ref-title">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-        Tham chiếu Lâm sàng
-    </div>
-    <ul class="ref-list">
-        <li><strong>AAP 2017:</strong> Clinical Practice Guideline for Screening and Management of High Blood Pressure in Children and Adolescents. <em>Pediatrics (2017) 140 (3): e20171904</em>.</li>
-        <li><strong>KDIGO 2021:</strong> Clinical Practice Guideline for the Management of Blood Pressure in Chronic Kidney Disease.</li>
-        <li><strong>Algorithm Note:</strong> Hệ thống sử dụng nội suy Z-score chiều cao tự động theo phương trình hồi quy 4 bậc nếu người dùng không nhập chiều cao thực tế. MAP ước tính nội suy từ công thức kinh điển (SBP + 2xDBP)/3 nếu không có chỉ số MAP máy.</li>
-    </ul>
-    <div class="ref-source">Cập nhật lần cuối: Tháng 7/2026 | Chuyên trách Huyết áp Thận Nhi</div>
-</div>
-
-<script>
-    // Logic điều khiển Accordion độc lập bổ sung
+    // ==========================================
+    // LOGIC ACCORDION LÝ THUYẾT
+    // ==========================================
     function toggleTheory(element) {
         element.classList.toggle("active");
         const content = element.nextElementSibling;
@@ -360,7 +415,7 @@
             icon.style.transform = "rotate(0deg)";
         } else {
             content.style.display = "block";
-            icon.innerText = "−"; // Ký tự minus chuẩn typography
+            icon.innerText = "−"; 
             icon.style.transform = "rotate(180deg)";
         }
     }
